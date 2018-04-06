@@ -1,0 +1,18 @@
+Package: rmapbox
+Type: Package
+Title: R interface to Mapbox web services
+Version: 0.1.0
+Authors@R: 
+    c(person(given = "Kyle", family = "Walker", email = "kyle.walker@linnaean.co", 
+    role = c("aut", "cre")))
+Maintainer: Kyle Walker <kyle.walker@linnaean.co>
+Description: An R interface to Mapbox web services.  At the moment, the Mapbox Directions API is supported.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.3.0)
+Imports: 
+  httr, 
+  sf, 
+  jsonlite, 
+  purrr
