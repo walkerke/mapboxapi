@@ -7,3 +7,5 @@
 #' @import sf
 #' @importFrom jsonlite fromJSON
 #' @import purrr
+#' @importFrom curl curl_escape
+NULL

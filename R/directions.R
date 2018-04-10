@@ -78,9 +78,4 @@ mb_matrix <- function(input_data, sources = "all", destinations = "all",
     stop("`duration_output` must be one of 'minutes' or 'seconds'", call. = FALSE)
   }
 
-
-
-
-
-
 }
