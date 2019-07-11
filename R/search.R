@@ -1,9 +1,9 @@
 #' Geocode an address using the Mapbox Geocoding API (skeleton at the moment)
 #'
-#' @param query
-#' @param limit
-#' @param sf
-#' @param access_token
+#' @param query The address query, formatted as a character string.
+#' @param limit How many results to return; defaults to 1
+#' @param sf If TRUE, returns the query result as an sf object.  Defaults to FALSE.
+#' @param access_token The Mapbox access token (required); can be set with \code{mb_access_token}.
 #'
 #' @return
 #' @export
@@ -12,8 +12,15 @@
 mb_geocode <- function(query, limit = 1, sf = FALSE, access_token = NULL) {
 
   if (is.null(access_token)) {
-    stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.",
-         call. = FALSE)
+
+    if (Sys.getenv("MAPBOX_ACCESS_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_ACCESS_TOKEN")
+    } else {
+      stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.",
+           call. = FALSE)
+    }
+
+
   }
 
   query <- curl::curl_escape(query)
