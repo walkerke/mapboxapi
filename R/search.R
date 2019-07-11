@@ -5,10 +5,7 @@
 #' @param sf If TRUE, returns the query result as an sf object.  Defaults to FALSE.
 #' @param access_token The Mapbox access token (required); can be set with \code{mb_access_token}.
 #'
-#' @return
 #' @export
-#'
-#' @examples
 mb_geocode <- function(query, limit = 1, sf = FALSE, access_token = NULL) {
 
   if (is.null(access_token)) {

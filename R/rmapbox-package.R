@@ -8,4 +8,5 @@
 #' @importFrom jsonlite fromJSON
 #' @import purrr
 #' @importFrom curl curl_escape
+#' @import aws.s3
 NULL

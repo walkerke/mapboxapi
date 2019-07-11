@@ -19,6 +19,8 @@ mb_isochrone(location, profile = "driving", contours = c(5, 10, 15),
 
 \item{denoise}{XXX}
 
+\item{output}{ZZZ}
+
 \item{polygons}{YYY}
 }
 \value{

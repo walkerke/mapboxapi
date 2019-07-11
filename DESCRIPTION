@@ -1,13 +1,13 @@
 Package: rmapbox
 Type: Package
 Title: R interface to Mapbox web services
-Date: 2018-04-09
-Version: 0.1.0
+Date: 2019-07-11
+Version: 0.2.0
 Authors@R: 
-    c(person(given = "Kyle", family = "Walker", email = "kyle.walker@linnaean.co", 
+    c(person(given = "Kyle", family = "Walker", email = "kyle.walker@tcu.edu", 
     role = c("aut", "cre")))
-Maintainer: Kyle Walker <kyle.walker@linnaean.co>
-Description: An R interface to Mapbox web services.  At the moment, the Mapbox Directions API is supported.
+Maintainer: Kyle Walker <kyle.walker@tcu.edu>
+Description: An R interface to Mapbox web services and the tippecanoe tile-generation utility.  
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
