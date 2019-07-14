@@ -2,7 +2,7 @@
 % Please edit documentation in R/maps.R
 \name{upload_tiles}
 \alias{upload_tiles}
-\title{Upload an R object or on-disk dataset to Mapbox}
+\title{Upload dataset to your Mapbox account}
 \usage{
 upload_tiles(input, username, access_token = NULL, tileset_name = NULL)
 }
@@ -16,5 +16,5 @@ upload_tiles(input, username, access_token = NULL, tileset_name = NULL)
 \item{tileset_name}{The name of the tileset}
 }
 \description{
-Upload an R object or on-disk dataset to Mapbox
+Upload dataset to your Mapbox account
 }
