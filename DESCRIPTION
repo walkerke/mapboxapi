@@ -1,8 +1,8 @@
 Package: rmapbox
 Type: Package
 Title: R interface to Mapbox web services
-Date: 2019-07-11
-Version: 0.2.0
+Date: 2020-01-26
+Version: 0.2.1
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle.walker@tcu.edu", 
     role = c("aut", "cre")))
@@ -17,5 +17,6 @@ Imports:
   sf, 
   jsonlite, 
   purrr, 
-  curl
+  curl,
+  data.table
 RoxygenNote: 6.1.1

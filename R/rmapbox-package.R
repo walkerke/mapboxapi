@@ -8,5 +8,6 @@
 #' @importFrom jsonlite fromJSON
 #' @import purrr
 #' @importFrom curl curl_escape
+#' @importFrom data.table rbindlist
 #' @import aws.s3
 NULL

@@ -99,23 +99,25 @@ mb_matrix <- function(input_data,
 
 #' Generate an isochrone using the Mapbox API
 #'
-#' @param location A vector of form \code{c(longitude, latitude)} or an address that can be geocoded as a character string.
+#' @param location A vector of form \code{c(longitude, latitude)}, an address that can be geocoded as a character string, or an sf object.
 #' @param profile One of "driving", "walking", or "cycling".  "driving" is the default.
 #' @param contours A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to \code{c(5, 10, 15)}.
 #' @param access_token A valid Mapbox access token.
-#' @param denoise XXX
-#' @param polygons YYY
-#' @param output ZZZ
+#' @param denoise A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.
+#' @param geometry one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.
+#' @param output one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"geojson"}, which returns the GeoJSON response from the API.
+#' @param rate_limit The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.
 #'
-#' @return An sf object representing the isochrone(s) around the location.
+#' @return An sf object representing the isochrone(s) around the location(s).
 #' @export
 mb_isochrone <- function(location,
                          profile = "driving",
                          contours = c(5, 10, 15),
                          access_token = NULL,
                          denoise = 1,
-                         geometry = "polygons",
-                         output = "sf") {
+                         geometry = "polygon",
+                         output = "sf",
+                         rate_limit = 300) {
 
   if (is.null(access_token)) {
 
@@ -127,12 +129,53 @@ mb_isochrone <- function(location,
     }
   }
 
-  if (geometry == "polygons") {
+  # If input location is an sf object, call a rate-limited function internally
+  mb_isochrone_sf <- function(sf_object) {
+
+    # Convert to centroids if geometry is not points
+    if (unique(st_geometry_type(location)) != "POINT") {
+      location <- suppressMessages(st_centroid(location))
+      message("Using feature centroids to compute isochrones")
+    }
+
+    input_data <- st_transform(location, 4326)
+
+    coords <- st_coordinates(input_data) %>%
+      as.data.frame() %>%
+      transpose()
+
+    mb_isochrone_limited <- purrr::slowly(mb_isochrone,
+                                          rate = rate_delay(60 / rate_limit),
+                                          quiet = TRUE)
+
+    map(coords, ~{
+      mb_isochrone_limited(location = .x,
+                           profile = profile,
+                           contours = contours,
+                           access_token = access_token,
+                           denoise = denoise,
+                           geometry = geometry,
+                           output = "sf")
+    }) %>%
+      data.table::rbindlist() %>%
+      st_as_sf(crs = 4326)
+
+  }
+
+  if (any(grepl("^sf", class(location)))) {
+
+    sf_isos <- mb_isochrone_sf(location)
+
+    return(sf_isos)
+
+  }
+
+  if (geometry == "polygon") {
     polygons <- "true"
   } else if (geometry == "linestring") {
     polygons <- "false"
   } else {
-    stop("The geometry must be one of 'polygons' or 'linestring'", call. = FALSE)
+    stop("The geometry must be one of 'polygon' or 'linestring'", call. = FALSE)
   }
 
   # If location is an address, geocode it
@@ -170,7 +213,7 @@ mb_isochrone <- function(location,
   if (output == "sf") {
     isos <- read_sf(content)
     return(isos)
-  } else {
+  } else if (output == "geojson") {
     return(content)
   }
 
