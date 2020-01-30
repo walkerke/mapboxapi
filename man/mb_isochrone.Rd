@@ -4,12 +4,19 @@
 \alias{mb_isochrone}
 \title{Generate an isochrone using the Mapbox API}
 \usage{
-mb_isochrone(location, profile = "driving", contours = c(5, 10, 15),
-  access_token = NULL, denoise = 1, geometry = "polygons",
-  output = "sf")
+mb_isochrone(
+  location,
+  profile = "driving",
+  contours = c(5, 10, 15),
+  access_token = NULL,
+  denoise = 1,
+  geometry = "polygon",
+  output = "sf",
+  rate_limit = 300
+)
 }
 \arguments{
-\item{location}{A vector of form \code{c(longitude, latitude)} or an address that can be geocoded as a character string.}
+\item{location}{A vector of form \code{c(longitude, latitude)}, an address that can be geocoded as a character string, or an sf object.}
 
 \item{profile}{One of "driving", "walking", or "cycling".  "driving" is the default.}
 
@@ -17,14 +24,16 @@ mb_isochrone(location, profile = "driving", contours = c(5, 10, 15),
 
 \item{access_token}{A valid Mapbox access token.}
 
-\item{denoise}{XXX}
+\item{denoise}{A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.}
 
-\item{output}{ZZZ}
+\item{geometry}{one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.}
 
-\item{polygons}{YYY}
+\item{output}{one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"geojson"}, which returns the GeoJSON response from the API.}
+
+\item{rate_limit}{The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.}
 }
 \value{
-An sf object representing the isochrone(s) around the location.
+An sf object representing the isochrone(s) around the location(s).
 }
 \description{
 Generate an isochrone using the Mapbox API

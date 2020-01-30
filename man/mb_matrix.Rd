@@ -4,9 +4,15 @@
 \alias{mb_matrix}
 \title{Retrieve a matrix of travel times from the Mapbox Directions API}
 \usage{
-mb_matrix(input_data, sources = "all", destinations = "all",
-  mode = "driving", fallback_speed = 44, access_token = NULL,
-  duration_output = "minutes")
+mb_matrix(
+  input_data,
+  sources = "all",
+  destinations = "all",
+  mode = "driving",
+  fallback_speed = 44,
+  access_token = NULL,
+  duration_output = "minutes"
+)
 }
 \arguments{
 \item{input_data}{The input coordinates of your request.  Acceptable inputs include a vector of
