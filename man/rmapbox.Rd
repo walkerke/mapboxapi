@@ -4,9 +4,6 @@
 \name{rmapbox}
 \alias{rmapbox}
 \title{An R interface to Mapbox web services}
-\description{
-An R interface to Mapbox web services
-}
 \author{
 Kyle Walker
 }

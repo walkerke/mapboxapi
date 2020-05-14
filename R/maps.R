@@ -2,41 +2,43 @@
 #'
 #' @param input The path to the dataset to upload
 #' @param username Your Mapbox username
-#' @param access_token Your Mapbox password
-#' @param tileset_name The name of the tileset
+#' @param access_token Your Mapbox access token; must have secret scope
+#' @param tileset_name The name of the tileset in your Mapbox account
+#' @param tileset_id The ID of the tileset in your Mapbox account
 #'
 #' @export
 upload_tiles <- function(input,
                          username,
                          access_token = NULL,
+                         tileset_id = NULL,
                          tileset_name = NULL) {
 
   if (is.null(access_token)) {
 
-    if (Sys.getenv("MAPBOX_ACCESS_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_ACCESS_TOKEN")
+    if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
     } else {
       stop("A Mapbox secret access token is required.  Please locate yours from your Mapbox account.",
            call. = FALSE)
     }
   }
-  # If input is an R object, write to a tempfile
-  # temp <- tempdir()
-  #
-  # file_loc <- file.path(temp, input)
 
-  dataset <- input
+  # If tileset_id is NULL, use the basename of the input
+  if (is.null(tileset_id)) {
+    tileset_id <- basename(input)
+  }
 
   # Get AWS credentials
   base1 <- sprintf("https://api.mapbox.com/uploads/v1/%s/credentials",
                    username)
 
-  req <- POST(base1, query = list(access_token = token))
+  req <- httr::POST(base1, query = list(access_token = access_token))
 
-  credentials <- content(req, as = "text") %>% fromJSON()
+  credentials <- httr::content(req, as = "text") %>%
+    jsonlite::fromJSON()
 
   # Use these credentials to transfer to the staging bucket
-  put_object(dataset,
+  aws.s3::put_object(file = input,
              object = credentials$key,
              bucket = credentials$bucket,
              region = "us-east-1",
@@ -51,23 +53,35 @@ upload_tiles <- function(input,
                  credentials$bucket,
                  credentials$key)
 
-  upload <- sprintf('{"url": "%s", "tileset": "%s.%s"}',
-                    url, username, tileset_name)
+  if (!is.null(tileset_name)) {
+    upload <- sprintf('{"url": "%s", "tileset": "%s.%s"}',
+                      url, username, tileset_id)
+  } else {
+    upload <- sprintf('{"url": "%s", "tileset": "%s.%s", name: %s}',
+                      url, username, tileset_id, tileset_name)
+  }
+
+
 
   base2 <- sprintf('https://api.mapbox.com/uploads/v1/%s',
                    username)
 
-  test <- POST(base2,
-               add_headers("Content-Type" = "application/json",
-                           "Cache-Control" = "no-cache"),
-               body = upload,
-               query = list(access_token = token))
+  request <- httr::POST(base2,
+                        httr::add_headers("Content-Type" = "application/json",
+                                          "Cache-Control" = "no-cache"),
+                        body = upload,
+                        query = list(access_token = access_token))
 
-  t2 <- test %>%
-    content(as = "text") %>%
-    fromJSON()
+  response <- request %>%
+    httr::content(as = "text") %>%
+    jsonlite::fromJSON()
 
-  message(sprintf("Your upload ID is %s", t2$id))
+  if (request$status_code != "200") {
+    stop(sprintf("Upload failed: your error message is %s", response),
+         call. = FALSE)
+  }
+
+  message(sprintf("Your upload ID is %s", response$id))
 
 }
 
@@ -85,8 +99,8 @@ check_upload_status <- function(username,
 
   if (is.null(access_token)) {
 
-    if (Sys.getenv("MAPBOX_ACCESS_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_ACCESS_TOKEN")
+    if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
     } else {
       stop("A Mapbox secret access token is required.  Please locate yours from your Mapbox account.",
            call. = FALSE)
@@ -183,3 +197,9 @@ query_tiles <- function(location,
 }
 
 
+get_vector_tiles <- function(tileset_id,
+                             location,
+                             zoom,
+                             output = "sf") {
+
+}

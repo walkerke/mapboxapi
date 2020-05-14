@@ -11,7 +11,7 @@ upload_tiles(input, username, access_token = NULL, tileset_name = NULL)
 
 \item{username}{Your Mapbox username}
 
-\item{access_token}{Your Mapbox password}
+\item{access_token}{Your Mapbox access token; must have secret scope}
 
 \item{tileset_name}{The name of the tileset}
 }
