@@ -4,7 +4,13 @@
 \alias{upload_tiles}
 \title{Upload dataset to your Mapbox account}
 \usage{
-upload_tiles(input, username, access_token = NULL, tileset_name = NULL)
+upload_tiles(
+  input,
+  username,
+  access_token = NULL,
+  tileset_id = NULL,
+  tileset_name = NULL
+)
 }
 \arguments{
 \item{input}{The path to the dataset to upload}
@@ -13,7 +19,9 @@ upload_tiles(input, username, access_token = NULL, tileset_name = NULL)
 
 \item{access_token}{Your Mapbox access token; must have secret scope}
 
-\item{tileset_name}{The name of the tileset}
+\item{tileset_id}{The ID of the tileset in your Mapbox account}
+
+\item{tileset_name}{The name of the tileset in your Mapbox account}
 }
 \description{
 Upload dataset to your Mapbox account
