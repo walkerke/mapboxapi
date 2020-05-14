@@ -1,20 +1,20 @@
 #' Retrieve a matrix of travel times from the Mapbox Directions API
 #'
-#' @param input_data The input coordinates of your request.  Acceptable inputs include a vector of
-#' coordinate pairs in "long, lat" format or an sf object.
+#' @param origins The input coordinates of your request.  Acceptable inputs include a list of
+#' coordinate pair vectors in \code{c(x, y)} format or an sf object.
 #' For sf linestrings or polygons, the distance between centroids will be taken.
-#' @param sources The positional indices of the source coordinates.  Defaults to "all".
-#' @param destinations The positional indices of the destination coordinates.  Defaults to "all".
+#' @param destinations The destination coordinates of your request.  If \code{NULL} (the default), a many-to-many matrix using \code{origins} will be returned.
 #' @param mode One of "driving" (the default), "driving-traffic", "walking", or "cycling".
+#' @param fallback_speed A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations.  The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.
 #' @param access_token A Mapbox access token (required)
+#' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
 #'
 #' @return An R matrix of source-destination travel times.
 #' @export
-mb_matrix <- function(input_data,
-                      sources = "all",
-                      destinations = "all",
+mb_matrix <- function(origins,
+                      destinations = NULL,
                       mode = "driving",
-                      fallback_speed = 44,
+                      fallback_speed = NULL,
                       access_token = NULL,
                       duration_output = "minutes") {
 
@@ -35,31 +35,263 @@ mb_matrix <- function(input_data,
          and 'cycling'.  Please modify your request accordingly", call. = FALSE)
   }
 
+  # Figure out size of request, and chunk accordingly if necessary
+  # Scenario 1: origins > limit, destinations < limit
+  if (any(grepl("^sf", class(origins)))) {
+    origin_size <- nrow(origins)
+  } else if ("list" %in% class(origins) || "numeric" %in% class(origins)) {
+    origin_size <- length(origins)
+  }
+
+  if (!is.null(destinations)) {
+    if (any(grepl("^sf", class(destinations)))) {
+      dest_size <- nrow(destinations)
+    } else if ("list" %in% class(destinations) || "numeric" %in% class(destinations)) {
+      dest_size <- length(destinations)
+    }
+  } else {
+    dest_size <- 0
+  }
+
+  coord_size <- origin_size + dest_size
+
+  # Specify limits depending on profile
+  if (mode == "driving-traffic") {
+    rate_limit <- 30
+    coord_limit <- 10
+  } else {
+    rate_limit <- 60
+    coord_limit <- 25
+  }
+
+  # Check to see if coordinate request will exceed the limit
+  if (coord_size > coord_limit) {
+    chunk <- TRUE
+  } else {
+    chunk <- FALSE
+  }
+
+  # Define slow matrix function
+  mb_matrix_limited <- purrr::slowly(mb_matrix, rate = rate_delay(60 / rate_limit))
+
+  # Specify chunking logic.  Scenario 1: origins exceed limit, destinations do not
+  # This scenario comes up when both origins and destinations are specified.
+  if (chunk) {
+    if (!is.null(destinations) && dest_size < coord_limit && origin_size >= coord_limit) {
+      chunk_size <- coord_limit - dest_size
+      if (any(grepl("^sf", class(origins)))) {
+        matrix_output <- origins %>%
+          mutate(ix = c(0, rep(1:(nrow(origins) - 1) %/% chunk_size))) %>%
+          group_by(ix) %>%
+          group_split(.keep = FALSE) %>%
+          map(., ~{
+          mb_matrix_limited(origins = .x,
+                            destinations = destinations,
+                            mode = mode,
+                            fallback_speed = fallback_speed,
+                            access_token = access_token,
+                            duration_output = duration_output)
+        }) %>%
+          reduce(rbind)
+        return(matrix_output)
+      } else {
+        ix <- c(0, rep(1:(length(origins) - 1) %/% chunk_size))
+        matrix_output <- origins %>%
+          split(ix) %>%
+          map(., ~{
+            mb_matrix_limited(origins = .x,
+                              destinations = destinations,
+                              mode = mode,
+                              fallback_speed = fallback_speed,
+                              access_token = access_token,
+                              duration_output = duration_output)
+          }) %>%
+          reduce(rbind)
+        return(matrix_output)
+      }
+    }
+    # Scenario 2: destinations exceed limit, origins do not
+    # Again, comes up when both origins and destinations are specified
+    else if (!is.null(destinations) && origin_size < coord_limit && dest_size >= coord_limit) {
+      chunk_size <- coord_limit - origin_size
+      if (any(grepl("^sf", class(destinations)))) {
+        matrix_output <- destinations %>%
+          mutate(ix = c(0, rep(1:(nrow(destinations) - 1) %/% chunk_size))) %>%
+          group_by(ix) %>%
+          group_split(.keep = FALSE) %>%
+          map(., ~{
+            mb_matrix_limited(origins = origins,
+                              destinations = .x,
+                              mode = mode,
+                              fallback_speed = fallback_speed,
+                              access_token = access_token,
+                              duration_output = duration_output)
+          }) %>%
+          reduce(rbind)
+        return(matrix_output)
+      } else {
+        ix <- c(0, rep(1:(length(destinations) - 1) %/% chunk_size))
+        matrix_output <- destinations %>%
+          split(ix) %>%
+          map(., ~{
+            mb_matrix_limited(origins = origins,
+                              destinations = .x,
+                              mode = mode,
+                              fallback_speed = fallback_speed,
+                              access_token = access_token,
+                              duration_output = duration_output)
+          }) %>%
+          reduce(rbind)
+        return(matrix_output)
+      }
+    }
+    # Scenario 3: Both origins _and_ destinations exceed limit
+    # Can be when destinations are specified, or left blank with origins as many-to-many
+    # Work through later...
+  }
+
+
+
+  # Specify fallback speeds based on travel mode, if fallback speed is not provided
+  if (is.null(fallback_speed)) {
+    if (mode %in% c("driving", "driving-traffic")) {
+      fallback_speed <- "44"
+    } else if (mode == "cycling") {
+      fallback_speed <- "16"
+    } else if (mode == "walking") {
+      fallback_speed <- "5"
+    }
+  }
+
+  if (is.numeric(origins)) {
+    origins <- list(origins)
+  }
+
+  if (!is.null(destinations)) {
+    if (is.numeric(destinations)) {
+      destinations <- list(destinations)
+    }
+  }
+
   # Parse the request
+  if (any(grepl("^sf", class(origins)))) {
 
-  if (any(grepl("^sf", class(input_data)))) {
-
-    if (unique(st_geometry_type(input_data)) != "POINT") {
-      input_data <- st_centroid(input_data)
+    if (unique(sf::st_geometry_type(origins)) != "POINT") {
+      origins <- suppressWarnings(sf::st_centroid(origins))
     }
 
-    input_data <- st_transform(input_data, 4326)
+    origins <- sf::st_transform(origins, 4326)
 
-    coords <- st_coordinates(input_data) %>%
+    coords <- sf::st_coordinates(origins) %>%
       as.data.frame() %>%
-      transpose()
+      purrr::transpose()
 
-    formatted_coords <- map_chr(coords, function(x) {
-      unlist(x) %>%
-        paste0(collapse = ",")
-
+    formatted_origins <- purrr::map(coords, ~{
+      paste0(.x, collapse = ",")
     }) %>%
+      unlist() %>%
       paste0(collapse = ";")
+
+    if (!is.null(destinations)) {
+      if ("data.frame" %in% class(origins)) {
+        origin_end <- nrow(origins) - 1
+      } else {
+        origin_end <- length(origins) - 1
+      }
+      origin_ix <- paste0(0:origin_end, collapse = ";")
+      if ("data.frame" %in% class(destinations)) {
+        if (length(destinations) == 1) {
+          destination_ix <- origin_end + 1
+        } else if (length(destinations) > 1) {
+          dest_start <- origin_end + 1
+          dest_end <- dest_start + (nrow(destinations) - 1)
+          destination_ix <- paste0(dest_start:dest_end, collapse = ";")
+        }
+      } else {
+        if (length(destinations) == 1) {
+          destination_ix <- origin_end + 1
+        } else if (length(destinations) > 1) {
+          dest_start <- origin_end + 1
+          dest_end <- dest_start + (length(destinations) - 1)
+          destination_ix <- paste0(dest_start:dest_end, collapse = ";")
+        }
+      }
+    } else {
+      origin_ix <- "all"
+      destination_ix <- "all"
+    }
+  }
+
+  if ("list" %in% class(origins)) {
+    if (!is.null(destinations)) {
+      end <- length(origins) - 1
+      origin_ix <- paste0(0:end, collapse = ";")
+      if ("data.frame" %in% class(destinations)) {
+        if (length(destinations) == 1) {
+          destination_ix <- origin_end + 1
+        } else if (length(destinations) > 1) {
+          dest_start <- origin_end + 1
+          dest_end <- dest_start + (nrow(destinations) - 1)
+          destination_ix <- paste0(dest_start:dest_end, collapse = ";")
+        }
+      } else {
+        if (length(destinations) == 1) {
+          destination_ix <- origin_end + 1
+        } else if (length(destinations) > 1) {
+          dest_start <- origin_end + 1
+          dest_end <- dest_start + (length(destinations) - 1)
+          destination_ix <- paste0(dest_start:dest_end, collapse = ";")
+        }
+      }
+    } else {
+      origin_ix <- "all"
+      destination_ix <- "all"
+    }
+
+    formatted_origins <- map(origins, ~{
+      paste0(.x, collapse = ",")
+    }) %>%
+      unlist() %>%
+      paste0(collapse = ";")
+
+    formatted_coords <- formatted_origins
 
   }
 
-  if (is.vector(input_data)) {
-    formatted_coords <- paste0(input_data, collapse = ";")
+  # If destinations is supplied, process the data accordingly
+  if (!is.null(destinations)) {
+    if (any(grepl("^sf", class(destinations)))) {
+
+      if (unique(sf::st_geometry_type(destinations)) != "POINT") {
+        destinations <- suppressWarnings(sf::st_centroid(destinations))
+      }
+
+      destinations <- sf::st_transform(destinations, 4326)
+
+      coords <- sf::st_coordinates(destinations) %>%
+        as.data.frame() %>%
+        purrr::transpose()
+
+      formatted_destinations <- purrr::map_chr(coords, function(x) {
+        unlist(x) %>%
+          paste0(collapse = ",")
+
+      }) %>%
+        paste0(collapse = ";")
+
+    }
+
+    else if ("list" %in% class(destinations)) {
+      formatted_destinations <- map(destinations, ~{
+        paste0(.x, collapse = ",")
+      }) %>%
+        unlist() %>%
+        paste0(collapse = ";")
+    }
+
+    formatted_coords <- paste(formatted_origins, formatted_destinations,
+                               sep = ";")
+
   }
 
 
@@ -69,20 +301,22 @@ mb_matrix <- function(input_data,
                      "/",
                      formatted_coords)
 
-  request <- GET(base_url,
+  request <- httr::GET(base_url,
                  query = list(
                    access_token = access_token,
-                   sources = sources,
-                   destinations = destinations,
+                   sources = origin_ix,
+                   destinations = destination_ix,
                    fallback_speed = fallback_speed
                  ))
 
-  content <- content(request, as = "text") %>%
-    fromJSON(flatten = TRUE)
+  content <- httr::content(request, as = "text") %>%
+    jsonlite::fromJSON(flatten = TRUE)
 
   if (request$status_code != 200) {
-    stop(content$message, call. = FALSE)
+    stop(print(content$message), call. = FALSE)
   }
+
+
 
   duration_matrix <- content$durations
 

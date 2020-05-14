@@ -5,27 +5,28 @@
 \title{Retrieve a matrix of travel times from the Mapbox Directions API}
 \usage{
 mb_matrix(
-  input_data,
-  sources = "all",
-  destinations = "all",
+  origins,
+  destinations = NULL,
   mode = "driving",
-  fallback_speed = 44,
+  fallback_speed = NULL,
   access_token = NULL,
   duration_output = "minutes"
 )
 }
 \arguments{
-\item{input_data}{The input coordinates of your request.  Acceptable inputs include a vector of
-coordinate pairs in "long, lat" format or an sf object.
+\item{origins}{The input coordinates of your request.  Acceptable inputs include a list of
+coordinate pair vectors in \code{c(x, y)} format or an sf object.
 For sf linestrings or polygons, the distance between centroids will be taken.}
 
-\item{sources}{The positional indices of the source coordinates.  Defaults to "all".}
-
-\item{destinations}{The positional indices of the destination coordinates.  Defaults to "all".}
+\item{destinations}{The destination coordinates of your request.  If \code{NULL} (the default), a many-to-many matrix using \code{origins} will be returned.}
 
 \item{mode}{One of "driving" (the default), "driving-traffic", "walking", or "cycling".}
 
+\item{fallback_speed}{A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations.  The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.}
+
 \item{access_token}{A Mapbox access token (required)}
+
+\item{duration_output}{one of \code{"minutes"} (the default) or \code{"seconds"}}
 }
 \value{
 An R matrix of source-destination travel times.
