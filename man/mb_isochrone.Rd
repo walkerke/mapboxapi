@@ -12,7 +12,8 @@ mb_isochrone(
   denoise = 1,
   geometry = "polygon",
   output = "sf",
-  rate_limit = 300
+  rate_limit = 300,
+  keep_color_cols = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ mb_isochrone(
 \item{output}{one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"geojson"}, which returns the GeoJSON response from the API.}
 
 \item{rate_limit}{The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.}
+
+\item{keep_color_cols}{Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an sf object).  Defaults to \code{FALSE}.}
 }
 \value{
 An sf object representing the isochrone(s) around the location(s).

@@ -147,10 +147,12 @@ mb_matrix <- function(origins,
     }
     # Scenario 3: Both origins _and_ destinations exceed limit
     # Can be when destinations are specified, or left blank with origins as many-to-many
-    # Work through later...
+    # Idea: split the destinations into chunks.  Then, the origin walks through the first chunk,
+    # then the second, then the third, etc. until the full matrix is assembled.
+    # This will take a bit of work
+  } else {
+    stop("Your matrix request is too large.  Please split up your request into smaller pieces; we plan to support this size in a future release.")
   }
-
-
 
   # Specify fallback speeds based on travel mode, if fallback speed is not provided
   if (is.null(fallback_speed)) {
@@ -341,6 +343,7 @@ mb_matrix <- function(origins,
 #' @param geometry one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.
 #' @param output one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"geojson"}, which returns the GeoJSON response from the API.
 #' @param rate_limit The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.
+#' @param keep_color_cols Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an sf object).  Defaults to \code{FALSE}.
 #'
 #' @return An sf object representing the isochrone(s) around the location(s).
 #' @export
@@ -351,7 +354,8 @@ mb_isochrone <- function(location,
                          denoise = 1,
                          geometry = "polygon",
                          output = "sf",
-                         rate_limit = 300) {
+                         rate_limit = 300,
+                         keep_color_cols = FALSE) {
 
   if (is.null(access_token)) {
 
@@ -445,7 +449,15 @@ mb_isochrone <- function(location,
   }
 
   if (output == "sf") {
-    isos <- read_sf(content)
+    isos <- read_sf(content) %>%
+      dplyr::rename(time = contour)
+
+    if (keep_color_cols) {
+      return(isos)
+    } else {
+      return(dplyr::select(isos, time))
+    }
+
     return(isos)
   } else if (output == "geojson") {
     return(content)
