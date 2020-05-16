@@ -15,7 +15,7 @@ mb_directions(
   bearings = NULL,
   continue_straight = NULL,
   exclude = NULL,
-  geometries = "geojson",
+  geometries = NULL,
   overview = "simplified",
   radiuses = NULL,
   approaches = NULL,

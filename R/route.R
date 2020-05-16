@@ -40,7 +40,7 @@ mb_directions <- function(input_data = NULL,
                           bearings = NULL,
                           continue_straight = NULL,
                           exclude = NULL,
-                          geometries = "geojson",
+                          geometries = NULL,
                           overview = "simplified",
                           radiuses = NULL,
                           approaches = NULL,
@@ -180,6 +180,62 @@ mb_directions <- function(input_data = NULL,
   base <- sprintf("https://api.mapbox.com/directions/v5/mapbox/%s/%s",
                   profile, formatted_coords)
 
+  # Account for boolean-to-string logic if applicable
+  if (!is.null(alternatives)) {
+    if (alternatives) {
+      alternatives <- 'true'
+    }
+  }
+
+
+  if (!is.null(steps)) {
+    if (steps) {
+      steps <- 'true'
+    }
+  } else {
+    steps <- 'false'
+  }
+
+  if (!is.null(banner_instructions)) {
+    if (banner_instructions) {
+      if (output == "sf") {
+        warning("Banner instructions are being ignored; set `output = 'full'` to retrieve this content.")
+      }
+      banner_instructions <- 'true'
+    }
+  }
+
+  if (!is.null(roundabout_exits)) {
+    if (roundabound_exits) {
+      roundabout_exits <- 'true'
+    }
+  }
+
+  if (!is.null(voice_instructions)) {
+    if (voice_instructions) {
+      if (output == "sf") {
+        warning("Voice instructions are being ignored; set `output = 'full'` to retrieve this content.")
+      }
+      voice_instructions <- 'true'
+    }
+  }
+
+  if (!is.null(voice_units)) {
+    if (voice_units) {
+      if (output == "sf") {
+        warning("Voice units are being ignored; set `output = 'full'` to retrieve this content.")
+      }
+      voice_units <- 'true'
+    }
+  }
+
+  # If the output is sf, the returned geometry should be 'geojson' so that it is easier
+  # to parse without additional dependencies
+  if (output == "sf") {
+
+  }
+
+
   request <- httr::GET(url = base,
                        query = list(
                          access_token = access_token,
@@ -215,15 +271,53 @@ mb_directions <- function(input_data = NULL,
     jsonlite::fromJSON()
 
   if (output == "sf") {
-    route <- content$routes$geometry$coordinates[[1]] %>%
-      sf::st_linestring() %>%
-      sf::st_sfc(crs = 4326) %>%
-      sf::st_sf()
 
-    route$distance <- content$routes$distance / 1000
-    route$duration <- content$routes$duration / 60
+    if (steps == 'true') {
 
-    return(route)
+      to_return <- purrr::map(content$routes$legs, ~{
+        geoms <- .x$steps[[1]]$geometry[[1]]
+
+        route <- purrr::map(geoms, ~{
+          .x %>%
+            sf::st_linestring() %>%
+            sf::st_sfc(crs = 4326) %>%
+            sf::st_sf()
+        }) %>%
+          purrr::reduce(rbind)
+
+        route$distance <- .x$steps[[1]]$distance / 1000
+        route$duration <- .x$steps[[1]]$duration / 60
+        route$instruction <- .x$steps[[1]]$maneuver
+
+        return(route)
+      })
+
+      if (length(to_return) == 1) {
+        return(to_return[[1]])
+      } else {
+        return(to_return)
+      }
+
+    } else {
+
+      to_return <- purrr::imap(content$routes$geometry$coordinates, ~{
+        route <- .x %>%
+          sf::st_linestring() %>%
+          sf::st_sfc(crs = 4326) %>%
+          sf::st_sf()
+
+        route$distance <- content$routes$distance[.y] / 1000
+        route$duration <- content$routes$duration[.y] / 60
+
+        return(route)
+      })
+
+      if (length(to_return) == 1) {
+        return(to_return[[1]])
+      } else {
+        return(to_return)
+      }
+    }
   } else {
     return(content)
   }
