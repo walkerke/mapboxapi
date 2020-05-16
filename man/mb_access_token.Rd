@@ -7,7 +7,7 @@
 mb_access_token(token, overwrite = FALSE, install = FALSE)
 }
 \arguments{
-\item{token}{The Mapbox access token}
+\item{token}{The Mapbox access token; can be public (starting with 'pk') or secret (starting with 'sk') scope, which the function will interpret for you}
 
 \item{overwrite}{Whether or not to overwrite an existing Mapbox access token.  Defaults to FALSE.}
 
@@ -20,6 +20,6 @@ Install a Mapbox access token in your .Renviron for repeated use
 \dontrun{
 my_token <- "..." # The token generated from your Mapbox account
 mb_access_token(my_token, install = TRUE)
-Sys.getenv("MAPBOX_ACCESS_TOKEN")
+Sys.getenv("MAPBOX_PUBLIC_TOKEN")
 }
 }

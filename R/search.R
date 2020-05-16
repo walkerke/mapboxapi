@@ -9,15 +9,16 @@
 mb_geocode <- function(query, limit = 1, sf = FALSE, access_token = NULL) {
 
   if (is.null(access_token)) {
-
-    if (Sys.getenv("MAPBOX_ACCESS_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_ACCESS_TOKEN")
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
     } else {
-      stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.",
-           call. = FALSE)
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
     }
-
-
   }
 
   query <- curl::curl_escape(query)

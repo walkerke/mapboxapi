@@ -4,7 +4,7 @@
 #' coordinate pair vectors in \code{c(x, y)} format or an sf object.
 #' For sf linestrings or polygons, the distance between centroids will be taken.
 #' @param destinations The destination coordinates of your request.  If \code{NULL} (the default), a many-to-many matrix using \code{origins} will be returned.
-#' @param mode One of "driving" (the default), "driving-traffic", "walking", or "cycling".
+#' @param profile One of "driving" (the default), "driving-traffic", "walking", or "cycling".
 #' @param fallback_speed A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations.  The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.
 #' @param access_token A Mapbox access token (required)
 #' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
@@ -13,26 +13,27 @@
 #' @export
 mb_matrix <- function(origins,
                       destinations = NULL,
-                      mode = "driving",
+                      profile = "driving",
                       fallback_speed = NULL,
                       access_token = NULL,
                       duration_output = "minutes") {
 
   if (is.null(access_token)) {
-
-    if (Sys.getenv("MAPBOX_ACCESS_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_ACCESS_TOKEN")
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
     } else {
-      stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.",
-           call. = FALSE)
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
     }
-
-
   }
 
-  if (!mode %in% c("driving", "driving-traffic", "walking", "cycling")) {
-    stop("The following travel modes are supported: 'driving', 'driving-traffic', 'walking',
-         and 'cycling'.  Please modify your request accordingly", call. = FALSE)
+  if (!profile %in% c("driving", "driving-traffic", "walking", "cycling")) {
+    stop("The following travel profiles are supported: 'driving', 'driving-traffic', 'walking', and 'cycling'.  Please modify your request accordingly", call. = FALSE)
   }
 
   # Figure out size of request, and chunk accordingly if necessary
@@ -56,7 +57,7 @@ mb_matrix <- function(origins,
   coord_size <- origin_size + dest_size
 
   # Specify limits depending on profile
-  if (mode == "driving-traffic") {
+  if (profile == "driving-traffic") {
     rate_limit <- 30
     coord_limit <- 10
   } else {
@@ -87,7 +88,7 @@ mb_matrix <- function(origins,
           map(., ~{
           mb_matrix_limited(origins = .x,
                             destinations = destinations,
-                            mode = mode,
+                            profile = profile,
                             fallback_speed = fallback_speed,
                             access_token = access_token,
                             duration_output = duration_output)
@@ -101,7 +102,7 @@ mb_matrix <- function(origins,
           map(., ~{
             mb_matrix_limited(origins = .x,
                               destinations = destinations,
-                              mode = mode,
+                              profile = profile,
                               fallback_speed = fallback_speed,
                               access_token = access_token,
                               duration_output = duration_output)
@@ -122,7 +123,7 @@ mb_matrix <- function(origins,
           map(., ~{
             mb_matrix_limited(origins = origins,
                               destinations = .x,
-                              mode = mode,
+                              profile = profile,
                               fallback_speed = fallback_speed,
                               access_token = access_token,
                               duration_output = duration_output)
@@ -136,7 +137,7 @@ mb_matrix <- function(origins,
           map(., ~{
             mb_matrix_limited(origins = origins,
                               destinations = .x,
-                              mode = mode,
+                              profile = profile,
                               fallback_speed = fallback_speed,
                               access_token = access_token,
                               duration_output = duration_output)
@@ -154,13 +155,13 @@ mb_matrix <- function(origins,
     stop("Your matrix request is too large.  Please split up your request into smaller pieces; we plan to support this size in a future release.")
   }
 
-  # Specify fallback speeds based on travel mode, if fallback speed is not provided
+  # Specify fallback speeds based on travel profile, if fallback speed is not provided
   if (is.null(fallback_speed)) {
-    if (mode %in% c("driving", "driving-traffic")) {
+    if (profile %in% c("driving", "driving-traffic")) {
       fallback_speed <- "44"
-    } else if (mode == "cycling") {
+    } else if (profile == "cycling") {
       fallback_speed <- "16"
-    } else if (mode == "walking") {
+    } else if (profile == "walking") {
       fallback_speed <- "5"
     }
   }
@@ -299,7 +300,7 @@ mb_matrix <- function(origins,
 
 
   base_url <- paste0("https://api.mapbox.com/directions-matrix/v1/mapbox/",
-                     mode,
+                     profile,
                      "/",
                      formatted_coords)
 
@@ -358,14 +359,19 @@ mb_isochrone <- function(location,
                          keep_color_cols = FALSE) {
 
   if (is.null(access_token)) {
-
-    if (Sys.getenv("MAPBOX_ACCESS_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_ACCESS_TOKEN")
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
     } else {
-      stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.",
-           call. = FALSE)
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
     }
   }
+
 
   # If input location is an sf object, call a rate-limited function internally
   mb_isochrone_sf <- function(sf_object) {

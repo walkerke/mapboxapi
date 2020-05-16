@@ -7,7 +7,7 @@
 mb_matrix(
   origins,
   destinations = NULL,
-  mode = "driving",
+  profile = "driving",
   fallback_speed = NULL,
   access_token = NULL,
   duration_output = "minutes"
@@ -20,7 +20,7 @@ For sf linestrings or polygons, the distance between centroids will be taken.}
 
 \item{destinations}{The destination coordinates of your request.  If \code{NULL} (the default), a many-to-many matrix using \code{origins} will be returned.}
 
-\item{mode}{One of "driving" (the default), "driving-traffic", "walking", or "cycling".}
+\item{profile}{One of "driving" (the default), "driving-traffic", "walking", or "cycling".}
 
 \item{fallback_speed}{A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations.  The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.}
 
