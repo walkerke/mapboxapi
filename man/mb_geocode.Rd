@@ -2,19 +2,36 @@
 % Please edit documentation in R/search.R
 \name{mb_geocode}
 \alias{mb_geocode}
-\title{Geocode an address using the Mapbox Geocoding API (skeleton at the moment)}
+\title{Geocode an address or place description using the Mapbox Geocoding API}
 \usage{
-mb_geocode(query, limit = 1, sf = FALSE, access_token = NULL)
+mb_geocode(
+  search_text,
+  endpoint = "mapbox.places",
+  limit = 1,
+  types = NULL,
+  search_within = NULL,
+  language = NULL,
+  output = "coordinates",
+  access_token = NULL
+)
 }
 \arguments{
-\item{query}{The address query, formatted as a character string.}
+\item{search_text}{The text to search, formatted as a character string. Can be an address, a location, or a description of a point of interest.}
 
-\item{limit}{How many results to return; defaults to 1}
+\item{endpoint}{One of \code{'mapbox.places'} (the default) or \code{mapbox.places-permanent}. Per Mapbox's terms of service, you are only allowed to save results and perform batch geocoding with the places-permanent endpoint.}
 
-\item{sf}{If TRUE, returns the query result as an sf object.  Defaults to FALSE.}
+\item{limit}{How many results to return; defaults to 1 (maximum 10).}
+
+\item{types}{A vector of feature types to limit to which the search should be limited. Available options include \code{'country'}, \code{'region'}, \code{'postcode'}, \code{'district'}, \code{'place'}, \code{'locality'}, \code{'neighborhood'}, \code{'address'}, and \code{'poi'}. If left blank, all types will be searched.}
+
+\item{search_within}{An sf object, or vector representing a bounding box of format \code{c(min_longitude, min_latitude, max_longitude, max_latitude)} used to limit search results.  Defaults to NULL.}
+
+\item{language}{The user's language, which can help with interpretation of queries.  Available languages are found at \url{https://docs.mapbox.com/api/search/#language-coverage}.}
+
+\item{output}{If \code{"coordinates"} (the default), returns a length-two vector of coordinates or a list of coordinates.  If \code{"sf"}, returns an sf object with the result geometries. If \code{"full"}, returns the full response from the API.}
 
 \item{access_token}{The Mapbox access token (required); can be set with \code{mb_access_token}.}
 }
 \description{
-Geocode an address using the Mapbox Geocoding API (skeleton at the moment)
+Geocode an address or place description using the Mapbox Geocoding API
 }
