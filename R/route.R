@@ -184,6 +184,8 @@ mb_directions <- function(input_data = NULL,
   if (!is.null(alternatives)) {
     if (alternatives) {
       alternatives <- 'true'
+    } else {
+      alternatives <- 'false'
     }
   }
 
@@ -202,12 +204,16 @@ mb_directions <- function(input_data = NULL,
         warning("Banner instructions are being ignored; set `output = 'full'` to retrieve this content.")
       }
       banner_instructions <- 'true'
+    } else {
+      banner_instructions <- 'false'
     }
   }
 
   if (!is.null(roundabout_exits)) {
     if (roundabound_exits) {
       roundabout_exits <- 'true'
+    } else {
+      roundabount_exits <- 'false'
     }
   }
 
@@ -217,6 +223,8 @@ mb_directions <- function(input_data = NULL,
         warning("Voice instructions are being ignored; set `output = 'full'` to retrieve this content.")
       }
       voice_instructions <- 'true'
+    } else {
+      voice_instructions <- 'false'
     }
   }
 
@@ -226,6 +234,8 @@ mb_directions <- function(input_data = NULL,
         warning("Voice units are being ignored; set `output = 'full'` to retrieve this content.")
       }
       voice_units <- 'true'
+    } else {
+      voice_units <- 'false'
     }
   }
 
@@ -287,7 +297,7 @@ mb_directions <- function(input_data = NULL,
 
         route$distance <- .x$steps[[1]]$distance / 1000
         route$duration <- .x$steps[[1]]$duration / 60
-        route$instruction <- .x$steps[[1]]$maneuver
+        route$instruction <- .x$steps[[1]]$maneuver$instruction
 
         return(route)
       })
