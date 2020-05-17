@@ -4,16 +4,25 @@
 \alias{tippecanoe}
 \title{Generate an .mbtiles file with tippecanoe}
 \usage{
-tippecanoe(input, output, options = NULL, keep_file = FALSE)
+tippecanoe(
+  input,
+  output,
+  min_zoom = NULL,
+  max_zoom = NULL,
+  drop_rate = NULL,
+  overwrite = TRUE,
+  other_options = NULL,
+  keep_file = FALSE
+)
 }
 \arguments{
 \item{input}{The dataset from which to generate vector tiles.  Can be an sf object or GeoJSON file on disk.}
 
 \item{output}{The name of the output .mbtiles file (with .mbtiles extension).  Will be saved in the current working directory.}
 
-\item{options}{A character vector of options to be passed to the tippecanoe program.}
-
 \item{keep_file}{Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.}
+
+\item{options}{A character vector of options to be passed to the tippecanoe program.}
 }
 \description{
 Generate an .mbtiles file with tippecanoe
