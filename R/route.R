@@ -5,30 +5,30 @@
 #' @param destination An address or coordinate pair that represents the destination of your requested route.
 #' @param profile One of "driving" (the default), "driving-traffic", "walking", or "cycling".
 #' @param output One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.
-#' @param alternatives Whether or not to return alternative routes with your request.
-#' @param annotations Must be used with overview = FULL.
+#' @param alternatives Whether or not to return alternative routes with your request. If TRUE, a list of up to 3 possible routes will be returned.
+#' @param annotations A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = FULL.
 #' @param bearings bearings
 #' @param continue_straight continue_straight
-#' @param exclude exclude
-#' @param geometries geometries
-#' @param overview overview
-#' @param radiuses radiuses
-#' @param approaches approaches
-#' @param steps steps
-#' @param banner_instructions banner_instructions
-#' @param language language
-#' @param roundabout_exits roundabout_exits
-#' @param voice_instructions voice_instructions
-#' @param voice_units voice_units
-#' @param waypoint_names waypoint_names
-#' @param waypoint_targets waypoint_targets
-#' @param waypoints waypoints
-#' @param walking_speed walking_speed
-#' @param walkway_bias walkway_bias
-#' @param alley_bias alley_bias
-#' @param access_token acces_token
+#' @param exclude Road types to exclude from your route; possible choices are \code{'toll'}, \code{'motorway'}, or \code{'ferry'}.  Defaults to NULL.
+#' @param geometries The route geometry format.  If \code{output = 'sf'}, you will get back an sf object and you should leave this blank.  If \code{output = 'full'}, the embedded route geometries will be \code{polyline} with five decimal place precision.  \code{'polyline6'} may also be specified.
+#' @param overview If left blank, defaults to \code{'simplified'} for simplified geometry; the other option is \code{'full'} which provides the most detailed geometry available.
+#' @param radiuses A character string with semicolon-separated radii that specify the distance (in meters) to snap each input coordinate to the road network.  Defaults to NULL.
+#' @param approaches A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.
+#' @param steps steps If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.
+#' @param banner_instructions Whether or not to return banner objects; only available when \code{output = 'full'} and \code{steps = TRUE}.
+#' @param language The language of the returned instructions (defaults to English). Available language codes are found at \url{https://docs.mapbox.com/api/navigation/#instructions-languages}.  Only available when \code{steps = TRUE}.
+#' @param roundabout_exits If TRUE, adds instructions for roundabout entrance and exit.  Only available when \code{steps = TRUE}.
+#' @param voice_instructions Only available when \code{steps = TRUE} and \code{output = 'full'}.
+#' @param voice_units Only available when \code{steps = TRUE} and \code{output = 'full'}.
+#' @param waypoint_names Only available when \code{steps = TRUE} and \code{output = 'full'}.
+#' @param waypoint_targets Only available when \code{steps = TRUE} and \code{output = 'full'}.
+#' @param waypoints Only available when \code{steps = TRUE} and \code{output = 'full'}.
+#' @param walking_speed The walking speed in meters/second; available when \code{profile = 'walking'}.
+#' @param walkway_bias Can take values between -1 and 1, where negative numbers avoid walkways and positive numbers prefer walkways.  Available when \code{profile = 'walking'}.
+#' @param alley_bias Can take values between -1 and 1, where negative numbers avoid alleys and positive numbers prefer alleys.  Available when \code{profile = 'walking'}.
+#' @param access_token Your Mapbox access token; set with \code{mb_access_token()}
 #'
-#' @return A list or sf object
+#' @return An sf object (or list of sf objects), or full R list representing the API response.
 #' @export
 mb_directions <- function(input_data = NULL,
                           origin = NULL,

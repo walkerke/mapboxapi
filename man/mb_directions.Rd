@@ -45,52 +45,52 @@ mb_directions(
 
 \item{output}{One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.}
 
-\item{alternatives}{Whether or not to return alternative routes with your request.}
+\item{alternatives}{Whether or not to return alternative routes with your request. If TRUE, a list of up to 3 possible routes will be returned.}
 
-\item{annotations}{Must be used with overview = FULL.}
+\item{annotations}{A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = FULL.}
 
 \item{bearings}{bearings}
 
 \item{continue_straight}{continue_straight}
 
-\item{exclude}{exclude}
+\item{exclude}{Road types to exclude from your route; possible choices are \code{'toll'}, \code{'motorway'}, or \code{'ferry'}.  Defaults to NULL.}
 
-\item{geometries}{geometries}
+\item{geometries}{The route geometry format.  If \code{output = 'sf'}, you will get back an sf object and you should leave this blank.  If \code{output = 'full'}, the embedded route geometries will be \code{polyline} with five decimal place precision.  \code{'polyline6'} may also be specified.}
 
-\item{overview}{overview}
+\item{overview}{If left blank, defaults to \code{'simplified'} for simplified geometry; the other option is \code{'full'} which provides the most detailed geometry available.}
 
-\item{radiuses}{radiuses}
+\item{radiuses}{A character string with semicolon-separated radii that specify the distance (in meters) to snap each input coordinate to the road network.  Defaults to NULL.}
 
-\item{approaches}{approaches}
+\item{approaches}{A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.}
 
-\item{steps}{steps}
+\item{steps}{steps If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.}
 
-\item{banner_instructions}{banner_instructions}
+\item{banner_instructions}{Whether or not to return banner objects; only available when \code{output = 'full'} and \code{steps = TRUE}.}
 
-\item{language}{language}
+\item{language}{The language of the returned instructions (defaults to English). Available language codes are found at \url{https://docs.mapbox.com/api/navigation/#instructions-languages}.  Only available when \code{steps = TRUE}.}
 
-\item{roundabout_exits}{roundabout_exits}
+\item{roundabout_exits}{If TRUE, adds instructions for roundabout entrance and exit.  Only available when \code{steps = TRUE}.}
 
-\item{voice_instructions}{voice_instructions}
+\item{voice_instructions}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
 
-\item{voice_units}{voice_units}
+\item{voice_units}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
 
-\item{waypoint_names}{waypoint_names}
+\item{waypoint_names}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
 
-\item{waypoint_targets}{waypoint_targets}
+\item{waypoint_targets}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
 
-\item{waypoints}{waypoints}
+\item{waypoints}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
 
-\item{walking_speed}{walking_speed}
+\item{walking_speed}{The walking speed in meters/second; available when \code{profile = 'walking'}.}
 
-\item{walkway_bias}{walkway_bias}
+\item{walkway_bias}{Can take values between -1 and 1, where negative numbers avoid walkways and positive numbers prefer walkways.  Available when \code{profile = 'walking'}.}
 
-\item{alley_bias}{alley_bias}
+\item{alley_bias}{Can take values between -1 and 1, where negative numbers avoid alleys and positive numbers prefer alleys.  Available when \code{profile = 'walking'}.}
 
-\item{access_token}{acces_token}
+\item{access_token}{Your Mapbox access token; set with \code{mb_access_token()}}
 }
 \value{
-A list or sf object
+An sf object (or list of sf objects), or full R list representing the API response.
 }
 \description{
 Make a request to the Mapbox Directions API
