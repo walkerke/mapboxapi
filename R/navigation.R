@@ -36,18 +36,28 @@ mb_matrix <- function(origins,
     stop("The following travel profiles are supported: 'driving', 'driving-traffic', 'walking', and 'cycling'.  Please modify your request accordingly", call. = FALSE)
   }
 
+  if (is.numeric(origins)) {
+    origins <- list(origins)
+  }
+
+  if (!is.null(destinations)) {
+    if (is.numeric(destinations)) {
+      destinations <- list(destinations)
+    }
+  }
+
   # Figure out size of request, and chunk accordingly if necessary
   # Scenario 1: origins > limit, destinations < limit
-  if (any(grepl("^sf", class(origins)))) {
+  if (!is.null(nrow(origins))) {
     origin_size <- nrow(origins)
-  } else if ("list" %in% class(origins) || "numeric" %in% class(origins)) {
+  } else {
     origin_size <- length(origins)
   }
 
   if (!is.null(destinations)) {
-    if (any(grepl("^sf", class(destinations)))) {
+    if (!is.null(nrow(destinations))) {
       dest_size <- nrow(destinations)
-    } else if ("list" %in% class(destinations) || "numeric" %in% class(destinations)) {
+    } else {
       dest_size <- length(destinations)
     }
   } else {
@@ -72,12 +82,13 @@ mb_matrix <- function(origins,
     chunk <- FALSE
   }
 
-  # Define slow matrix function
-  mb_matrix_limited <- purrr::slowly(mb_matrix, rate = rate_delay(60 / rate_limit))
-
   # Specify chunking logic.  Scenario 1: origins exceed limit, destinations do not
   # This scenario comes up when both origins and destinations are specified.
   if (chunk) {
+    message("Splitting your matrix request into smaller chunks and re-assembling the result.")
+    # Define slow matrix function
+    mb_matrix_limited <- purrr::slowly(mb_matrix, rate = rate_delay(60 / rate_limit))
+
     if (!is.null(destinations) && dest_size < coord_limit && origin_size >= coord_limit) {
       chunk_size <- coord_limit - dest_size
       if (any(grepl("^sf", class(origins)))) {
@@ -151,7 +162,7 @@ mb_matrix <- function(origins,
     # Idea: split the destinations into chunks.  Then, the origin walks through the first chunk,
     # then the second, then the third, etc. until the full matrix is assembled.
     # This will take a bit of work
-  } else {
+  } else if ((origin_size > coord_limit && dest_size > coord_limit) || (origin_size > coord_limit && is.null(destinations))) {
     stop("Your matrix request is too large.  Please split up your request into smaller pieces; we plan to support this size in a future release.")
   }
 
@@ -163,16 +174,6 @@ mb_matrix <- function(origins,
       fallback_speed <- "16"
     } else if (profile == "walking") {
       fallback_speed <- "5"
-    }
-  }
-
-  if (is.numeric(origins)) {
-    origins <- list(origins)
-  }
-
-  if (!is.null(destinations)) {
-    if (is.numeric(destinations)) {
-      destinations <- list(destinations)
     }
   }
 
@@ -338,7 +339,7 @@ mb_matrix <- function(origins,
 #'
 #' @param location A vector of form \code{c(longitude, latitude)}, an address that can be geocoded as a character string, or an sf object.
 #' @param profile One of "driving", "walking", or "cycling".  "driving" is the default.
-#' @param contours A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to \code{c(5, 10, 15)}.
+#' @param time A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to \code{c(5, 10, 15)}.
 #' @param access_token A valid Mapbox access token.
 #' @param denoise A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.
 #' @param geometry one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.
@@ -350,7 +351,7 @@ mb_matrix <- function(origins,
 #' @export
 mb_isochrone <- function(location,
                          profile = "driving",
-                         contours = c(5, 10, 15),
+                         time = c(5, 10, 15),
                          access_token = NULL,
                          denoise = 1,
                          geometry = "polygon",
@@ -395,7 +396,7 @@ mb_isochrone <- function(location,
     map(coords, ~{
       mb_isochrone_limited(location = .x,
                            profile = profile,
-                           contours = contours,
+                           time = time,
                            access_token = access_token,
                            denoise = denoise,
                            geometry = geometry,
@@ -442,7 +443,7 @@ mb_isochrone <- function(location,
   request <- GET(base,
                  query = list(
                    access_token = access_token,
-                   contours_minutes = paste0(contours, collapse = ","),
+                   contours_minutes = paste0(time, collapse = ","),
                    denoise = as.character(denoise),
                    polygons = polygons
                  ))

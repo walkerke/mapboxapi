@@ -20,9 +20,17 @@ tippecanoe(
 
 \item{output}{The name of the output .mbtiles file (with .mbtiles extension).  Will be saved in the current working directory.}
 
-\item{keep_file}{Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.}
+\item{min_zoom}{min_zoom}
 
-\item{options}{A character vector of options to be passed to the tippecanoe program.}
+\item{max_zoom}{max_zoom}
+
+\item{drop_rate}{drop_rate}
+
+\item{overwrite}{overwrite}
+
+\item{other_options}{A character vector of options to be passed to the tippecanoe program.}
+
+\item{keep_file}{Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.}
 }
 \description{
 Generate an .mbtiles file with tippecanoe

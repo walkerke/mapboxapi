@@ -7,7 +7,7 @@
 mb_isochrone(
   location,
   profile = "driving",
-  contours = c(5, 10, 15),
+  time = c(5, 10, 15),
   access_token = NULL,
   denoise = 1,
   geometry = "polygon",
@@ -21,7 +21,7 @@ mb_isochrone(
 
 \item{profile}{One of "driving", "walking", or "cycling".  "driving" is the default.}
 
-\item{contours}{A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to \code{c(5, 10, 15)}.}
+\item{time}{A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to \code{c(5, 10, 15)}.}
 
 \item{access_token}{A valid Mapbox access token.}
 

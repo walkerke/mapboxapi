@@ -25,7 +25,7 @@ upload_tiles <- function(input,
 
   # If tileset_id is NULL, use the basename of the input
   if (is.null(tileset_id)) {
-    tileset_id <- basename(input)
+    tileset_id <- gsub("\\.[^.]*$", "", basename(input))
   }
 
   # Get AWS credentials
@@ -53,11 +53,11 @@ upload_tiles <- function(input,
                  credentials$bucket,
                  credentials$key)
 
-  if (!is.null(tileset_name)) {
+  if (is.null(tileset_name)) {
     upload <- sprintf('{"url": "%s", "tileset": "%s.%s"}',
                       url, username, tileset_id)
   } else {
-    upload <- sprintf('{"url": "%s", "tileset": "%s.%s", name: %s}',
+    upload <- sprintf('{"url": "%s", "tileset": "%s.%s", "name": "%s"}',
                       url, username, tileset_id, tileset_name)
   }
 
@@ -76,7 +76,7 @@ upload_tiles <- function(input,
     httr::content(as = "text") %>%
     jsonlite::fromJSON()
 
-  if (request$status_code != "200") {
+  if (request$status_code != "201") {
     stop(sprintf("Upload failed: your error message is %s", response),
          call. = FALSE)
   }
