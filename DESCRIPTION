@@ -19,5 +19,6 @@ Imports:
   purrr, 
   curl,
   data.table,
-  aws.s3
+  aws.s3,
+  stringi
 RoxygenNote: 7.1.0

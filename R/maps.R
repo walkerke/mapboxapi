@@ -95,8 +95,8 @@ upload_tiles <- function(input,
 #' @param access_token Your Mapbox access token
 #'
 #' @export
-check_upload_status <- function(username,
-                                id,
+check_upload_status <- function(upload_id,
+                                username,
                                 access_token = NULL) {
 
   if (is.null(access_token)) {
@@ -110,7 +110,7 @@ check_upload_status <- function(username,
   }
 
   status <- GET(sprintf("https://api.mapbox.com/uploads/v1/%s/%s",
-                        username, id),
+                        username, upload_id),
                 query = list(access_token = access_token))
 
   status %>%
@@ -199,9 +199,9 @@ query_tiles <- function(location,
 }
 
 
-get_vector_tiles <- function(tileset_id,
-                             location,
-                             zoom,
-                             output = "sf") {
-
-}
+# get_vector_tiles <- function(tileset_id,
+#                              location,
+#                              zoom,
+#                              output = "sf") {
+#
+# }

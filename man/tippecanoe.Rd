@@ -7,7 +7,7 @@
 tippecanoe(
   input,
   output,
-  layer_name = "layer",
+  layer_name = NULL,
   min_zoom = NULL,
   max_zoom = NULL,
   drop_rate = NULL,
@@ -21,9 +21,17 @@ tippecanoe(
 
 \item{output}{The name of the output .mbtiles file (with .mbtiles extension).  Will be saved in the current working directory.}
 
-\item{options}{A character vector of options to be passed to the tippecanoe program.}
+\item{layer_name}{The name of the layer in the output .mbtiles file. If NULL, will either be a random string (if input is an sf object) or the name of the input GeoJSON file (if input is a file path).}
 
-\item{keep_file}{Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.}
+\item{min_zoom}{The minimum zoom level for which to compute tiles.}
+
+\item{max_zoom}{The maximum zoom level for which to compute tiles.  If both min_zoom and max_zoom are blank, tippecanoe will guess the best zoom levels for your data.}
+
+\item{drop_rate}{The rate at which tippecanoe will drop features as you zoom out. If NULL, tippecanoe will drop features as needed in the densest tiles to stay within Mapbox's limits.}
+
+\item{other_options}{A character string of other options to be passed to the tippecanoe program.}
+
+\item{keep_geojson}{Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.}
 }
 \description{
 Generate an .mbtiles file with tippecanoe

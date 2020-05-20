@@ -2,12 +2,16 @@
 #'
 #' @param input The dataset from which to generate vector tiles.  Can be an sf object or GeoJSON file on disk.
 #' @param output The name of the output .mbtiles file (with .mbtiles extension).  Will be saved in the current working directory.
-#' @param options A character vector of options to be passed to the tippecanoe program.
-#' @param keep_file Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.
+#' @param layer_name The name of the layer in the output .mbtiles file. If NULL, will either be a random string (if input is an sf object) or the name of the input GeoJSON file (if input is a file path).
+#' @param min_zoom The minimum zoom level for which to compute tiles.
+#' @param max_zoom The maximum zoom level for which to compute tiles.  If both min_zoom and max_zoom are blank, tippecanoe will guess the best zoom levels for your data.
+#' @param drop_rate The rate at which tippecanoe will drop features as you zoom out. If NULL, tippecanoe will drop features as needed in the densest tiles to stay within Mapbox's limits.
+#' @param other_options A character string of other options to be passed to the tippecanoe program.
+#' @param keep_geojson Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.
 #' @export
 tippecanoe <- function(input,
                        output,
-                       layer_name = "layer",
+                       layer_name = NULL,
                        min_zoom = NULL,
                        max_zoom = NULL,
                        drop_rate = NULL,
@@ -61,6 +65,10 @@ tippecanoe <- function(input,
 
     input <- sf::st_transform(input, 4326)
 
+    if (is.null(layer_name)) {
+      layer_name <- stringi::stri_rand_strings(1, 6)
+    }
+
     if (keep_geojson) {
       outfile <- paste0(layer_name, ".geojson")
 
@@ -87,6 +95,11 @@ tippecanoe <- function(input,
 
 
   } else if (class(input) == "character") {
+
+    if (!is.null(layer_name)) {
+      collapsed_opts <- paste0(collapsed_opts, " -l ", layer_name)
+    }
+
     call <- sprintf("tippecanoe -o %s/%s %s %s",
                     dir, output, collapsed_opts, input)
 

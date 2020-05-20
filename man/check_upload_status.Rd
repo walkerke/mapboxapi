@@ -4,14 +4,14 @@
 \alias{check_upload_status}
 \title{Check the status of a Mapbox upload}
 \usage{
-check_upload_status(username, id, access_token = NULL)
+check_upload_status(upload_id, username, access_token = NULL)
 }
 \arguments{
 \item{username}{Your account's username}
 
-\item{id}{The upload ID}
-
 \item{access_token}{Your Mapbox access token}
+
+\item{id}{The upload ID}
 }
 \description{
 Check the status of a Mapbox upload
