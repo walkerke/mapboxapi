@@ -66,7 +66,7 @@ tippecanoe <- function(input,
 
       path <- file.path(dir, outfile)
 
-      sf::st_write(input, path)
+      sf::st_write(input, path, quiet = TRUE)
 
     } else {
 
@@ -76,7 +76,7 @@ tippecanoe <- function(input,
 
       path <- file.path(tmp, tempfile)
 
-      sf::st_write(input, path)
+      sf::st_write(input, path, quiet = TRUE)
 
     }
 
