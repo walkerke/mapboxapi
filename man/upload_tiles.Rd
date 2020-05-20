@@ -9,7 +9,8 @@ upload_tiles(
   username,
   access_token = NULL,
   tileset_id = NULL,
-  tileset_name = NULL
+  tileset_name = NULL,
+  multipart = FALSE
 )
 }
 \arguments{

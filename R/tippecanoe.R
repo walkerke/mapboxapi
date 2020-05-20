@@ -2,21 +2,18 @@
 #'
 #' @param input The dataset from which to generate vector tiles.  Can be an sf object or GeoJSON file on disk.
 #' @param output The name of the output .mbtiles file (with .mbtiles extension).  Will be saved in the current working directory.
-#' @param min_zoom min_zoom
-#' @param max_zoom max_zoom
-#' @param drop_rate drop_rate
-#' @param overwrite overwrite
-#' @param other_options A character vector of options to be passed to the tippecanoe program.
+#' @param options A character vector of options to be passed to the tippecanoe program.
 #' @param keep_file Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.
 #' @export
 tippecanoe <- function(input,
                        output,
+                       layer_name = "layer",
                        min_zoom = NULL,
                        max_zoom = NULL,
                        drop_rate = NULL,
                        overwrite = TRUE,
                        other_options = NULL,
-                       keep_file = FALSE) {
+                       keep_geojson = FALSE) {
 
   check_install <- system("tippecanoe -v") == 0
 
@@ -41,9 +38,9 @@ tippecanoe <- function(input,
   }
 
   if (!is.null(drop_rate)) {
-    opts <- c(opts, sprintf("-r", drop_rate))
+    opts <- c(opts, sprintf("-r%s", drop_rate))
   } else {
-    opts <- c(opts, "--drop-densest-as-needed")
+    opts <- c(opts, "-as")
   }
 
   if (overwrite) {
@@ -62,24 +59,24 @@ tippecanoe <- function(input,
   # If input is an sf object, it should be first converted to GeoJSON
   if (any(grepl("^sf", class(input)))) {
 
-    input <- st_transform(input, 4326)
+    input <- sf::st_transform(input, 4326)
 
-    if (keep_file) {
-      outfile <- paste0(deparse(substitute(input)), ".geojson")
+    if (keep_geojson) {
+      outfile <- paste0(layer_name, ".geojson")
 
       path <- file.path(dir, outfile)
 
-      st_write(input, path)
+      sf::st_write(input, path)
 
     } else {
 
       tmp <- tempdir()
 
-      tempfile <- paste0(deparse(substitute(input)), ".geojson")
+      tempfile <- paste0(layer_name, ".geojson")
 
       path <- file.path(tmp, tempfile)
 
-      st_write(input, path)
+      sf::st_write(input, path)
 
     }
 
@@ -88,7 +85,7 @@ tippecanoe <- function(input,
 
     system(call)
 
-    #
+
   } else if (class(input) == "character") {
     call <- sprintf("tippecanoe -o %s/%s %s %s",
                     dir, output, collapsed_opts, input)

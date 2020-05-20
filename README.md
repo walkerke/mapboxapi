@@ -8,4 +8,4 @@ The purpose of {mapboxapi} is to facilitate the use of [Mapbox web services](htt
 
 More thorough documentation will be coming.  In the meantime, take a look at the following examples:
 
-### Example 1: analyzing the relationship between 
+### Example 1: how does the median household income of Census tracts vary  

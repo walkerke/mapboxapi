@@ -11,7 +11,8 @@ upload_tiles <- function(input,
                          username,
                          access_token = NULL,
                          tileset_id = NULL,
-                         tileset_name = NULL) {
+                         tileset_name = NULL,
+                         multipart = FALSE) {
 
   if (is.null(access_token)) {
 
@@ -45,7 +46,8 @@ upload_tiles <- function(input,
              key = credentials$accessKeyId,
              secret = credentials$secretAccessKey,
              session_token = credentials$sessionToken,
-             check_region = FALSE)
+             check_region = FALSE,
+             multipart = multipart)
 
 
   # Once done, generate the upload
