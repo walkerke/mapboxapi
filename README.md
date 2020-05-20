@@ -84,7 +84,7 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
-![](https://walker-data.com/examples/shiny-example.gif)
+<img src=img/shiny-example.gif style="width: 800px">
 
 #### Example 2: render large datasets as scalable vector tiles with tippecanoe
 
@@ -122,7 +122,7 @@ mapdeck(token = Sys.getenv("MAPBOX_PUBLIC_TOKEN"),
         location = c(-98.7382803, 31.7678448))
 ```
 
-![](https://walker-data.com/examples/tippecanoe-example.gif)
+<img src=img/tippecanoe-example.gif style="width: 800px">
 
 
 ### Example 3: a research workflow to determine how median gross rent varies by distance from downtown
@@ -186,4 +186,4 @@ ggplot(tc_rent, aes(x = time, y = estimate)) +
   theme_minimal()
 ```
 
-<img src="https://walker-data.com/examples/ggplot2-example.png" style="width: 800px">
+<img src=img/ggplot2-example.png style="width: 800px">
