@@ -142,11 +142,18 @@ query_tiles <- function(location,
                         layers = NULL,
                         access_token = NULL) {
 
-  if (Sys.getenv("MAPBOX_ACCESS_TOKEN") != "") {
-    access_token <- Sys.getenv("MAPBOX_ACCESS_TOKEN")
-  } else {
-    stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.",
-         call. = FALSE)
+  if (is.null(access_token)) {
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    } else {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
+    }
   }
 
   # If location is an address, geocode it
@@ -199,9 +206,124 @@ query_tiles <- function(location,
 }
 
 
-# get_vector_tiles <- function(tileset_id,
-#                              location,
-#                              zoom,
-#                              output = "sf") {
-#
-# }
+get_vector_tiles <- function(tileset_id,
+                             location,
+                             zoom,
+                             output = "sf",
+                             access_token = NULL) {
+
+  if (is.null(access_token)) {
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    } else {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
+    }
+  }
+
+  # If location is an sf object, get the bbox and the tiles that intersect it
+  if (any(grepl("^sf"), location)) {
+    bbox <- location %>%
+      sf::st_transform(4326) %>%
+      sf::st_bbox(.)
+
+    tile_grid <- slippymath::bbox_to_tile_grid(bbox = bbox, zoom = zoom)
+
+    tile_ids <- tile_grid$tiles
+
+    message(sprintf("Requesting data for %s map tiles. To speed up your query, choose a smaller extent or zoom level.", nrow(tile_ids)))
+    sf_list <- purrr::map2(tile_ids$x, tile_ids$y, ~{
+      # Build the request to Mapbox
+      url <- sprintf("https://api.mapbox.com/v4/%s/%s/%s/%s.mvt",
+                     tileset_id, zoom, .x, .y)
+
+
+      request <- httr::GET(url, query = list(access_token = access_token))
+
+
+      if (request$status_code != 200) {
+        content <- httr::content(request, as = "text")
+        stop(print(content$message), call. = FALSE)
+      }
+
+      sf_output <- protolite::read_mvt_sf(request$url)
+
+      return(sf_output)
+    })
+
+    # Now, combine the internal list elements by name
+    # First, find the tile with the most elements and get the names
+    max_ix <- purrr::map(sf_list, ~length(.x)) %>% which.max()
+
+    # Next, grab the names of that list element
+    layer_names <- names(sf_list[[max_ix]])
+
+    names(layer_names) <- layer_names
+
+    # Now, iterate over the layer names, then the lists, keeping what you need and combining
+    master_list <- purrr::map(layer_names, function(name) {
+      print(name)
+      layer_list <- purrr::map(sf_list, ~{
+        if (name %in% names(.x)) {
+          layer <- .x[[name]]
+          if ("POLYGON" %in% sf::st_geometry_type(layer)) {
+            # Remove malformed polygons
+            layer$layer_area <- sf::st_area(layer) %>% as.numeric()
+            layer <- dplyr::filter(layer, layer_area > 0)
+            layer <- sf::st_cast(layer, "MULTIPOLYGON")
+            layer <- dplyr::select(layer, -layer_area)
+          } else if ("LINESTRING" %in% sf::st_geometry_type(layer)) {
+            layer <- sf::st_cast(layer, "MULTILINESTRING")
+          }
+          return(layer)
+        }
+      }) %>%
+        purrr::compact()
+
+    })
+
+    return(master_list)
+
+  }
+
+  # If location is a length-2 numeric vector of longitude/latitude, get the specific tile IDs
+  # If location is an address/text description, geocode it
+  if (is.vector(location)) {
+    if (class(location) == "numeric") {
+      if (length(location) != 2) {
+        stop("Location must be a length-2 vector of format c(lon, lat) if supplying coordinates as input.")
+      }
+    } else if (class(location) == "character") {
+      location <- mb_geocode(location)
+    }
+
+    tile_id <- slippymath::lonlat_to_tilenum(location[1], location[2], zoom = zoom)
+
+
+    # Build the request to Mapbox
+    url <- sprintf("https://api.mapbox.com/v4/%s/%s/%s/%s.mvt",
+                   tileset_id, zoom, tile_id$x, tile_id$y)
+
+
+    request <- httr::GET(url, query = list(access_token = access_token))
+
+
+    if (request$status_code != 200) {
+      content <- httr::content(request, as = "text")
+      stop(print(content$message), call. = FALSE)
+    }
+
+    sf_output <- protolite::read_mvt_sf(request$url)
+
+    return(sf_output)
+
+  }
+
+
+
+}
