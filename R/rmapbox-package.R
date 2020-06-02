@@ -7,6 +7,7 @@
 #' @import sf
 #' @importFrom jsonlite fromJSON
 #' @import purrr
+#' @import dplyr
 #' @importFrom curl curl_escape
 #' @importFrom data.table rbindlist
 #' @import aws.s3

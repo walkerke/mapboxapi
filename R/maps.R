@@ -109,13 +109,13 @@ check_upload_status <- function(upload_id,
     }
   }
 
-  status <- GET(sprintf("https://api.mapbox.com/uploads/v1/%s/%s",
+  status <- httr::GET(sprintf("https://api.mapbox.com/uploads/v1/%s/%s",
                         username, upload_id),
                 query = list(access_token = access_token))
 
   status %>%
-    content(as = "text") %>%
-    fromJSON()
+    httr::content(as = "text") %>%
+    jsonlite::fromJSON()
 
 }
 
@@ -192,10 +192,10 @@ query_tiles <- function(location,
     access_token = access_token
   ))
 
-  content <- content(query, as = "text")
+  content <- httr::content(query, as = "text")
 
   if (query$status_code != 200) {
-    pull <- fromJSON(content)
+    pull <- jsonlite::fromJSON(content)
     stop(pull$message, call. = FALSE)
   }
 
@@ -206,10 +206,18 @@ query_tiles <- function(location,
 }
 
 
+#' Retrieve vector tiles from a given Mapbox tileset
+#'
+#' @param tileset_id The name of the tileset ID; names can be retrieved from your Mapbox account
+#' @param location The location for which you'd like to retrieve tiles.  If the input is an sf object, the function will return data for all tiles that intersect the object's bounding box.  If the input is a coordinate pair or an address, data will be returned for the specific tile that contains the input.
+#' @param zoom The zoom level of the request; larger zoom levels will return more detail but will take longer to process.
+#' @param access_token Your Mapbox access token; can be set with \code{mb_access_token()}.
+#'
+#' @return A list of sf objects representing the different layer types found in the requested vector tiles.
+#' @export
 get_vector_tiles <- function(tileset_id,
                              location,
                              zoom,
-                             output = "sf",
                              access_token = NULL) {
 
   if (is.null(access_token)) {
@@ -227,7 +235,7 @@ get_vector_tiles <- function(tileset_id,
   }
 
   # If location is an sf object, get the bbox and the tiles that intersect it
-  if (any(grepl("^sf"), location)) {
+  if (any(grepl("^sf", class(location)))) {
     bbox <- location %>%
       sf::st_transform(4326) %>%
       sf::st_bbox(.)
@@ -267,7 +275,7 @@ get_vector_tiles <- function(tileset_id,
 
     # Now, iterate over the layer names, then the lists, keeping what you need and combining
     master_list <- purrr::map(layer_names, function(name) {
-      print(name)
+      # print(name)
       layer_list <- purrr::map(sf_list, ~{
         if (name %in% names(.x)) {
           layer <- .x[[name]]
@@ -287,7 +295,40 @@ get_vector_tiles <- function(tileset_id,
 
     })
 
-    return(master_list)
+    # Within the master list, we need to separate out by geometry type
+    # We'll have a mix of points, lines, and polygons for some
+    parsed_list <- purrr::map(layer_names, function(name) {
+      # ID the specific segment by layer name
+      segment <- master_list[[name]]
+      # identify how many geometries are in the list
+      geoms <- purrr::map_int(segment, ~{
+        sf::st_geometry_type(.x, by_geometry = FALSE)
+      })
+
+      # If there is only one geometry, return the combined segment across the tiles
+      # Otherwise, we should give back points, lines, and polygons objects as
+      # appropriate
+      if (length(unique(geoms)) == 1) {
+        return(dplyr::bind_rows(segment))
+      } else if (length(unique(geoms)) > 1) {
+        output <- list()
+        if (2L %in% geoms) {
+          point_ix <- geoms == 2L
+          output$points <- segment[point_ix] %>% dplyr::bind_rows()
+        }
+        if (6L %in% geoms) {
+          line_ix <- geoms == 6L
+          output$lines <- segment[line_ix] %>% dplyr::bind_rows()
+        }
+        if (7L %in% geoms) {
+          polygon_ix <- geoms == 7L
+          output$polygons <- segment[polygon_ix] %>% dplyr::bind_rows()
+        }
+        return(output)
+      }
+    })
+
+    return(parsed_list)
 
   }
 
