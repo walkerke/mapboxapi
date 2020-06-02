@@ -11,4 +11,6 @@
 #' @importFrom data.table rbindlist
 #' @import aws.s3
 #' @importFrom stringi stri_rand_strings
+#' @import slippymath
+#' @import protolite
 NULL
