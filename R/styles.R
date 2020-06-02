@@ -11,12 +11,12 @@ get_style <- function(style_id,
                       access_token = NULL) {
 
   if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    # Use secret token first, then public token
+    if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
     } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      if (Sys.getenv("MAPBOX_PUBLIC_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
       } else {
         stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
       }
@@ -47,15 +47,15 @@ get_style <- function(style_id,
 #'
 #' @return A data frame of information about styles in your Mapbox account
 #' @export
-list_styles <- function(username, access_token) {
+list_styles <- function(username, access_token = NULL) {
 
   if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    # Use secret token first, then public token
+    if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
     } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      if (Sys.getenv("MAPBOX_PUBLIC_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
       } else {
         stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
       }
