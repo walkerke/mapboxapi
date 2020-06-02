@@ -20,5 +20,7 @@ Imports:
   curl,
   data.table,
   aws.s3,
-  stringi
+  stringi,
+  slippymath,
+  protolite
 RoxygenNote: 7.1.0
