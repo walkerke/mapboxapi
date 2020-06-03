@@ -11,6 +11,7 @@
 #' @importFrom curl curl_escape
 #' @importFrom data.table rbindlist
 #' @import aws.s3
+#' @importFrom rlang flatten_if
 #' @importFrom stringi stri_rand_strings
 #' @import slippymath
 #' @import protolite

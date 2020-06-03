@@ -275,20 +275,46 @@ get_vector_tiles <- function(tileset_id,
 
     # Now, iterate over the layer names, then the lists, keeping what you need and combining
     master_list <- purrr::map(layer_names, function(name) {
-      # print(name)
+      # print(name) # Leave here for de-bugging
       layer_list <- purrr::map(sf_list, ~{
         if (name %in% names(.x)) {
           layer <- .x[[name]]
-          if ("POLYGON" %in% sf::st_geometry_type(layer)) {
-            # Remove malformed polygons
-            layer$layer_area <- sf::st_area(layer) %>% as.numeric()
-            layer <- dplyr::filter(layer, layer_area > 0)
-            layer <- sf::st_cast(layer, "MULTIPOLYGON")
-            layer <- dplyr::select(layer, -layer_area)
-          } else if ("LINESTRING" %in% sf::st_geometry_type(layer)) {
-            layer <- sf::st_cast(layer, "MULTILINESTRING")
+          # If layer comes through as mixed geometry, we need to parse it into
+          # multiple list elements and return that
+          if (sf::st_geometry_type(layer, by_geometry = FALSE) == "GEOMETRY") {
+            sub_geoms <- list()
+            mixed_geoms <- sf::st_geometry_type(layer, by_geometry = TRUE)
+            if ("POINT" %in% mixed_geoms || "MULTIPOINT" %in% mixed_geoms) {
+              point_ix <- mixed_geoms %in% c("POINT", "MULTIPOINT")
+              sub_geoms$points <- layer[point_ix, ] %>%
+                suppressWarnings(sf::st_cast("MULTIPOINT"))
+            }
+            if ("LINESTRING" %in% mixed_geoms || "MULTILINESTRING" %in% mixed_geoms) {
+              line_ix <- mixed_geoms %in% c("LINESTRING", "MULTILINESTRING")
+              sub_geoms$lines <- layer[line_ix, ] %>%
+                sf::st_cast("MULTILINESTRING")
+            }
+            if ("POLYGON" %in% mixed_geoms || "MULTIPOLYGON" %in% mixed_geoms) {
+              polygon_ix <- mixed_geoms %in% c("POLYGON", "MULTIPOLYGON")
+              sub_geoms$polygons <- layer[polygon_ix, ] %>%
+                sf::st_cast("MULTIPOLYGON")
+            }
+
+            return(sub_geoms)
+          } else {
+            if ("POLYGON" %in% sf::st_geometry_type(layer)) {
+              # Remove malformed polygons
+              layer$layer_area <- sf::st_area(layer) %>% as.numeric()
+              layer <- dplyr::filter(layer, layer_area > 0)
+              layer <- sf::st_cast(layer, "MULTIPOLYGON")
+              layer <- dplyr::select(layer, -layer_area)
+            } else if ("LINESTRING" %in% sf::st_geometry_type(layer)) {
+              layer <- sf::st_cast(layer, "MULTILINESTRING")
+            } else if ("POINT" %in% sf::st_geometry_type(layer)) {
+              layer <- sf::st_cast(layer, "MULTIPOINT")
+            }
+            return(layer)
           }
-          return(layer)
         }
       }) %>%
         purrr::compact()
@@ -298,8 +324,9 @@ get_vector_tiles <- function(tileset_id,
     # Within the master list, we need to separate out by geometry type
     # We'll have a mix of points, lines, and polygons for some
     parsed_list <- purrr::map(layer_names, function(name) {
-      # ID the specific segment by layer name
-      segment <- master_list[[name]]
+      # ID the specific segment by layer name then smooth out any mixed geoms
+      segment <- master_list[[name]] %>%
+        rlang::flatten_if(predicate = function(x) inherits(x, "list"))
       # identify how many geometries are in the list
       geoms <- purrr::map_int(segment, ~{
         sf::st_geometry_type(.x, by_geometry = FALSE)
@@ -312,9 +339,11 @@ get_vector_tiles <- function(tileset_id,
         return(dplyr::bind_rows(segment))
       } else if (length(unique(geoms)) > 1) {
         output <- list()
-        if (2L %in% geoms) {
-          point_ix <- geoms == 2L
-          output$points <- segment[point_ix] %>% dplyr::bind_rows()
+        if (2L %in% geoms || 1L %in% geoms || 5L %in% geoms) {
+          point_ix <- geoms %in% c(1L, 2L, 5L)
+          output$points <- segment[point_ix] %>%
+            dplyr::bind_rows() %>%
+            sf::st_cast("MULTIPOINT")
         }
         if (6L %in% geoms) {
           line_ix <- geoms == 6L
