@@ -388,9 +388,53 @@ get_vector_tiles <- function(tileset_id,
       stop(print(content$message), call. = FALSE)
     }
 
-    sf_output <- protolite::read_mvt_sf(request$url)
+    sf_list <- protolite::read_mvt_sf(request$url)
 
-    return(sf_output)
+    # Iterate through the elements and parse into sub-elements when geometry is mixed
+    layer_names <- names(sf_list)
+
+    names(layer_names) <- layer_names
+
+    output_list <- purrr::map(layer_names, function(name) {
+      layer <- sf_list[[name]]
+      if (sf::st_geometry_type(layer, by_geometry = FALSE) == "GEOMETRY") {
+        sub_geoms <- list()
+        mixed_geoms <- sf::st_geometry_type(layer, by_geometry = TRUE)
+        if ("POINT" %in% mixed_geoms || "MULTIPOINT" %in% mixed_geoms) {
+          point_ix <- mixed_geoms %in% c("POINT", "MULTIPOINT")
+          sub_geoms$points <- layer[point_ix, ] %>%
+            suppressWarnings(sf::st_cast("MULTIPOINT"))
+        }
+        if ("LINESTRING" %in% mixed_geoms || "MULTILINESTRING" %in% mixed_geoms) {
+          line_ix <- mixed_geoms %in% c("LINESTRING", "MULTILINESTRING")
+          sub_geoms$lines <- layer[line_ix, ] %>%
+            sf::st_cast("MULTILINESTRING")
+        }
+        if ("POLYGON" %in% mixed_geoms || "MULTIPOLYGON" %in% mixed_geoms) {
+          polygon_ix <- mixed_geoms %in% c("POLYGON", "MULTIPOLYGON")
+          sub_geoms$polygons <- layer[polygon_ix, ] %>%
+            sf::st_cast("MULTIPOLYGON")
+        }
+
+        return(sub_geoms)
+      } else {
+        if ("POLYGON" %in% sf::st_geometry_type(layer)) {
+          # Remove malformed polygons
+          layer$layer_area <- sf::st_area(layer) %>% as.numeric()
+          layer <- dplyr::filter(layer, layer_area > 0)
+          layer <- sf::st_cast(layer, "MULTIPOLYGON")
+          layer <- dplyr::select(layer, -layer_area)
+        } else if ("LINESTRING" %in% sf::st_geometry_type(layer)) {
+          layer <- sf::st_cast(layer, "MULTILINESTRING")
+        } else if ("POINT" %in% sf::st_geometry_type(layer)) {
+          layer <- sf::st_cast(layer, "MULTIPOINT")
+        }
+        return(layer)
+      }
+
+    })
+
+    return(output_list)
 
   }
 
