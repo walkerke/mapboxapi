@@ -515,12 +515,13 @@ static_mapbox <- function(style_id,
   overlay <- NULL
 
   if (!is.null(overlay_sf)) {
-    overlay <- purrr::map(overlay_sf, ~{
-      geojsonsf::sf_geojson(.x)
-    }) %>%
-      paste0(collapse = ",")
+    if (any(grepl("sfc", class(overlay_sf)))) {
+      overlay_json <- geojsonsf::sfc_geojson(overlay_sf)
+    } else {
+      overlay_json <- geojsonsf::sf_geojson(overlay_sf)
+    }
 
-    overlay <- sprintf("geojson(%s)", overlay)
+    overlay <- sprintf("geojson(%s)", overlay_json)
 
   }
 
@@ -543,7 +544,7 @@ static_mapbox <- function(style_id,
     }
 
     if (!is.null(overlay)) {
-      overlay <- paste0(overlay, marker_spec, collapse = ",")
+      overlay <- paste(overlay, marker_spec, sep = ",")
     } else {
       overlay <- marker_spec
     }
@@ -577,6 +578,10 @@ static_mapbox <- function(style_id,
 
   if (double_scale) {
     base1 <- sprintf("%s@2x", base1)
+  }
+
+  if (nchar(base1) > 8192) {
+    stop("Your request is too large likely due to the size of your overlay geometry. Consider simplifying your overlay geometry or adding your data to a style in Mapbox Studio to resolve this.", call. = FALSE)
   }
 
   request <- httr::GET(base1, query = list(access_token = access_token))
