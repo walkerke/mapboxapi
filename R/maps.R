@@ -438,6 +438,160 @@ get_vector_tiles <- function(tileset_id,
 
   }
 
+}
+
+
+#' Return a static Mapbox map from a specified style
+#'
+#' @param style_id The style ID
+#' @param username Your Mapbox username
+#' @param overlay_sf The overlay sf object, if applicable
+#' @param overlay_markers The overlay markers, if applicable
+#' @param longitude The longitude of the map center
+#' @param latitude The latitude of the map center
+#' @param zoom The map zoom
+#' @param width The map width; defaults to 600px
+#' @param height The map height; defaults to 600px
+#' @param bearing The map bearing
+#' @param pitch The map pitch
+#' @param double_scale Whether or not to return a 2x map
+#' @param attribution Not yet implemented
+#' @param logo Not yet implemented
+#' @param before_layer Not yet implemented
+#' @param addlayer Not yet implemented
+#' @param setfilter Not yet implemented
+#' @param layer_id Not yet implemented
+#' @param access_token Your Mapbox access token
+#'
+#' @return right now, an http request
+#' @export
+static_mapbox <- function(style_id,
+                          username,
+                          overlay_sf = NULL,
+                          overlay_markers = NULL,
+                          longitude = NULL,
+                          latitude = NULL,
+                          zoom = NULL,
+                          width = 600,
+                          height = 600,
+                          bearing = NULL,
+                          pitch = NULL,
+                          double_scale = FALSE,
+                          attribution = TRUE,
+                          logo = TRUE,
+                          before_layer = NULL,
+                          addlayer = NULL,
+                          setfilter = NULL,
+                          layer_id = NULL,
+                          access_token = NULL) {
+
+  if (is.null(access_token)) {
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    } else {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
+    }
+  }
+
+  # Construct the request URL
+  # First, do chunk 1
+  base <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/static",
+                    username, style_id)
+
+  # Next, figure out the overlay
+  # Basically, the idea is that you can string together GeoJSON, markers, etc.
+  # on a map and put it over a Mapbox style.  overlay should accept such
+  # components and format them accordingly.
+  #
+  # `overlay_sf` converts to GeoJSON to make the request.
+  # The input GeoJSON should have internal information conforming to simplestyle-spec
+  # Eventually, this function could be able to do that internally but not yet
+  overlay <- NULL
+
+  if (!is.null(overlay_sf)) {
+    overlay <- purrr::map(overlay_sf, ~{
+      geojsonsf::sf_geojson(.x)
+    }) %>%
+      paste0(collapse = ",")
+
+    overlay <- sprintf("geojson(%s)", overlay)
+
+  }
+
+  if (!is.null(overlay_markers)) {
+    # Right now, support one overlay marker to see if it works
+    # Then, experiment with how to do multiple markers
+    # I think a function to construct an overlay markers spec makes sense
+    if ("size" %in% names(overlay_markers)) {
+      marker_spec <- sprintf("%s-%s+%s(%s,%s)",
+                             overlay_markers$size,
+                             overlay_markers$label,
+                             overlay_markers$color,
+                             overlay_markers$lon,
+                             overlay_markers$lat)
+    } else if ("url" %in% names(overlay_markers)) {
+      marker_spec <- sprintf("url-%s(%s,%s)",
+                             overlay_markers$url,
+                             overlay_markers$lon,
+                             overlay_markers$lat)
+    }
+
+    if (!is.null(overlay)) {
+      overlay <- paste0(overlay, marker_spec, collapse = ",")
+    } else {
+      overlay <- marker_spec
+    }
+  }
+
+  if (!is.null(overlay)) {
+    base <- paste(base, overlay, sep = "/")
+  }
+
+  focus_args <- c(longitude, latitude, zoom)
+
+  if (all(is.null(focus_args))) {
+    focus <- "auto"
+  } else {
+    if (is.null(bearing)) {
+      bearing <- 0
+    }
+
+    if (is.null(pitch)) {
+      pitch <- 0
+    }
+
+    focus_args <- c(focus_args, bearing, pitch)
+
+    focus <- paste0(focus_args, collapse = ",")
+  }
+
+  base <- paste(base, focus, sep = "/")
+
+  base1 <- sprintf("%s/%sx%s", base, width, height)
+
+  if (double_scale) {
+    base1 <- sprintf("%s@2x", base1)
+  }
+
+  request <- httr::GET(base1, query = list(access_token = access_token))
+
+  if (request$status_code != 200) {
+    content <- httr::content(request, as = "text")
+    stop(print(jsonlite::fromJSON(content)), call. = FALSE)
+  }
+
+  img <- magick::image_read(httr::content(request))
+
+  return(img)
+
 
 
 }
+
+

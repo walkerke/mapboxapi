@@ -24,5 +24,7 @@ Imports:
   stringi,
   slippymath,
   protolite,
-  rlang
+  rlang,
+  geojsonsf,
+  magick
 RoxygenNote: 7.1.0

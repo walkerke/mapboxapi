@@ -15,4 +15,6 @@
 #' @importFrom stringi stri_rand_strings
 #' @import slippymath
 #' @import protolite
+#' @import geojsonsf
+#' @importFrom magick image_read
 NULL
