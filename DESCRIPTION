@@ -26,5 +26,6 @@ Imports:
   protolite,
   rlang,
   geojsonsf,
-  magick
+  magick,
+  leaflet
 RoxygenNote: 7.1.0

@@ -600,3 +600,67 @@ static_mapbox <- function(style_id,
 }
 
 
+#' Use a Mapbox style in a Leaflet map
+#'
+#' @param map A map widget object created by \code{leaflet::leaflet()}
+#' @param style_id The style ID of your Mapbox style
+#' @param username Your Mapbox username
+#' @param scaling_factor The scaling factor to use when rendering the tiles.  A scaling factor of 1 (the default) returns 512px by 512px tiles.  A factor of \code{0.5} returns 256x256 tiles, and a factor of \code{2} returns 1024x1024 tiles.
+#' @param access_token Your Mapbox access token; can be set with \code{mb_access_token()}.
+#' @param layerId the layer ID
+#' @param group The name of the group the Mapbox tile layer should belong to (for use in Shiny and to modify layers control in a Leaflet workflow)
+#' @param options A list of extra options (optional)
+#' @param data The data object used to derive argument values; can be provided to the initial call to \code{leaflet::leaflet()}
+#'
+#' @return A pointer to the Mapbox Static Tiles API which will be translated appropriately by the leaflet R package.
+#' @export
+addMapboxTiles <- function(map,
+                           style_id,
+                           username,
+                           scaling_factor = c("1", "0.5", "2"),
+                           access_token = NULL,
+                           layerId = NULL,
+                           group = NULL,
+                           options = leaflet::tileOptions(),
+                           data = leaflet::getMapData(map)) {
+
+  if (is.null(access_token)) {
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    } else {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
+    }
+  }
+
+  sfactor <- match.arg(scaling_factor)
+
+  if (sfactor == "1") {
+    url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/{z}/{x}/{y}?access_token=%s", username, style_id, access_token)
+  } else if (sfactor == "0.5") {
+    url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/256/{z}/{x}/{y}?access_token=%s", username, style_id, access_token)
+  } else if (sfactor == "2") {
+    url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/{z}/{x}/{y}@2x?access_token=%s", username, style_id, access_token)
+  }
+
+
+
+  mb_attribution <- '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>'
+
+  leaflet::addTiles(map = map,
+                    urlTemplate = url,
+                    attribution = mb_attribution,
+                    layerId = layerId,
+                    group = group,
+                    options = options,
+                    data = data)
+
+}
+
+
+
