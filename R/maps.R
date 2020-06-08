@@ -438,6 +438,377 @@ get_vector_tiles <- function(tileset_id,
 
   }
 
+}
 
+
+#' Return a static Mapbox map from a specified style
+#'
+#' @param style_id The style ID
+#' @param username Your Mapbox username
+#' @param overlay_sf The overlay sf object (optional).  The function will convert the sf object to GeoJSON then plot over the basemap style.  Spatial data that are too large will trigger an error, and should be added to the style in Mapbox Studio instead.
+#' @param overlay_style A named list of vectors pecifying how to style the sf overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity", "fill", and "fill-opacity".  The fill and stroke color values should be specified as six-digit hex codes, and the opacity and width values should be supplied as floating-point numbers.
+#' @param overlay_markers The prepared overlay markers (optional).  See the function \code{\link{prep_overlay_markers}} for more information on how to specify a marker overlay.
+#' @param longitude The longitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.
+#' @param latitude The latitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.
+#' @param zoom The map zoom.  The map will infer this from the overlay unless longitude, latitude, and zoom are all specified.
+#' @param width The map width; defaults to 600px
+#' @param height The map height; defaults to 600px
+#' @param bearing The map bearing; defaults to 0
+#' @param pitch The map pitch; defaults to 0
+#' @param scaling_factor The scaling factor of the tiles; either \code{"1x"} (the default) or \code{"2x"}
+#' @param before_layer A character string that specifies where in the hierarchy of layer elements the overlay should be inserted.  The overlay will be placed just above the specified layer in the given Mapbox styles.
+#' @param access_token Your Mapbox access token; can be set with \code{mb_access_token()}.
+#'
+#' @return A pointer to an image of class \code{"magick-image"}.  The resulting image can be manipulated further with functions from the magick package.
+#' @export
+static_mapbox <- function(style_id,
+                          username,
+                          overlay_sf = NULL,
+                          overlay_style = NULL,
+                          overlay_markers = NULL,
+                          longitude = NULL,
+                          latitude = NULL,
+                          zoom = NULL,
+                          width = 600,
+                          height = 400,
+                          bearing = NULL,
+                          pitch = NULL,
+                          scaling_factor = c("1x", "2x"),
+                          before_layer = NULL,
+                          access_token = NULL) {
+
+  if (is.null(access_token)) {
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    } else {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
+    }
+  }
+
+  # Construct the request URL
+  # First, do chunk 1
+  base <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/static",
+                    username, style_id)
+
+  # Next, figure out the overlay
+  # Basically, the idea is that you can string together GeoJSON, markers, etc.
+  # on a map and put it over a Mapbox style.  overlay should accept such
+  # components and format them accordingly.
+  #
+  # `overlay_sf` converts to GeoJSON to make the request.
+  # The input GeoJSON should have internal information conforming to simplestyle-spec
+  # Eventually, this function could be able to do that internally but not yet
+  overlay <- NULL
+
+  if (!is.null(overlay_sf)) {
+    if (any(grepl("sfc", class(overlay_sf)))) {
+      overlay_sf <- st_sf(overlay_sf)
+    }
+
+    if (!is.null(overlay_style)) {
+      style_names <- names(overlay_style)
+      if ("stroke" %in% style_names) {
+        overlay_sf$stroke <- utils::URLencode(overlay_style$stroke,
+                                              reserved = TRUE)
+      }
+      if ("stroke-opacity" %in% style_names) {
+        overlay_sf$`stroke-opacity` <- utils::URLencode(overlay_style$`stroke-opacity`,
+                                                        reserved = TRUE)
+      }
+      if ("stroke-width" %in% style_names) {
+        overlay_sf$`stroke-width` <- utils::URLencode(overlay_style$`stroke-width`,
+                                                      reserved = TRUE)
+      }
+      if ("fill" %in% style_names) {
+        overlay_sf$fill <- utils::URLencode(overlay_style$fill,
+                                            reserved = TRUE)
+      }
+      if ("stroke-width" %in% style_names) {
+        overlay_sf$`fill-opacity` <- utils::URLencode(overlay_style$`fill-opacity`,
+                                                      reserved = TRUE)
+      }
+    }
+
+    overlay_json <- geojsonsf::sf_geojson(overlay_sf)
+
+    overlay <- sprintf("geojson(%s)", overlay_json)
+
+  }
+
+  if (!is.null(overlay_markers)) {
+
+    if (attr(overlay_markers, "mapboxapi") != "marker_spec") {
+      stop("Overlay markers should be formatted with `prep_overlay_markers() before using in a static map", call. = FALSE)
+    }
+
+    marker_spec <- overlay_markers %>%
+      unlist() %>%
+      paste0(collapse = ",")
+
+
+    if (!is.null(overlay)) {
+      overlay <- paste(overlay, marker_spec, sep = ",")
+    } else {
+      overlay <- marker_spec
+    }
+  }
+
+  if (!is.null(overlay)) {
+    base <- paste(base, overlay, sep = "/")
+  }
+
+  focus_args <- c(longitude, latitude, zoom)
+
+  if (all(is.null(focus_args))) {
+    focus <- "auto"
+  } else {
+    if (is.null(bearing)) {
+      bearing <- 0
+    }
+
+    if (is.null(pitch)) {
+      pitch <- 0
+    }
+
+    focus_args <- c(focus_args, bearing, pitch)
+
+    focus <- paste0(focus_args, collapse = ",")
+  }
+
+  base <- paste(base, focus, sep = "/")
+
+  base1 <- sprintf("%s/%sx%s", base, width, height)
+
+  scaling_factor <- match.arg(scaling_factor)
+
+  if (scaling_factor == "2x") {
+    base1 <- sprintf("%s@2x", base1)
+  }
+
+  if (nchar(base1) > 8192) {
+    stop("Your request is too large likely due to the size of your overlay geometry. Consider simplifying your overlay geometry or adding your data to a style in Mapbox Studio to resolve this.", call. = FALSE)
+  }
+
+  request <- httr::GET(base1, query = list(access_token = access_token,
+                                           before_layer = before_layer))
+
+  if (request$status_code != 200) {
+    content <- httr::content(request, as = "text")
+    stop(print(jsonlite::fromJSON(content)), call. = FALSE)
+  }
+
+  img <- magick::image_read(httr::content(request))
+
+  return(img)
 
 }
+
+
+#' Prepare overlay markers for use in a Mapbox static map
+#'
+#' @param data An input data frame with longitude and latitude columns (X and Y or lon and lat as names are also acceptable) or an sf object with geometry type POINT.
+#' @param marker_type The marker type; one of \code{"pin-s"}, for a small pin; \code{"pin-l"}, for a large pin; and \code{"url"}, for an image path.
+#' @param label The marker label (optional).  Can be a letter, number (0 through 99), or a valid Maki icon (see \url{https://labs.mapbox.com/maki-icons/}) for options).
+#' @param color The marker color (optional).  Color should be specified as a three or six-digit hexadecimal code without the number sign.
+#' @param longitude A vector of longitudes; inferred from the input dataset if \code{data} is provided.
+#' @param latitude A vector of latitudes; inferred from the input dataset if \code{data} is provided.
+#' @param url The URL of the image to be used for the icon if \code{marker_type = "url"}.
+#'
+#' @return A formatted list of marker specifications that can be passed to the \code{\link{static_mapbox}} function.
+#' @export
+prep_overlay_markers <- function(data = NULL,
+                                 marker_type = c("pin-s", "pin-l", "url"),
+                                 label = NA,
+                                 color = NA,
+                                 longitude = NULL,
+                                 latitude = NULL,
+                                 url = NA) {
+
+
+  if (!is.null(data)) {
+    if (any(grepl("^sf", class(data)))) {
+      if (sf::st_geometry_type(data, by_geometry = FALSE) != "POINT") {
+        stop("To make markers from sf objects you must use the geometry type POINT",
+             call. = FALSE)
+      }
+      # Construct the marker data frame
+      coords_df <- data %>%
+        sf::st_coordinates() %>%
+        as.data.frame()
+
+      coords_df <- cbind(data, coords_df)
+    } else {
+      coords_df <- data
+    }
+    # Infer coordinates from column names
+    names(coords_df) <- tolower(names(coords_df))
+
+    if (all(c("lon", "lat") %in% names(coords_df))) {
+      coords_df <- dplyr::rename(coords_df, longitude = lon, latitude = lat)
+    } else if (all(c("x", "y") %in% names(coords_df))) {
+      coords_df <- dplyr::rename(coords_df, longitude = x, latitude = y)
+    }
+
+    if (!all(c("longitude", "latitude") %in% names(coords_df))) {
+      stop("Your input dataset must have longitude/latitude information denoted by columns x and y, lon and lat, or longitude and latitude.", call. = FALSE)
+    }
+
+    if ("marker_type" %in% names(coords_df)) {
+      marker_type <- coords_df$marker_type
+    } else {
+      marker_type <- match.arg(marker_type)
+      coords_df$marker_type <- marker_type
+    }
+
+    if ("label" %in% names(coords_df)) {
+      label <- coords_df$label
+    } else {
+      if (!is.null(label)) {
+        coords_df$label <- label
+      }
+    }
+
+    if ("color" %in% names(coords_df)) {
+      color <- coords_df$color
+    } else {
+      if (!is.null(color)) {
+        coords_df$color <- color
+      }
+    }
+
+    if ("url" %in% names(coords_df)) {
+      url <- coords_df$url
+    } else {
+      if (!is.null(url)) {
+        coords_df$url <- url
+      }
+    }
+  } else {
+    coords_df <- data.frame(
+      longitude = longitude,
+      latitude = latitude,
+      marker_type = marker_type,
+      label = label,
+      color = color,
+      url = url
+    )
+  }
+
+  # Iterate through the coords_df to make a formatted list of markers
+  marker_list <- purrr::map(1:nrow(coords_df), ~{
+    r <- coords_df[.x, ]
+
+    if (r$marker_type %in% c("pin-s", "pin-l")) {
+      if (!is.na(r$label) && !is.na(r$color)) {
+        return(sprintf("%s-%s+%s(%s,%s)",
+                       r$marker_type,
+                       tolower(r$label),
+                       r$color,
+                       r$longitude,
+                       r$latitude))
+      } else if (is.na(r$label) && !is.na(r$color)) {
+        return(sprintf("%s-%s(%s,%s)",
+                       r$marker_type,
+                       r$color,
+                       r$longitude,
+                       r$latitude))
+      } else if (!is.na(r$label) && is.na(r$color)) {
+        return(sprintf("%s-%s(%s,%s)",
+                       r$marker_type,
+                       tolower(r$label),
+                       r$longitude,
+                       r$latitude))
+      } else {
+        return(sprintf("%s-(%s,%s)",
+                       r$marker_type,
+                       r$longitude,
+                       r$latitude))
+      }
+    } else if (r$marker_type == "url") {
+      if (is.na(url)) {
+        stop("A valid URL must be provided.")
+      }
+      encoded_url <- utils::URLencode(r$url, reserved = TRUE)
+      return(sprintf("url-%s(%s,%s)",
+                     encoded_url,
+                     r$longitude,
+                     r$latitude))
+    }
+  })
+
+  attr(marker_list, 'mapboxapi') <- "marker_spec"
+
+  return(marker_list)
+}
+
+
+#' Use a Mapbox style in a Leaflet map
+#'
+#' @param map A map widget object created by \code{leaflet::leaflet()}
+#' @param style_id The style ID of your Mapbox style
+#' @param username Your Mapbox username
+#' @param scaling_factor The scaling factor to use when rendering the tiles.  A scaling factor of 1 (the default) returns 512px by 512px tiles.  A factor of \code{0.5} returns 256x256 tiles, and a factor of \code{2} returns 1024x1024 tiles.
+#' @param access_token Your Mapbox access token; can be set with \code{mb_access_token()}.
+#' @param layerId the layer ID
+#' @param group The name of the group the Mapbox tile layer should belong to (for use in Shiny and to modify layers control in a Leaflet workflow)
+#' @param options A list of extra options (optional)
+#' @param data The data object used to derive argument values; can be provided to the initial call to \code{leaflet::leaflet()}
+#'
+#' @return A pointer to the Mapbox Static Tiles API which will be translated appropriately by the leaflet R package.
+#' @export
+addMapboxTiles <- function(map,
+                           style_id,
+                           username,
+                           scaling_factor = c("1x", "0.5x", "2x"),
+                           access_token = NULL,
+                           layerId = NULL,
+                           group = NULL,
+                           options = leaflet::tileOptions(),
+                           data = leaflet::getMapData(map)) {
+
+  if (is.null(access_token)) {
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    } else {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
+    }
+  }
+
+  sfactor <- match.arg(scaling_factor)
+
+  if (sfactor == "1x") {
+    url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/{z}/{x}/{y}?access_token=%s", username, style_id, access_token)
+  } else if (sfactor == "0.5x") {
+    url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/256/{z}/{x}/{y}?access_token=%s", username, style_id, access_token)
+  } else if (sfactor == "2x") {
+    url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/{z}/{x}/{y}@2x?access_token=%s", username, style_id, access_token)
+  }
+
+
+
+  mb_attribution <- '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>'
+
+  leaflet::addTiles(map = map,
+                    urlTemplate = url,
+                    attribution = mb_attribution,
+                    layerId = layerId,
+                    group = group,
+                    options = options,
+                    data = data)
+
+}
+
+
+

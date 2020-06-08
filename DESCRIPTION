@@ -1,12 +1,12 @@
 Package: mapboxapi
 Type: Package
 Title: R interface to Mapbox web services
-Date: 2020-06-03
-Version: 0.1.4
+Date: 2020-06-07
+Version: 0.1.5
 Authors@R: 
-    c(person(given = "Kyle", family = "Walker", email = "kyle.walker@tcu.edu", 
+    c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
     role = c("aut", "cre")))
-Maintainer: Kyle Walker <kyle.walker@tcu.edu>
+Maintainer: Kyle Walker <kyle@walker-data.com>
 Description: An R interface to Mapbox web services and the tippecanoe tile-generation utility.  
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -24,5 +24,8 @@ Imports:
   stringi,
   slippymath,
   protolite,
-  rlang
+  rlang,
+  geojsonsf,
+  magick,
+  leaflet
 RoxygenNote: 7.1.0
