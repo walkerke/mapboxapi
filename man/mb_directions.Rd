@@ -47,9 +47,9 @@ mb_directions(
 
 \item{alternatives}{Whether or not to return alternative routes with your request. If TRUE, a list of up to 3 possible routes will be returned.}
 
-\item{annotations}{A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = FULL.}
+\item{annotations}{A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".}
 
-\item{bearings}{bearings}
+\item{bearings}{A semicolon-delimited character string of bearings}
 
 \item{continue_straight}{continue_straight}
 
@@ -63,7 +63,7 @@ mb_directions(
 
 \item{approaches}{A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.}
 
-\item{steps}{steps If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.}
+\item{steps}{If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.}
 
 \item{banner_instructions}{Whether or not to return banner objects; only available when \code{output = 'full'} and \code{steps = TRUE}.}
 
