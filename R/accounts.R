@@ -57,7 +57,7 @@ list_tokens <- function(username,
   output <- request %>%
     httr::content(as = "text") %>%
     jsonlite::fromJSON() %>%
-    as_tibble()
+    dplyr::as_tibble()
 
   return(output)
 
