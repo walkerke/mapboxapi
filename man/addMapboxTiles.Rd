@@ -8,7 +8,7 @@ addMapboxTiles(
   map,
   style_id,
   username,
-  scaling_factor = c("1", "0.5", "2"),
+  scaling_factor = c("1x", "0.5x", "2x"),
   access_token = NULL,
   layerId = NULL,
   group = NULL,
