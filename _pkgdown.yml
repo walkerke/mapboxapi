@@ -1,6 +1,6 @@
 template:
   params:
-    bootswatch: litera
+    bootswatch: readable
 
 home:
   title: Use Mapbox Web Services in R

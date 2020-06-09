@@ -29,11 +29,11 @@ leaflet(walk_5min) %>%
 
 ```
 
-<iframe src="img/isochrone.html" width = "800"></iframe>
+<iframe src="img/isochrone.html" width = "800" height = "450"></iframe>
 
 Read through the articles to see what you can do with the package.  
 
-If you find this project useful, [consider chipping in to support package development](https://www.paypal.me/walkerdata), hiring me to give a workshop on __mapboxapi__ or hiring me to consult on your project.  You can also get updates on package development by signing up for my newsletter (no spam!): 
+If you find this project useful, [consider supporting package development via PayPal](https://www.paypal.me/walkerdata), hiring me to give a workshop on __mapboxapi__ or hiring me to consult on your project.  Send me a note at <kyle@walker-data.com> if this interests you!  You can also get updates on package development by signing up for my newsletter: 
 
 <!-- Begin MailChimp Signup Form -->
 <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
