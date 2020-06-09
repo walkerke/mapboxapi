@@ -103,9 +103,6 @@
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
     </li>
-    <li>
-      <a href="../articles/search-and-query.html">Search and query functionality in mapboxapi</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -144,6 +141,7 @@
   <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>tileset_id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>tileset_name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>keep_geojson</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>multipart</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
@@ -152,7 +150,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>input</th>
-      <td><p>The path to the dataset to upload</p></td>
+      <td><p>An sf object, or the path to the dataset to upload as a character string.</p></td>
     </tr>
     <tr>
       <th>username</th>
@@ -169,6 +167,14 @@
     <tr>
       <th>tileset_name</th>
       <td><p>The name of the tileset in your Mapbox account</p></td>
+    </tr>
+    <tr>
+      <th>keep_geojson</th>
+      <td><p>Whether or not to keep the temporary GeoJSON used to generate the tiles (if the input is an sf object)</p></td>
+    </tr>
+    <tr>
+      <th>multipart</th>
+      <td><p>Whether or not to upload to the temporary AWS staging bucket as a multipart object; defaults to <code>FALSE</code>.</p></td>
     </tr>
     </table>
 

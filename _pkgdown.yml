@@ -31,8 +31,6 @@ navbar:
         href: articles/navigation.html
       - text: Creating and uploading Mapbox vector tilesets
         href: articles/creating-tiles.html
-      - text: Search and query functionality in mapboxapi
-        href: articles/search-and-query.html
     github:
       icon: fa-github fa-lg
       href: https://github.com/walkerke/mapboxapi

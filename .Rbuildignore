@@ -6,3 +6,4 @@
 ^docs$
 ^pkgdown$
 ^index\.md$
+^vignettes$
