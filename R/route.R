@@ -491,6 +491,9 @@ mb_optimized_route <- function(input_data,
         sf::st_as_sf(coords = c("location_1", "location_2"), crs = 4326) %>%
         dplyr::select(name, waypoint_index)
 
+      waypoints$waypoint_index <- waypoints$waypoint_index + 1
+
+
       output <- list()
 
       output$waypoints <- waypoints
@@ -525,6 +528,8 @@ mb_optimized_route <- function(input_data,
         tidyr::unnest_wider(location, names_sep = "_") %>%
         sf::st_as_sf(coords = c("location_1", "location_2"), crs = 4326) %>%
         dplyr::select(name, waypoint_index)
+
+      waypoints$waypoint_index <- waypoints$waypoint_index + 1
 
       output <- list()
 
