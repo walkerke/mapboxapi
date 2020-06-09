@@ -346,7 +346,7 @@ mb_directions <- function(input_data = NULL,
 #' @param steps If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.
 #' @param access_token Your Mapbox access token; set with \code{mb_access_token()}
 #'
-#' @return An sf object or list representing the optimization API response.
+#' @return Either a list of two sf objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
 #' @export
 mb_optimized_route <- function(input_data,
                                profile = c("driving", "walking", "cycling",
@@ -486,10 +486,25 @@ mb_optimized_route <- function(input_data,
       }) %>%
         dplyr::bind_rows()
 
+      waypoints <- content$waypoints %>%
+        tidyr::unnest_wider(location, names_sep = "_") %>%
+        sf::st_as_sf(coords = c("location_1", "location_2"), crs = 4326) %>%
+        dplyr::select(name, waypoint_index)
+
+      output <- list()
+
+      output$waypoints <- waypoints
+
       if (length(to_return) == 1) {
-        return(to_return[[1]])
+
+        output$route <- to_return[[1]]
+
+        return(output)
       } else {
-        return(to_return)
+
+        output$route <- to_return
+
+        return(output)
       }
 
     } else {
@@ -506,10 +521,21 @@ mb_optimized_route <- function(input_data,
         return(route)
       })
 
+      waypoints <- content$waypoints %>%
+        tidyr::unnest_wider(location, names_sep = "_") %>%
+        sf::st_as_sf(coords = c("location_1", "location_2"), crs = 4326) %>%
+        dplyr::select(name, waypoint_index)
+
+      output <- list()
+
+      output$waypoints <- waypoints
+
       if (length(to_return) == 1) {
-        return(to_return[[1]])
+        output$route <- to_return[[1]]
+        return(output)
       } else {
-        return(to_return)
+        output$route <- to_return
+        return(output)
       }
     }
   } else {

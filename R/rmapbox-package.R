@@ -18,4 +18,5 @@
 #' @import geojsonsf
 #' @import leaflet
 #' @importFrom magick image_read
+#' @importFrom tidyr unnest_wider
 NULL

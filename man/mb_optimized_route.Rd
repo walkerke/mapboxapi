@@ -54,7 +54,7 @@ mb_optimized_route(
 \item{access_token}{Your Mapbox access token; set with \code{mb_access_token()}}
 }
 \value{
-An sf object or list representing the optimization API response.
+Either a list of two sf objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
 }
 \description{
 Return an optimized route for a series of input coordinates

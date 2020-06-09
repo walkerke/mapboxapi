@@ -1,0 +1,38 @@
+template:
+  params:
+    bootswatch: litera
+
+home:
+  title: Use Mapbox Web Services in R
+
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: Mapping with mapboxapi
+        href: articles/mapping.html
+      - text: Using navigation services with mapboxapi
+        href: articles/navigation.html
+      - text: Creating and uploading Mapbox vector tilesets
+        href: articles/creating-tiles.html
+      - text: Search and query functionality in mapboxapi
+        href: articles/search-and-query.html
+    github:
+      icon: fa-github fa-lg
+      href: https://github.com/walkerke/mapboxapi

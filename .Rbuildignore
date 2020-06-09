@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 ^data$
 ^img$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^index\.md$

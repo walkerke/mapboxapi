@@ -1,8 +1,8 @@
 Package: mapboxapi
 Type: Package
 Title: R interface to Mapbox web services
-Date: 2020-06-07
-Version: 0.1.5
+Date: 2020-06-09
+Version: 0.1.5.1
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
     role = c("aut", "cre")))
@@ -20,6 +20,7 @@ Imports:
   curl,
   data.table,
   dplyr (>= 1.0.0),
+  tidyr (>= 1.0.0),
   aws.s3,
   stringi,
   slippymath,
