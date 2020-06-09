@@ -86,7 +86,7 @@ mapdeck(style = mapdeck_style("light")) %>%
   add_polygon(data = isochrones, 
               fill_colour = "time",
               fill_opacity = 0.5,
-              legend = TRUE)
+              legend = TRUE) 
 ```
 
 Travel-time matrices are available in the `mb_matrix()` function.  Requests are rate-limited internally to conform with Mapbox API limits; I've made internal modifications for larger-scale matrices but very large many-to-many matrices (more than 25 source coordinates and 25 destination coordinates) are not yet supported.  `mb_matrix()` returns an R matrix object where each cell represents the travel time between an origin and destination pair.  Coordinate pairs, addresses, and sf objects can be used as inputs.  If sf polygons are used as the input, `mb_matrix()` will calculate travel times based on the polygon centroids, which should be double-checked for possible routing errors.  
