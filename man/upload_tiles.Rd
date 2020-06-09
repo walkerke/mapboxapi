@@ -10,11 +10,12 @@ upload_tiles(
   access_token = NULL,
   tileset_id = NULL,
   tileset_name = NULL,
+  keep_geojson = FALSE,
   multipart = FALSE
 )
 }
 \arguments{
-\item{input}{The path to the dataset to upload}
+\item{input}{An sf object, or the path to the dataset to upload as a character string.}
 
 \item{username}{Your Mapbox username}
 
@@ -23,6 +24,10 @@ upload_tiles(
 \item{tileset_id}{The ID of the tileset in your Mapbox account}
 
 \item{tileset_name}{The name of the tileset in your Mapbox account}
+
+\item{keep_geojson}{Whether or not to keep the temporary GeoJSON used to generate the tiles (if the input is an sf object)}
+
+\item{multipart}{Whether or not to upload to the temporary AWS staging bucket as a multipart object; defaults to \code{FALSE}.}
 }
 \description{
 Upload dataset to your Mapbox account

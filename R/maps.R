@@ -1,10 +1,12 @@
 #' Upload dataset to your Mapbox account
 #'
-#' @param input The path to the dataset to upload
+#' @param input An sf object, or the path to the dataset to upload as a character string.
 #' @param username Your Mapbox username
 #' @param access_token Your Mapbox access token; must have secret scope
-#' @param tileset_name The name of the tileset in your Mapbox account
 #' @param tileset_id The ID of the tileset in your Mapbox account
+#' @param tileset_name The name of the tileset in your Mapbox account
+#' @param keep_geojson Whether or not to keep the temporary GeoJSON used to generate the tiles (if the input is an sf object)
+#' @param multipart Whether or not to upload to the temporary AWS staging bucket as a multipart object; defaults to \code{FALSE}.
 #'
 #' @export
 upload_tiles <- function(input,
@@ -12,6 +14,7 @@ upload_tiles <- function(input,
                          access_token = NULL,
                          tileset_id = NULL,
                          tileset_name = NULL,
+                         keep_geojson = FALSE,
                          multipart = FALSE) {
 
   if (is.null(access_token)) {
@@ -24,9 +27,43 @@ upload_tiles <- function(input,
     }
   }
 
+  # Allow input to be an sf object
+  if (any(grepl("^sf", class(input)))) {
+
+    input <- sf::st_transform(input, 4326)
+
+    if (is.null(tileset_name)) {
+      layer_name <- stringi::stri_rand_strings(1, 6)
+    } else {
+      layer_name <- tileset_name
+    }
+
+    if (keep_geojson) {
+      outfile <- paste0(layer_name, ".geojson")
+
+      path <- file.path(dir, outfile)
+
+      sf::st_write(input, path, quiet = TRUE)
+
+    } else {
+
+      tmp <- tempdir()
+
+      tempfile <- paste0(layer_name, ".geojson")
+
+      path <- file.path(tmp, tempfile)
+
+      sf::st_write(input, path, quiet = TRUE)
+
+    }
+
+  } else {
+    path <- input
+  }
+
   # If tileset_id is NULL, use the basename of the input
   if (is.null(tileset_id)) {
-    tileset_id <- gsub("\\.[^.]*$", "", basename(input))
+    tileset_id <- gsub("\\.[^.]*$", "", basename(path))
   }
 
   # Get AWS credentials
@@ -39,7 +76,7 @@ upload_tiles <- function(input,
     jsonlite::fromJSON()
 
   # Use these credentials to transfer to the staging bucket
-  aws.s3::put_object(file = input,
+  aws.s3::put_object(file = path,
              object = credentials$key,
              bucket = credentials$bucket,
              region = "us-east-1",
