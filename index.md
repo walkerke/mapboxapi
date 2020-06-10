@@ -29,7 +29,7 @@ leaflet(walk_5min) %>%
 
 ```
 
-<iframe src="img/isochrone.html" width = "800" height = "450"></iframe>
+<iframe src="img/isochrone.html" width = "100%" height = "500"></iframe>
 
 Read through the following articles to see what you can do with the package: 
 

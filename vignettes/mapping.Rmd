@@ -47,7 +47,9 @@ prepped_pois <- prep_overlay_markers(
 map <- static_mapbox(
   style_id = "ckb83x2ur02oa1hpiq9zdt1i2",
   username = "kwalkertcu",
-  overlay_markers = prepped_pois
+  overlay_markers = prepped_pois, 
+  width = 1200,
+  height = 800
 )
 
 map
