@@ -1,7 +1,7 @@
 #' An R interface to Mapbox web services
 #'
 #' @author Kyle Walker
-#' @name rmapbox
+#' @name mapboxapi
 #' @docType package
 #' @import httr
 #' @import sf
