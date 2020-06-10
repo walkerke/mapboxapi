@@ -15,7 +15,7 @@ get_style <- function(style_id,
     if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
       access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
     } else {
-      if (Sys.getenv("MAPBOX_PUBLIC_TOKEN" != "")) {
+      if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
         access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
       } else {
         stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
