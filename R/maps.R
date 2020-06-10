@@ -127,8 +127,8 @@ upload_tiles <- function(input,
 
 #' Check the status of a Mapbox upload
 #'
+#' @param upload_id The upload ID
 #' @param username Your account's username
-#' @param id The upload ID
 #' @param access_token Your Mapbox access token
 #'
 #' @export
@@ -835,7 +835,7 @@ addMapboxTiles <- function(map,
 
 
 
-  mb_attribution <- '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>'
+  mb_attribution <- '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong><a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a></strong>'
 
   leaflet::addTiles(map = map,
                     urlTemplate = url,

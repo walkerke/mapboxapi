@@ -6,6 +6,7 @@
 #' @param min_zoom The minimum zoom level for which to compute tiles.
 #' @param max_zoom The maximum zoom level for which to compute tiles.  If both min_zoom and max_zoom are blank, tippecanoe will guess the best zoom levels for your data.
 #' @param drop_rate The rate at which tippecanoe will drop features as you zoom out. If NULL, tippecanoe will drop features as needed in the densest tiles to stay within Mapbox's limits.
+#' @param overwrite If TRUE, an existing .mbtiles file with the same name will be overwritten.
 #' @param other_options A character string of other options to be passed to the tippecanoe program.
 #' @param keep_geojson Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.
 #' @export

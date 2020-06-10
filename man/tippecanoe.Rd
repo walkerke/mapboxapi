@@ -29,6 +29,8 @@ tippecanoe(
 
 \item{drop_rate}{The rate at which tippecanoe will drop features as you zoom out. If NULL, tippecanoe will drop features as needed in the densest tiles to stay within Mapbox's limits.}
 
+\item{overwrite}{If TRUE, an existing .mbtiles file with the same name will be overwritten.}
+
 \item{other_options}{A character string of other options to be passed to the tippecanoe program.}
 
 \item{keep_geojson}{Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.}

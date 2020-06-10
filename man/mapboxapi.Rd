@@ -4,6 +4,9 @@
 \name{mapboxapi}
 \alias{mapboxapi}
 \title{An R interface to Mapbox web services}
+\description{
+Use Mapbox web services APIs for spatial data science and visualization projects in R. Usage of the package is governed by the Mapbox Terms of Service.
+}
 \author{
 Kyle Walker
 }

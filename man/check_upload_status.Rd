@@ -7,11 +7,11 @@
 check_upload_status(upload_id, username, access_token = NULL)
 }
 \arguments{
+\item{upload_id}{The upload ID}
+
 \item{username}{Your account's username}
 
 \item{access_token}{Your Mapbox access token}
-
-\item{id}{The upload ID}
 }
 \description{
 Check the status of a Mapbox upload
