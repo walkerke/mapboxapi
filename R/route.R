@@ -64,7 +64,7 @@ mb_directions <- function(input_data = NULL,
     if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
       access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
     } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
         access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
       } else {
         stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
@@ -374,7 +374,7 @@ mb_optimized_route <- function(input_data,
     if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
       access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
     } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN" != "")) {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
         access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
       } else {
         stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
