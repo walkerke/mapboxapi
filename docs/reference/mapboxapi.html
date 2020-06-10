@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>List tokens from a Mapbox account — list_tokens • mapboxapi</title>
+<title>An R interface to Mapbox web services — mapboxapi • mapboxapi</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="List tokens from a Mapbox account — list_tokens" />
-<meta property="og:description" content="List tokens from a Mapbox account" />
+<meta property="og:title" content="An R interface to Mapbox web services — mapboxapi" />
+<meta property="og:description" content="Use Mapbox web services APIs for spatial data science and visualization projects in R. Usage of the package is governed by the Mapbox Terms of Service." />
 
 
 
@@ -126,56 +126,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>List tokens from a Mapbox account</h1>
+    <h1>An R interface to Mapbox web services</h1>
     
-    <div class="hidden name"><code>list_tokens.Rd</code></div>
+    <div class="hidden name"><code>mapboxapi.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>List tokens from a Mapbox account</p>
+    <p>Use Mapbox web services APIs for spatial data science and visualization projects in R. Usage of the package is governed by the Mapbox Terms of Service.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>list_tokens</span>(
-  <span class='no'>username</span>,
-  <span class='kw'>default</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>sortby</span> <span class='kw'>=</span> <span class='st'>"created"</span>,
-  <span class='kw'>usage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>username</th>
-      <td><p>The Mapbox username for which you'd like to list access tokens.</p></td>
-    </tr>
-    <tr>
-      <th>default</th>
-      <td><p>If TRUE, will only include the default token for an account. If FALSE, will include all other tokens except for the default.  Defaults to NULL.</p></td>
-    </tr>
-    <tr>
-      <th>limit</th>
-      <td><p>The maximum number of tokens to return. Defaults to NULL.</p></td>
-    </tr>
-    <tr>
-      <th>sortby</th>
-      <td><p>How to sort the returned tokens; one of <code>"created"</code> or <code>"modified"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>usage</th>
-      <td><p>If <code>"pk"</code>, returns only public tokens; if <code>"sk"</code>, returns only secret tokens.  Defaults to <code>NULL</code>, which returns all tokens in the scope of the supplied access token.</p></td>
-    </tr>
-    <tr>
-      <th>access_token</th>
-      <td><p>Your Mapbox access token.  If left blank, will first check to see if you have a secret token stored in .Renviron, then a public token.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A tibble of information about tokens in your Mapbox account.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
