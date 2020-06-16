@@ -29,7 +29,7 @@ mb_isochrone(
 
 \item{geometry}{one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.}
 
-\item{output}{one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"geojson"}, which returns the GeoJSON response from the API.}
+\item{output}{one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"list"}, which returns the GeoJSON response from the API as an R list.}
 
 \item{rate_limit}{The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.}
 

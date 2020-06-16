@@ -343,7 +343,7 @@ mb_matrix <- function(origins,
 #' @param access_token A valid Mapbox access token.
 #' @param denoise A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.
 #' @param geometry one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.
-#' @param output one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"geojson"}, which returns the GeoJSON response from the API.
+#' @param output one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"list"}, which returns the GeoJSON response from the API as an R list.
 #' @param rate_limit The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.
 #' @param keep_color_cols Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an sf object).  Defaults to \code{FALSE}.
 #'
@@ -373,6 +373,11 @@ mb_isochrone <- function(location,
     }
   }
 
+  # Check to ensure the max time does not exceed the limit
+  if (max(time) > 60) {
+    stop("The maximum time you can request is 60 minutes.", call. = FALSE)
+  }
+
 
   # If input location is an sf object, call a rate-limited function internally
   mb_isochrone_sf <- function(sf_object) {
@@ -390,7 +395,7 @@ mb_isochrone <- function(location,
       transpose()
 
     mb_isochrone_limited <- purrr::slowly(mb_isochrone,
-                                          rate = rate_delay(60 / rate_limit),
+                                          rate = purrr::rate_delay(60 / rate_limit),
                                           quiet = TRUE)
 
     map(coords, ~{
@@ -439,35 +444,86 @@ mb_isochrone <- function(location,
     paste0(coords, collapse = ",")
   )
 
+  # Once assembled, we can check to see how many times have been requested
+  # to handle rate-limiting internally.
+  request_isochrones <- function(base, access_token, time, denoise, polygons,
+                                 output, keep_color_cols) {
+    request <- GET(base,
+                   query = list(
+                     access_token = access_token,
+                     contours_minutes = paste0(time, collapse = ","),
+                     denoise = as.character(denoise),
+                     polygons = polygons
+                   ))
 
-  request <- GET(base,
-                 query = list(
-                   access_token = access_token,
-                   contours_minutes = paste0(time, collapse = ","),
-                   denoise = as.character(denoise),
-                   polygons = polygons
-                 ))
+    content <- content(request, as = "text")
 
-  content <- content(request, as = "text")
-
-  if (request$status_code != 200) {
-    pull <- fromJSON(content)
-    stop(pull$message, call. = FALSE)
-  }
-
-  if (output == "sf") {
-    isos <- read_sf(content) %>%
-      dplyr::rename(time = contour)
-
-    if (keep_color_cols) {
-      return(isos)
-    } else {
-      return(dplyr::select(isos, time))
+    if (request$status_code != 200) {
+      pull <- fromJSON(content)
+      stop(pull$message, call. = FALSE)
     }
 
-    return(isos)
-  } else if (output == "geojson") {
-    return(content)
+    if (output == "sf") {
+      isos <- sf::read_sf(content) %>%
+        dplyr::rename(time = contour)
+
+      if (keep_color_cols) {
+        return(isos)
+      } else {
+        return(dplyr::select(isos, time))
+      }
+
+      return(isos)
+    } else if (output == "list") {
+      return(content)
+    }
   }
+
+  # Handle the requested times with respect to the contour limit of 4
+  if (length(time) <= 4) {
+    iso_request <- request_isochrones(
+      base = base,
+      access_token = access_token,
+      time = time,
+      denoise = denoise,
+      polygons = polygons,
+      output = output,
+      keep_color_cols = keep_color_cols
+    )
+
+    return(iso_request)
+  } else {
+    if (output == "list") {
+      stop("The maximum number of times you can request for list output is 4.", call. = FALSE)
+    }
+
+    # Chunk the times into groups of 4 or less
+    times_chunked <- split(time, ceiling(seq_along(time) / 4))
+
+    # Iterate over the times and reassemble in a rate-limited way
+    request_isochrones_times <- purrr::slowly(request_isochrones,
+                                              rate = purrr::rate_delay(60 / rate_limit),
+                                              quiet = TRUE)
+
+    iso_requests <- purrr::map(times_chunked, ~{
+      request_isochrones_times(
+        base = base,
+        access_token = access_token,
+        time = .x,
+        denoise = denoise,
+        polygons = polygons,
+        output = "sf",
+        keep_color_cols = keep_color_cols
+      )
+    }) %>%
+      data.table::rbindlist() %>%
+      st_as_sf(crs = 4326) %>%
+      dplyr::arrange(dplyr::desc(time))
+
+    return(iso_requests)
+
+  }
+
+
 
 }
