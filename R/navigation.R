@@ -339,7 +339,7 @@ mb_matrix <- function(origins,
 #'
 #' @param location A vector of form \code{c(longitude, latitude)}, an address that can be geocoded as a character string, or an sf object.
 #' @param profile One of "driving", "walking", or "cycling".  "driving" is the default.
-#' @param time A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to \code{c(5, 10, 15)}.
+#' @param time A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}.  The maximum time supported is 60 minutes.
 #' @param access_token A valid Mapbox access token.
 #' @param denoise A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.
 #' @param geometry one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.

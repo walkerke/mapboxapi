@@ -21,7 +21,7 @@ mb_isochrone(
 
 \item{profile}{One of "driving", "walking", or "cycling".  "driving" is the default.}
 
-\item{time}{A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to \code{c(5, 10, 15)}.}
+\item{time}{A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}.  The maximum time supported is 60 minutes.}
 
 \item{access_token}{A valid Mapbox access token.}
 
