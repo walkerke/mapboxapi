@@ -93,10 +93,10 @@ mb_matrix <- function(origins,
       chunk_size <- coord_limit - dest_size
       if (any(grepl("^sf", class(origins)))) {
         matrix_output <- origins %>%
-          mutate(ix = c(0, rep(1:(nrow(origins) - 1) %/% chunk_size))) %>%
-          group_by(ix) %>%
-          group_split(.keep = FALSE) %>%
-          map(., ~{
+          dplyr::mutate(ix = c(0, rep(1:(nrow(origins) - 1) %/% chunk_size))) %>%
+          dplyr::group_by(ix) %>%
+          dplyr::group_split(.keep = FALSE) %>%
+          purrr::map(., ~{
           mb_matrix_limited(origins = .x,
                             destinations = destinations,
                             profile = profile,
@@ -110,7 +110,7 @@ mb_matrix <- function(origins,
         ix <- c(0, rep(1:(length(origins) - 1) %/% chunk_size))
         matrix_output <- origins %>%
           split(ix) %>%
-          map(., ~{
+          purrr::map(., ~{
             mb_matrix_limited(origins = .x,
                               destinations = destinations,
                               profile = profile,
@@ -118,7 +118,7 @@ mb_matrix <- function(origins,
                               access_token = access_token,
                               duration_output = duration_output)
           }) %>%
-          reduce(rbind)
+          purrr::reduce(rbind)
         return(matrix_output)
       }
     }
@@ -128,10 +128,10 @@ mb_matrix <- function(origins,
       chunk_size <- coord_limit - origin_size
       if (any(grepl("^sf", class(destinations)))) {
         matrix_output <- destinations %>%
-          mutate(ix = c(0, rep(1:(nrow(destinations) - 1) %/% chunk_size))) %>%
-          group_by(ix) %>%
-          group_split(.keep = FALSE) %>%
-          map(., ~{
+          dplyr::mutate(ix = c(0, rep(1:(nrow(destinations) - 1) %/% chunk_size))) %>%
+          dplyr::group_by(ix) %>%
+          dplyr::group_split(.keep = FALSE) %>%
+          purrr::map(., ~{
             mb_matrix_limited(origins = origins,
                               destinations = .x,
                               profile = profile,
@@ -145,7 +145,7 @@ mb_matrix <- function(origins,
         ix <- c(0, rep(1:(length(destinations) - 1) %/% chunk_size))
         matrix_output <- destinations %>%
           split(ix) %>%
-          map(., ~{
+          purrr::map(., ~{
             mb_matrix_limited(origins = origins,
                               destinations = .x,
                               profile = profile,
@@ -153,7 +153,7 @@ mb_matrix <- function(origins,
                               access_token = access_token,
                               duration_output = duration_output)
           }) %>%
-          reduce(rbind)
+          purrr::reduce(rbind)
         return(matrix_output)
       }
     }
@@ -180,8 +180,9 @@ mb_matrix <- function(origins,
   # Parse the request
   if (any(grepl("^sf", class(origins)))) {
 
-    if (unique(sf::st_geometry_type(origins)) != "POINT") {
+    if (sf::st_geometry_type(origins, by_geometry = FALSE) != "POINT") {
       origins <- suppressWarnings(sf::st_centroid(origins))
+      message("Using feature centroids for origins")
     }
 
     origins <- sf::st_transform(origins, 4326)
@@ -266,8 +267,11 @@ mb_matrix <- function(origins,
   if (!is.null(destinations)) {
     if (any(grepl("^sf", class(destinations)))) {
 
-      if (unique(sf::st_geometry_type(destinations)) != "POINT") {
+      if (sf::st_geometry_type(destinations,
+                               by_geometry = FALSE) != "POINT") {
         destinations <- suppressWarnings(sf::st_centroid(destinations))
+        message("Using feature centroids for destinations")
+
       }
 
       destinations <- sf::st_transform(destinations, 4326)
@@ -383,7 +387,7 @@ mb_isochrone <- function(location,
   mb_isochrone_sf <- function(sf_object) {
 
     # Convert to centroids if geometry is not points
-    if (unique(st_geometry_type(location)) != "POINT") {
+    if (sf::st_geometry_type(location, by_geometry = FALSE) != "POINT") {
       location <- suppressMessages(st_centroid(location))
       message("Using feature centroids to compute isochrones")
     }
