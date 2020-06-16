@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -160,7 +160,7 @@
     </tr>
     <tr>
       <th>time</th>
-      <td><p>A vector of isochrone contours, specified in minutes.  4 is the maximum; defaults to <code><a href='https://rdrr.io/r/base/c.html'>c(5, 10, 15)</a></code>.</p></td>
+      <td><p>A vector of isochrone contours, specified in minutes. Defaults to <code><a href='https://rdrr.io/r/base/c.html'>c(5, 10, 15)</a></code>.  The maximum time supported is 60 minutes.</p></td>
     </tr>
     <tr>
       <th>access_token</th>
@@ -176,7 +176,7 @@
     </tr>
     <tr>
       <th>output</th>
-      <td><p>one of <code>"sf"</code> (the default), which returns an sf object representing the isochrone(s), or <code>"geojson"</code>, which returns the GeoJSON response from the API.</p></td>
+      <td><p>one of <code>"sf"</code> (the default), which returns an sf object representing the isochrone(s), or <code>"list"</code>, which returns the GeoJSON response from the API as an R list.</p></td>
     </tr>
     <tr>
       <th>rate_limit</th>
