@@ -61,7 +61,7 @@ optimized_map <- static_mapbox(
   overlay_markers = prep_overlay_markers(
     data = optimized_route$waypoints,
     marker_type = "pin-l",
-    label <- optimized_route$waypoints$waypoint_index,
+    label = optimized_route$waypoints$waypoint_index,
     color = "144708"
   ),
   height = 800,
