@@ -92,24 +92,28 @@ mb_matrix <- function(origins,
     if (!is.null(destinations) && dest_size < coord_limit && origin_size >= coord_limit) {
       chunk_size <- coord_limit - dest_size
       if (any(grepl("^sf", class(origins)))) {
+        if (sf::st_geometry_type(origins, by_geometry = FALSE) != "POINT") {
+          message("Using feature centroids for origins")
+        }
         matrix_output <- origins %>%
           dplyr::mutate(ix = c(0, rep(1:(nrow(origins) - 1) %/% chunk_size))) %>%
-          dplyr::group_by(ix) %>%
-          dplyr::group_split(.keep = FALSE) %>%
+          split(.$ix) %>%
           purrr::map(., ~{
-          mb_matrix_limited(origins = .x,
-                            destinations = destinations,
-                            profile = profile,
-                            fallback_speed = fallback_speed,
-                            access_token = access_token,
-                            duration_output = duration_output)
+            suppressMessages(
+              mb_matrix_limited(origins = .x,
+                                destinations = destinations,
+                                profile = profile,
+                                fallback_speed = fallback_speed,
+                                access_token = access_token,
+                                duration_output = duration_output)
+            )
         }) %>%
           reduce(rbind)
         return(matrix_output)
       } else {
         ix <- c(0, rep(1:(length(origins) - 1) %/% chunk_size))
         matrix_output <- origins %>%
-          split(ix) %>%
+          split(.$ix) %>%
           purrr::map(., ~{
             mb_matrix_limited(origins = .x,
                               destinations = destinations,
@@ -127,17 +131,21 @@ mb_matrix <- function(origins,
     else if (!is.null(destinations) && origin_size < coord_limit && dest_size >= coord_limit) {
       chunk_size <- coord_limit - origin_size
       if (any(grepl("^sf", class(destinations)))) {
+        if (sf::st_geometry_type(origins, by_geometry = FALSE) != "POINT") {
+          message("Using feature centroids for destinations")
+        }
         matrix_output <- destinations %>%
           dplyr::mutate(ix = c(0, rep(1:(nrow(destinations) - 1) %/% chunk_size))) %>%
-          dplyr::group_by(ix) %>%
-          dplyr::group_split(.keep = FALSE) %>%
+          split(ix) %>%
           purrr::map(., ~{
-            mb_matrix_limited(origins = origins,
-                              destinations = .x,
-                              profile = profile,
-                              fallback_speed = fallback_speed,
-                              access_token = access_token,
-                              duration_output = duration_output)
+            suppressMessages(
+              mb_matrix_limited(origins = origins,
+                                destinations = .x,
+                                profile = profile,
+                                fallback_speed = fallback_speed,
+                                access_token = access_token,
+                                duration_output = duration_output)
+            )
           }) %>%
           reduce(rbind)
         return(matrix_output)
