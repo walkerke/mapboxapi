@@ -27,7 +27,7 @@ mb_isochrone(
 
 \item{denoise}{A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.}
 
-\item{geometry}{one of \code{"polygons"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.}
+\item{geometry}{one of \code{"polygon"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.}
 
 \item{output}{one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"list"}, which returns the GeoJSON response from the API as an R list.}
 
