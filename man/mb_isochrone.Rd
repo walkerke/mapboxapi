@@ -13,7 +13,8 @@ mb_isochrone(
   geometry = "polygon",
   output = "sf",
   rate_limit = 300,
-  keep_color_cols = FALSE
+  keep_color_cols = FALSE,
+  id_column = NULL
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ mb_isochrone(
 \item{rate_limit}{The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.}
 
 \item{keep_color_cols}{Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an sf object).  Defaults to \code{FALSE}.}
+
+\item{id_column}{If the input dataset is an sf object, the column in your dataset you want to use as the isochrone ID.  Otherwise, isochrone IDs will be identified by row index or position.}
 }
 \value{
 An sf object representing the isochrone(s) around the location(s).

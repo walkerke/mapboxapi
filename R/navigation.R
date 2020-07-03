@@ -358,6 +358,7 @@ mb_matrix <- function(origins,
 #' @param output one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"list"}, which returns the GeoJSON response from the API as an R list.
 #' @param rate_limit The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.
 #' @param keep_color_cols Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an sf object).  Defaults to \code{FALSE}.
+#' @param id_column If the input dataset is an sf object, the column in your dataset you want to use as the isochrone ID.  Otherwise, isochrone IDs will be identified by row index or position.
 #'
 #' @return An sf object representing the isochrone(s) around the location(s).
 #' @export
@@ -369,7 +370,8 @@ mb_isochrone <- function(location,
                          geometry = "polygon",
                          output = "sf",
                          rate_limit = 300,
-                         keep_color_cols = FALSE) {
+                         keep_color_cols = FALSE,
+                         id_column = NULL) {
 
   if (is.null(access_token)) {
     # Use public token first, then secret token
@@ -396,13 +398,13 @@ mb_isochrone <- function(location,
 
     # Convert to centroids if geometry is not points
     if (sf::st_geometry_type(location, by_geometry = FALSE) != "POINT") {
-      location <- suppressMessages(st_centroid(location))
+      location <- suppressWarnings(sf::st_centroid(location))
       message("Using feature centroids to compute isochrones")
     }
 
     input_data <- st_transform(location, 4326)
 
-    coords <- st_coordinates(input_data) %>%
+    coords <- sf::st_coordinates(input_data) %>%
       as.data.frame() %>%
       transpose()
 
@@ -410,14 +412,26 @@ mb_isochrone <- function(location,
                                           rate = purrr::rate_delay(60 / rate_limit),
                                           quiet = TRUE)
 
-    map(coords, ~{
+    # Grab IDs to allocate to isochrones
+    if ("data.frame" %in% class(location)) {
+      if (!is.null(id_column)) {
+        iso_ids <- as.list(location[[id_column]])
+      } else {
+        iso_ids <- as.list(1:nrow(location))
+      }
+    } else {
+      iso_ids <- 1:length(location)
+    }
+
+    purrr::map2(coords, iso_ids, ~{
       mb_isochrone_limited(location = .x,
                            profile = profile,
                            time = time,
                            access_token = access_token,
                            denoise = denoise,
                            geometry = geometry,
-                           output = "sf")
+                           output = "sf") %>%
+        dplyr::mutate(id = .y)
     }) %>%
       data.table::rbindlist() %>%
       st_as_sf(crs = 4326)
