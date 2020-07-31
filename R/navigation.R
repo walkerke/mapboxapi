@@ -136,7 +136,7 @@ mb_matrix <- function(origins,
         }
         matrix_output <- destinations %>%
           dplyr::mutate(ix = c(0, rep(1:(nrow(destinations) - 1) %/% chunk_size))) %>%
-          split(ix) %>%
+          split(.$ix) %>%
           purrr::map(., ~{
             suppressMessages(
               mb_matrix_limited(origins = origins,
