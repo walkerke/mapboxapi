@@ -108,7 +108,7 @@ mb_matrix <- function(origins,
                                 duration_output = duration_output)
             )
         }) %>%
-          reduce(rbind)
+          purrr::reduce(rbind)
         return(matrix_output)
       } else {
         ix <- c(0, rep(1:(length(origins) - 1) %/% chunk_size))
@@ -147,7 +147,7 @@ mb_matrix <- function(origins,
                                 duration_output = duration_output)
             )
           }) %>%
-          reduce(rbind)
+          purrr::reduce(cbind)
         return(matrix_output)
       } else {
         ix <- c(0, rep(1:(length(destinations) - 1) %/% chunk_size))
@@ -161,7 +161,7 @@ mb_matrix <- function(origins,
                               access_token = access_token,
                               duration_output = duration_output)
           }) %>%
-          purrr::reduce(rbind)
+          purrr::reduce(cbind)
         return(matrix_output)
       }
     }
