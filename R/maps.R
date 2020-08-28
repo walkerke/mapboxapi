@@ -291,14 +291,17 @@ get_vector_tiles <- function(tileset_id,
       request <- httr::GET(url, query = list(access_token = access_token))
 
 
-      if (request$status_code != 200) {
-        content <- httr::content(request, as = "text")
-        stop(print(content$message), call. = FALSE)
+      # if (request$status_code != 200) {
+      #   content <- httr::content(request, as = "text")
+      #   stop(print(content$message), call. = FALSE)
+      # }
+
+      # Only try to read the data if there is data available
+      if (request$status_code == 200) {
+        sf_output <- protolite::read_mvt_sf(request$url)
+        return(sf_output)
       }
 
-      sf_output <- protolite::read_mvt_sf(request$url)
-
-      return(sf_output)
     })
 
     # Now, combine the internal list elements by name
