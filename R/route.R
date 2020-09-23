@@ -210,7 +210,7 @@ mb_directions <- function(input_data = NULL,
   }
 
   if (!is.null(roundabout_exits)) {
-    if (roundabound_exits) {
+    if (roundabout_exits) {
       roundabout_exits <- 'true'
     } else {
       roundabout_exits <- 'false'

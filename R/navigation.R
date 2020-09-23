@@ -433,8 +433,9 @@ mb_isochrone <- function(location,
                            output = "sf") %>%
         dplyr::mutate(id = .y)
     }) %>%
-      data.table::rbindlist() %>%
-      st_as_sf(crs = 4326)
+      dplyr::bind_rows()
+      # data.table::rbindlist() %>%
+      # st_as_sf(crs = 4326)
 
   }
 
@@ -542,8 +543,9 @@ mb_isochrone <- function(location,
         keep_color_cols = keep_color_cols
       )
     }) %>%
-      data.table::rbindlist() %>%
-      st_as_sf(crs = 4326) %>%
+      dplyr::bind_rows() %>%
+      # data.table::rbindlist() %>%
+      # st_as_sf(crs = 4326) %>%
       dplyr::arrange(dplyr::desc(time))
 
     return(iso_requests)
