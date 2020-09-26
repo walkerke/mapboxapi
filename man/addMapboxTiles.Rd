@@ -41,3 +41,19 @@ A pointer to the Mapbox Static Tiles API which will be translated appropriately 
 \description{
 Use a Mapbox style in a Leaflet map
 }
+\examples{
+\dontrun{
+
+library(leaflet)
+library(mapboxapi)
+
+leaflet() \%>\%
+  addMapboxTiles(style_id = "light-v9",
+                 username = "mapbox") \%>\%
+  setView(lng = -74.0051,
+          lat = 40.7251,
+          zoom = 13)
+
+}
+
+}

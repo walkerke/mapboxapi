@@ -59,3 +59,21 @@ Either a list of two sf objects - one representing the waypoints, and one repres
 \description{
 Return an optimized route for a series of input coordinates
 }
+\examples{
+\dontrun{
+
+library(mapboxapi)
+library(sf)
+
+to_visit <- data.frame(
+  X = c(-0.209307, -0.185875, -0.216877, -0.233511, -0.234541),
+  Y = c(5.556019, 5.58031, 5.582528, 5.566771, 5.550209)
+) \%>\%
+  st_as_sf(coords = c("X", "Y"), crs = 4326)
+
+optimized_route <- mb_optimized_route(to_visit,
+                                      profile = "driving-traffic")
+
+}
+
+}

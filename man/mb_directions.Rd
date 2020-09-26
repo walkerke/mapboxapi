@@ -95,3 +95,23 @@ An sf object (or list of sf objects), or full R list representing the API respon
 \description{
 Make a request to the Mapbox Directions API
 }
+\examples{
+\dontrun{
+library(mapboxapi)
+library(leaflet)
+
+my_route <- mb_directions(
+ origin = "10 Avenue de Wagram, 75008 Paris France",
+  destination = "59 Rue de Tocqueville, 75017 Paris France",
+  profile = "cycling",
+  steps = TRUE,
+  language = "fr"
+)
+
+leaflet(my_route) \%>\%
+  addMapboxTiles(style_id = "light-v9",
+                 username = "mapbox") \%>\%
+  addPolylines()
+
+}
+}

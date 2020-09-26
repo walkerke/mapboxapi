@@ -10,6 +10,28 @@
 #' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
 #'
 #' @return An R matrix of source-destination travel times.
+#'
+#' @examples \dontrun{
+#'
+#' library(mapboxapi)
+#' library(tigris)
+#' library(mapdeck)
+#'
+#' philly_tracts <- tracts("PA", "Philadelphia", cb = TRUE, class = "sf")
+#' downtown_philly <- mb_geocode("Philadelphia City Hall, Philadelphia PA")
+#'
+#' time_to_downtown <- mb_matrix(philly_tracts, downtown_philly)
+#'
+#' philly_tracts$time <- time_to_downtown
+#'
+#' mapdeck(style = mapdeck_style("light")) %>%
+#'   add_polygon(data = philly_tracts,
+#'               fill_colour = "time",
+#'               fill_opacity = 0.6,
+#'               legend = TRUE)
+#'
+#' }
+#'
 #' @export
 mb_matrix <- function(origins,
                       destinations = NULL,
@@ -361,6 +383,23 @@ mb_matrix <- function(origins,
 #' @param id_column If the input dataset is an sf object, the column in your dataset you want to use as the isochrone ID.  Otherwise, isochrone IDs will be identified by row index or position.
 #'
 #' @return An sf object representing the isochrone(s) around the location(s).
+#'
+#' @examples \dontrun{
+#'
+#' library(mapboxapi)
+#' library(mapdeck)
+#' isochrones <- mb_isochrone("The Kremlin, Moscow Russia",
+#'                            time = c(4, 8, 12),
+#'                            profile = "walking")
+#'
+#' mapdeck(style = mapdeck_style("light")) %>%
+#'   add_polygon(data = isochrones,
+#'               fill_colour = "time",
+#'               fill_opacity = 0.5,
+#'               legend = TRUE)
+#'
+#' }
+#'
 #' @export
 mb_isochrone <- function(location,
                          profile = "driving",

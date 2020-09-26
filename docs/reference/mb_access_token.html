@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Install a Mapbox access token in your .Renviron for repeated use — mb_access_token" />
-<meta property="og:description" content="Install a Mapbox access token in your .Renviron for repeated use" />
+<meta property="og:description" content="Install a Mapbox access token in your .Renviron for repeated use
+List tokens from a Mapbox account" />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -133,9 +134,19 @@
 
     <div class="ref-description">
     <p>Install a Mapbox access token in your .Renviron for repeated use</p>
+<p>List tokens from a Mapbox account</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mb_access_token</span>(<span class='no'>token</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>install</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>mb_access_token</span>(<span class='no'>token</span>, <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>install</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>list_tokens</span>(
+  <span class='no'>username</span>,
+  <span class='kw'>default</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>limit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>sortby</span> <span class='kw'>=</span> <span class='st'>"created"</span>,
+  <span class='kw'>usage</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -152,14 +163,50 @@
       <th>install</th>
       <td><p>if TRUE, will install the key in your <code>.Renviron</code> file for use in future sessions.  Defaults to FALSE.</p></td>
     </tr>
+    <tr>
+      <th>username</th>
+      <td><p>The Mapbox username for which you'd like to list access tokens.</p></td>
+    </tr>
+    <tr>
+      <th>default</th>
+      <td><p>If TRUE, will only include the default token for an account. If FALSE, will include all other tokens except for the default.  Defaults to NULL.</p></td>
+    </tr>
+    <tr>
+      <th>limit</th>
+      <td><p>The maximum number of tokens to return. Defaults to NULL.</p></td>
+    </tr>
+    <tr>
+      <th>sortby</th>
+      <td><p>How to sort the returned tokens; one of <code>"created"</code> or <code>"modified"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>usage</th>
+      <td><p>If <code>"pk"</code>, returns only public tokens; if <code>"sk"</code>, returns only secret tokens.  Defaults to <code>NULL</code>, which returns all tokens in the scope of the supplied access token.</p></td>
+    </tr>
+    <tr>
+      <th>access_token</th>
+      <td><p>Your Mapbox access token.  If left blank, will first check to see if you have a secret token stored in .Renviron, then a public token.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A tibble of information about tokens in your Mapbox account.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='no'>my_token</span> <span class='kw'>&lt;-</span> <span class='st'>"..."</span> <span class='co'># The token generated from your Mapbox account</span>
 <span class='fu'>mb_access_token</span>(<span class='no'>my_token</span>, <span class='kw'>install</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span>(<span class='st'>"MAPBOX_PUBLIC_TOKEN"</span>)
+}
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='no'>token_list</span> <span class='kw'>&lt;-</span> <span class='fu'>list_tokens</span>(
+  <span class='kw'>username</span> <span class='kw'>=</span> <span class='st'>"kwalkertcu"</span>, <span class='co'># You would use your own username here</span>
+  <span class='kw'>limit</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>sortby</span> <span class='kw'>=</span> <span class='st'>"modified"</span><span class='co'>#'</span>
+)
+
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

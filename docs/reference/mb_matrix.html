@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -179,6 +179,27 @@ For sf linestrings or polygons, the distance between centroids will be taken.</p
 
     <p>An R matrix of source-destination travel times.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapboxapi</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tigris</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapdeck</span>)
+
+<span class='no'>philly_tracts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tigris/man/tracts.html'>tracts</a></span>(<span class='st'>"PA"</span>, <span class='st'>"Philadelphia"</span>, <span class='kw'>cb</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"sf"</span>)
+<span class='no'>downtown_philly</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mb_geocode.html'>mb_geocode</a></span>(<span class='st'>"Philadelphia City Hall, Philadelphia PA"</span>)
+
+<span class='no'>time_to_downtown</span> <span class='kw'>&lt;-</span> <span class='fu'>mb_matrix</span>(<span class='no'>philly_tracts</span>, <span class='no'>downtown_philly</span>)
+
+<span class='no'>philly_tracts</span>$<span class='no'>time</span> <span class='kw'>&lt;-</span> <span class='no'>time_to_downtown</span>
+
+<span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck.html'>mapdeck</a></span>(<span class='kw'>style</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck_style.html'>mapdeck_style</a></span>(<span class='st'>"light"</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/add_polygon.html'>add_polygon</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>philly_tracts</span>,
+              <span class='kw'>fill_colour</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
+              <span class='kw'>fill_opacity</span> <span class='kw'>=</span> <span class='fl'>0.6</span>,
+              <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

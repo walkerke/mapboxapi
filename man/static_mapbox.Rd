@@ -2,6 +2,7 @@
 % Please edit documentation in R/maps.R
 \name{static_mapbox}
 \alias{static_mapbox}
+\alias{prep_overlay_markers}
 \title{Return a static Mapbox map from a specified style}
 \usage{
 static_mapbox(
@@ -21,6 +22,16 @@ static_mapbox(
   before_layer = NULL,
   access_token = NULL
 )
+
+prep_overlay_markers(
+  data = NULL,
+  marker_type = c("pin-s", "pin-l", "url"),
+  label = NA,
+  color = NA,
+  longitude = NULL,
+  latitude = NULL,
+  url = NA
+)
 }
 \arguments{
 \item{style_id}{The style ID}
@@ -33,9 +44,9 @@ static_mapbox(
 
 \item{overlay_markers}{The prepared overlay markers (optional).  See the function \code{\link{prep_overlay_markers}} for more information on how to specify a marker overlay.}
 
-\item{longitude}{The longitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.}
+\item{longitude}{A vector of longitudes; inferred from the input dataset if \code{data} is provided.}
 
-\item{latitude}{The latitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.}
+\item{latitude}{A vector of latitudes; inferred from the input dataset if \code{data} is provided.}
 
 \item{zoom}{The map zoom.  The map will infer this from the overlay unless longitude, latitude, and zoom are all specified.}
 
@@ -52,10 +63,54 @@ static_mapbox(
 \item{before_layer}{A character string that specifies where in the hierarchy of layer elements the overlay should be inserted.  The overlay will be placed just above the specified layer in the given Mapbox styles.}
 
 \item{access_token}{Your Mapbox access token; can be set with \code{mb_access_token()}.}
+
+\item{data}{An input data frame with longitude and latitude columns (X and Y or lon and lat as names are also acceptable) or an sf object with geometry type POINT.}
+
+\item{marker_type}{The marker type; one of \code{"pin-s"}, for a small pin; \code{"pin-l"}, for a large pin; and \code{"url"}, for an image path.}
+
+\item{label}{The marker label (optional).  Can be a letter, number (0 through 99), or a valid Maki icon (see \url{https://labs.mapbox.com/maki-icons/}) for options).}
+
+\item{color}{The marker color (optional).  Color should be specified as a three or six-digit hexadecimal code without the number sign.}
+
+\item{url}{The URL of the image to be used for the icon if \code{marker_type = "url"}.}
 }
 \value{
 A pointer to an image of class \code{"magick-image"}.  The resulting image can be manipulated further with functions from the magick package.
+
+A formatted list of marker specifications that can be passed to the \code{\link{static_mapbox}} function.
 }
 \description{
 Return a static Mapbox map from a specified style
+
+Prepare overlay markers for use in a Mapbox static map
+}
+\examples{
+\dontrun{
+
+library(mapboxapi)
+
+points_of_interest <- tibble::tibble(
+  longitude = c(-73.99405, -74.00616, -73.99577, -74.00761),
+  latitude = c(40.72033, 40.72182, 40.71590, 40.71428)
+)
+
+prepped_pois <- prep_overlay_markers(
+  data = points_of_interest,
+  marker_type = "pin-l",
+  label = 1:4,
+  color = "fff"
+)
+
+map <- static_mapbox(
+  style_id = "streets-v11",
+  username = "mapbox",
+  overlay_markers = prepped_pois,
+  width = 1200,
+  height = 800
+)
+
+map
+
+}
+
 }

@@ -21,3 +21,22 @@ A list of sf objects representing the different layer types found in the request
 \description{
 Retrieve vector tiles from a given Mapbox tileset
 }
+\examples{
+\dontrun{
+
+library(mapboxapi)
+library(ggplot2)
+
+vector_extract <- get_vector_tiles(
+  tileset_id = "mapbox.mapbox-streets-v8",
+  location = c(-73.99405, 40.72033),
+  zoom = 15
+)
+
+ggplot(vector_extract$building$polygons) +
+  geom_sf() +
+  theme_void()
+
+}
+
+}

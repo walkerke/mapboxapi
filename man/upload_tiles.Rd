@@ -32,3 +32,30 @@ upload_tiles(
 \description{
 Upload dataset to your Mapbox account
 }
+\examples{
+\dontrun{
+
+# Example: create a tileset of median age for all United States Census tracts
+# Requires setting a Mapbox secret access token as an environment variable
+
+library(mapboxapi)
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+median_age <- get_acs(
+  geography = "tract",
+  variables = "B01002_001",
+  state = c(state.abb, "DC"),
+  geometry = TRUE
+)
+
+upload_tiles(
+  input = median_age,
+  username = "kwalkertcu", # Your username goes here
+  tileset_id = "median_age",
+  tileset_name = "us_median_age_2014_to_2018"
+)
+
+}
+
+}

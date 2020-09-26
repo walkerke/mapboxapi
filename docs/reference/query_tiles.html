@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -159,7 +159,7 @@
     </tr>
     <tr>
       <th>radius</th>
-      <td><p>The radius around the point for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.</p></td>
+      <td><p>The radius around the point (in meters) for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.</p></td>
     </tr>
     <tr>
       <th>limit</th>
@@ -185,8 +185,26 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame of information about the requested features.</p>
+    <p>An R list containing the API response, which includes information about the requested features.  Parse the list to extract desired elements.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
+    <div class='dont-index'><p><a href='https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/'>https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/</a></p></div>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapboxapi</span>)
+
+<span class='no'>elevation</span> <span class='kw'>&lt;-</span> <span class='fu'>query_tiles</span>(
+  <span class='kw'>location</span> <span class='kw'>=</span> <span class='st'>"Breckenridge, Colorado"</span>,
+  <span class='kw'>tileset_id</span> <span class='kw'>=</span> <span class='st'>"mapbox.mapbox-terrain-v2"</span>,
+  <span class='kw'>layer</span> <span class='kw'>=</span> <span class='st'>"contour"</span>,
+  <span class='kw'>limit</span> <span class='kw'>=</span> <span class='fl'>50</span>
+)
+
+<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='no'>elevation</span>$<span class='no'>features</span>$<span class='no'>properties</span>$<span class='no'>ele</span>)
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -144,7 +144,8 @@
   <span class='kw'>geometry</span> <span class='kw'>=</span> <span class='st'>"polygon"</span>,
   <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"sf"</span>,
   <span class='kw'>rate_limit</span> <span class='kw'>=</span> <span class='fl'>300</span>,
-  <span class='kw'>keep_color_cols</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>keep_color_cols</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>id_column</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -186,12 +187,32 @@
       <th>keep_color_cols</th>
       <td><p>Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an sf object).  Defaults to <code>FALSE</code>.</p></td>
     </tr>
+    <tr>
+      <th>id_column</th>
+      <td><p>If the input dataset is an sf object, the column in your dataset you want to use as the isochrone ID.  Otherwise, isochrone IDs will be identified by row index or position.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An sf object representing the isochrone(s) around the location(s).</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapboxapi</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapdeck</span>)
+<span class='no'>isochrones</span> <span class='kw'>&lt;-</span> <span class='fu'>mb_isochrone</span>(<span class='st'>"The Kremlin, Moscow Russia"</span>,
+                           <span class='kw'>time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>8</span>, <span class='fl'>12</span>),
+                           <span class='kw'>profile</span> <span class='kw'>=</span> <span class='st'>"walking"</span>)
+
+<span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck.html'>mapdeck</a></span>(<span class='kw'>style</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck_style.html'>mapdeck_style</a></span>(<span class='st'>"light"</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/add_polygon.html'>add_polygon</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>isochrones</span>,
+              <span class='kw'>fill_colour</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
+              <span class='kw'>fill_opacity</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+              <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

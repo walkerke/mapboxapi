@@ -29,6 +29,25 @@
 #' @param access_token Your Mapbox access token; set with \code{mb_access_token()}
 #'
 #' @return An sf object (or list of sf objects), or full R list representing the API response.
+#'
+#' @examples \dontrun{
+#' library(mapboxapi)
+#' library(leaflet)
+#'
+#' my_route <- mb_directions(
+#'  origin = "10 Avenue de Wagram, 75008 Paris France",
+#'   destination = "59 Rue de Tocqueville, 75017 Paris France",
+#'   profile = "cycling",
+#'   steps = TRUE,
+#'   language = "fr"
+#' )
+#'
+#' leaflet(my_route) %>%
+#'   addMapboxTiles(style_id = "light-v9",
+#'                  username = "mapbox") %>%
+#'   addPolylines()
+#'
+#' }
 #' @export
 mb_directions <- function(input_data = NULL,
                           origin = NULL,
@@ -347,6 +366,23 @@ mb_directions <- function(input_data = NULL,
 #' @param access_token Your Mapbox access token; set with \code{mb_access_token()}
 #'
 #' @return Either a list of two sf objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
+#'
+#' @examples \dontrun{
+#'
+#' library(mapboxapi)
+#' library(sf)
+#'
+#' to_visit <- data.frame(
+#'   X = c(-0.209307, -0.185875, -0.216877, -0.233511, -0.234541),
+#'   Y = c(5.556019, 5.58031, 5.582528, 5.566771, 5.550209)
+#' ) %>%
+#'   st_as_sf(coords = c("X", "Y"), crs = 4326)
+#'
+#' optimized_route <- mb_optimized_route(to_visit,
+#'                                       profile = "driving-traffic")
+#'
+#' }
+#'
 #' @export
 mb_optimized_route <- function(input_data,
                                profile = c("driving", "walking", "cycling",

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -114,14 +114,14 @@
   <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-methods.html">setView</a></span>(<span class="kw">lng</span> <span class="kw">=</span> -<span class="fl">74.0051</span>,
           <span class="kw">lat</span> <span class="kw">=</span> <span class="fl">40.7251</span>,
           <span class="kw">zoom</span> <span class="kw">=</span> <span class="fl">13</span>)</pre></body></html></div>
-<div id="htmlwidget-f704cb3b90dcc1cc8561" style="width:700px;height:432.632880098888px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f704cb3b90dcc1cc8561">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://api.mapbox.com/styles/v1/kwalkertcu/ckb83x2ur02oa1hpiq9zdt1i2/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3dhbGtlcnRjdSIsImEiOiJMRk9JSmRvIn0.l1y2jHZ6IARHM_rA1-X45A",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://www.mapbox.com/about/maps/\">Mapbox<\/a> &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap<\/a> <strong><a href=\"https://www.mapbox.com/map-feedback/\" target=\"_blank\">Improve this map<\/a><\/strong>"}]}],"setView":[[40.7251,-74.0051],13,[]]},"evals":[],"jsHooks":[]}</script><p>In some cases, you may be more interested in a static map rather than an interactive one. Static maps can be generated in <strong>mapboxapi</strong> with the <code><a href="../reference/static_mapbox.html">static_mapbox()</a></code> function. This function accepts sf polygon/linestring (of limited size) or marker overlays.</p>
+<div id="htmlwidget-72a6ceda1d6ef3b4d1de" style="width:700px;height:432.632880098888px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-72a6ceda1d6ef3b4d1de">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://api.mapbox.com/styles/v1/kwalkertcu/ckb83x2ur02oa1hpiq9zdt1i2/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3dhbGtlcnRjdSIsImEiOiJMRk9JSmRvIn0.l1y2jHZ6IARHM_rA1-X45A",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://www.mapbox.com/about/maps/\">Mapbox<\/a> &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap<\/a> <strong><a href=\"https://www.mapbox.com/map-feedback/\" target=\"_blank\">Improve this map<\/a><\/strong>"}]}],"setView":[[40.7251,-74.0051],13,[]]},"evals":[],"jsHooks":[]}</script><p>In some cases, you may be more interested in a static map rather than an interactive one. Static maps can be generated in <strong>mapboxapi</strong> with the <code><a href="../reference/static_mapbox.html">static_mapbox()</a></code> function. This function accepts sf polygon/linestring (of limited size) or marker overlays.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">points_of_interest</span> <span class="kw">&lt;-</span> <span class="kw pkg">tibble</span><span class="kw ns">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(
   <span class="kw">longitude</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">73.99405</span>, -<span class="fl">74.00616</span>, -<span class="fl">73.99577</span>, -<span class="fl">74.00761</span>),
   <span class="kw">latitude</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">40.72033</span>, <span class="fl">40.72182</span>, <span class="fl">40.71590</span>, <span class="fl">40.71428</span>)
   )
 
-<span class="no">prepped_pois</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/prep_overlay_markers.html">prep_overlay_markers</a></span>(
+<span class="no">prepped_pois</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/static_mapbox.html">prep_overlay_markers</a></span>(
   <span class="kw">data</span> <span class="kw">=</span> <span class="no">points_of_interest</span>,
   <span class="kw">marker_type</span> <span class="kw">=</span> <span class="st">"pin-l"</span>,
   <span class="kw">label</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fl">4</span>,
@@ -152,9 +152,9 @@
 )
 
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">vector_extract</span>)</pre></body></html></div>
-<pre><code>## [1] "landuse"            "water"              "structure"         
-## [4] "building"           "road"               "place_label"       
-## [7] "transit_stop_label" "natural_label"      "poi_label"</code></pre>
+<pre><code>## [1] "structure"          "road"               "place_label"       
+## [4] "water"              "transit_stop_label" "landuse"           
+## [7] "poi_label"          "building"</code></pre>
 <p>I get back a number of layers, including roads, labels, and buildings, from the vector tile at zoom 15 that intersects my input coordinates. All of these elements are processed as sf objects that can be mapped with R tools:</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
 

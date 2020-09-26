@@ -2,6 +2,7 @@
 % Please edit documentation in R/search.R
 \name{mb_geocode}
 \alias{mb_geocode}
+\alias{mb_reverse_geocode}
 \title{Geocode an address or place description using the Mapbox Geocoding API}
 \usage{
 mb_geocode(
@@ -12,6 +13,16 @@ mb_geocode(
   search_within = NULL,
   language = NULL,
   output = "coordinates",
+  access_token = NULL
+)
+
+mb_reverse_geocode(
+  coordinates,
+  endpoint = "mapbox.places",
+  limit = 1,
+  language = NULL,
+  types = NULL,
+  output = "text",
   access_token = NULL
 )
 }
@@ -28,10 +39,31 @@ mb_geocode(
 
 \item{language}{The user's language, which can help with interpretation of queries.  Available languages are found at \url{https://docs.mapbox.com/api/search/#language-coverage}.}
 
-\item{output}{If \code{"coordinates"} (the default), returns a length-two vector of coordinates or a list of coordinates.  If \code{"sf"}, returns an sf object with the result geometries. If \code{"full"}, returns the full response from the API.}
+\item{output}{one of \code{"text"} (the default), which will return a character string or list of character strings representing the returned results; \code{output = "sf"}, returning an sf object; or \code{"full"}, which will return a list with the full API response.}
 
 \item{access_token}{The Mapbox access token (required); can be set with \code{mb_access_token}.}
+
+\item{coordinates}{The coordinates of a location in format \code{c(longitude, latitude)} for which you'd like to return information.}
+}
+\value{
+A character vector, list, or sf object representing the query results.
 }
 \description{
 Geocode an address or place description using the Mapbox Geocoding API
+
+Perform reverse geocoding for a coordinate pair
+}
+\examples{
+\dontrun{
+
+whitehouse <- mb_geocode("1600 Pennsylvania Ave, Washington DC")
+
+}
+
+\dontrun{
+
+mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "poi")
+
+}
+
 }

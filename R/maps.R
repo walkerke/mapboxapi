@@ -8,6 +8,31 @@
 #' @param keep_geojson Whether or not to keep the temporary GeoJSON used to generate the tiles (if the input is an sf object)
 #' @param multipart Whether or not to upload to the temporary AWS staging bucket as a multipart object; defaults to \code{FALSE}.
 #'
+#' @examples \dontrun{
+#'
+#' # Example: create a tileset of median age for all United States Census tracts
+#' # Requires setting a Mapbox secret access token as an environment variable
+#'
+#' library(mapboxapi)
+#' library(tidycensus)
+#' options(tigris_use_cache = TRUE)
+#'
+#' median_age <- get_acs(
+#'   geography = "tract",
+#'   variables = "B01002_001",
+#'   state = c(state.abb, "DC"),
+#'   geometry = TRUE
+#' )
+#'
+#' upload_tiles(
+#'   input = median_age,
+#'   username = "kwalkertcu", # Your username goes here
+#'   tileset_id = "median_age",
+#'   tileset_name = "us_median_age_2014_to_2018"
+#' )
+#'
+#' }
+#'
 #' @export
 upload_tiles <- function(input,
                          username,
@@ -161,14 +186,31 @@ check_upload_status <- function(upload_id,
 #'
 #' @param location The location for which you'd like to query tiles, expressed as either a length-2 vector of longitude and latitude or an address you'd like to geocode.
 #' @param tileset_id The tileset ID to query.
-#' @param radius The radius around the point for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.
+#' @param radius The radius around the point (in meters) for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.
 #' @param limit How many features to return (defaults to 5). Can be an integer between 1 and 50.
 #' @param dedupe Whether or not to return duplicate features as identified by their IDs.  The default, TRUE, will de-duplicate your dataset.
 #' @param geometry The feature geometry type to query - can be \code{"point"}, \code{"linestring"}, or \code{"polygon"}. If left blank, all geometry types will be queried.
 #' @param layers A vector of layer IDs you'd like to query (recommended); if left blank will query all layers, with the limitation that at most 50 features can be returned.
 #' @param access_token Your Mapbox access token, which can be set with \code{mb_access_token()}.
 #'
-#' @return A data frame of information about the requested features.
+#' @return An R list containing the API response, which includes information about the requested features.  Parse the list to extract desired elements.
+#' @seealso \url{https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/}
+#'
+#' @examples \dontrun{
+#'
+#' library(mapboxapi)
+#'
+#' elevation <- query_tiles(
+#'   location = "Breckenridge, Colorado",
+#'   tileset_id = "mapbox.mapbox-terrain-v2",
+#'   layer = "contour",
+#'   limit = 50
+#' )
+#'
+#' max(elevation$features$properties$ele)
+#'
+#' }
+#'
 #' @export
 query_tiles <- function(location,
                         tileset_id,
@@ -251,6 +293,24 @@ query_tiles <- function(location,
 #' @param access_token Your Mapbox access token; can be set with \code{mb_access_token()}.
 #'
 #' @return A list of sf objects representing the different layer types found in the requested vector tiles.
+#'
+#' @examples \dontrun{
+#'
+#' library(mapboxapi)
+#' library(ggplot2)
+#'
+#' vector_extract <- get_vector_tiles(
+#'   tileset_id = "mapbox.mapbox-streets-v8",
+#'   location = c(-73.99405, 40.72033),
+#'   zoom = 15
+#' )
+#'
+#' ggplot(vector_extract$building$polygons) +
+#'   geom_sf() +
+#'   theme_void()
+#'
+#' }
+#'
 #' @export
 get_vector_tiles <- function(tileset_id,
                              location,
@@ -500,6 +560,35 @@ get_vector_tiles <- function(tileset_id,
 #' @param access_token Your Mapbox access token; can be set with \code{mb_access_token()}.
 #'
 #' @return A pointer to an image of class \code{"magick-image"}.  The resulting image can be manipulated further with functions from the magick package.
+#'
+#' @examples \dontrun{
+#'
+#' library(mapboxapi)
+#'
+#' points_of_interest <- tibble::tibble(
+#'   longitude = c(-73.99405, -74.00616, -73.99577, -74.00761),
+#'   latitude = c(40.72033, 40.72182, 40.71590, 40.71428)
+#' )
+#'
+#' prepped_pois <- prep_overlay_markers(
+#'   data = points_of_interest,
+#'   marker_type = "pin-l",
+#'   label = 1:4,
+#'   color = "fff"
+#' )
+#'
+#' map <- static_mapbox(
+#'   style_id = "streets-v11",
+#'   username = "mapbox",
+#'   overlay_markers = prepped_pois,
+#'   width = 1200,
+#'   height = 800
+#' )
+#'
+#' map
+#'
+#' }
+#'
 #' @export
 static_mapbox <- function(style_id,
                           username,
@@ -659,7 +748,7 @@ static_mapbox <- function(style_id,
 #' @param longitude A vector of longitudes; inferred from the input dataset if \code{data} is provided.
 #' @param latitude A vector of latitudes; inferred from the input dataset if \code{data} is provided.
 #' @param url The URL of the image to be used for the icon if \code{marker_type = "url"}.
-#'
+#' @rdname static_mapbox
 #' @return A formatted list of marker specifications that can be passed to the \code{\link{static_mapbox}} function.
 #' @export
 prep_overlay_markers <- function(data = NULL,
@@ -690,9 +779,13 @@ prep_overlay_markers <- function(data = NULL,
     names(coords_df) <- tolower(names(coords_df))
 
     if (all(c("lon", "lat") %in% names(coords_df))) {
-      coords_df <- dplyr::rename(coords_df, longitude = lon, latitude = lat)
+      coords_df$longitude <- coords_df$lon
+      coords_df$latitude <- coords_df$lat
+      # coords_df <- dplyr::rename(coords_df, longitude = lon, latitude = lat)
     } else if (all(c("x", "y") %in% names(coords_df))) {
-      coords_df <- dplyr::rename(coords_df, longitude = x, latitude = y)
+      coords_df$longitude <- coords_df$x
+      coords_df$latitude <- coords_df$y
+      # coords_df <- dplyr::rename(coords_df, longitude = x, latitude = y)
     }
 
     if (!all(c("longitude", "latitude") %in% names(coords_df))) {
@@ -801,6 +894,21 @@ prep_overlay_markers <- function(data = NULL,
 #' @param data The data object used to derive argument values; can be provided to the initial call to \code{leaflet::leaflet()}
 #'
 #' @return A pointer to the Mapbox Static Tiles API which will be translated appropriately by the leaflet R package.
+#'
+#' @examples \dontrun{
+#'
+#' library(leaflet)
+#' library(mapboxapi)
+#'
+#' leaflet() %>%
+#'   addMapboxTiles(style_id = "light-v9",
+#'                  username = "mapbox") %>%
+#'   setView(lng = -74.0051,
+#'           lat = 40.7251,
+#'           zoom = 13)
+#'
+#' }
+#'
 #' @export
 addMapboxTiles <- function(map,
                            style_id,

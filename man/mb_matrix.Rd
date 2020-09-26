@@ -34,3 +34,26 @@ An R matrix of source-destination travel times.
 \description{
 Retrieve a matrix of travel times from the Mapbox Directions API
 }
+\examples{
+\dontrun{
+
+library(mapboxapi)
+library(tigris)
+library(mapdeck)
+
+philly_tracts <- tracts("PA", "Philadelphia", cb = TRUE, class = "sf")
+downtown_philly <- mb_geocode("Philadelphia City Hall, Philadelphia PA")
+
+time_to_downtown <- mb_matrix(philly_tracts, downtown_philly)
+
+philly_tracts$time <- time_to_downtown
+
+mapdeck(style = mapdeck_style("light")) \%>\%
+  add_polygon(data = philly_tracts,
+              fill_colour = "time",
+              fill_opacity = 0.6,
+              legend = TRUE)
+
+}
+
+}

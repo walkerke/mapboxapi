@@ -9,6 +9,12 @@
 #' @param output If \code{"coordinates"} (the default), returns a length-two vector of coordinates or a list of coordinates.  If \code{"sf"}, returns an sf object with the result geometries. If \code{"full"}, returns the full response from the API.
 #' @param access_token The Mapbox access token (required); can be set with \code{mb_access_token}.
 #'
+#' @examples \dontrun{
+#'
+#' whitehouse <- mb_geocode("1600 Pennsylvania Ave, Washington DC")
+#'
+#' }
+#'
 #' @export
 mb_geocode <- function(search_text,
                        endpoint = "mapbox.places",
@@ -105,8 +111,16 @@ mb_geocode <- function(search_text,
 #' @param types A vector of feature types to limit to which the search should be limited. Available options include \code{'country'}, \code{'region'}, \code{'postcode'}, \code{'district'}, \code{'place'}, \code{'locality'}, \code{'neighborhood'}, \code{'address'}, and \code{'poi'}. If left blank, all types will be searched.
 #' @param output one of \code{"text"} (the default), which will return a character string or list of character strings representing the returned results; \code{output = "sf"}, returning an sf object; or \code{"full"}, which will return a list with the full API response.
 #' @param access_token The Mapbox access token (required); can be set with \code{mb_access_token}.
+#' @rdname mb_geocode
 #'
 #' @return A character vector, list, or sf object representing the query results.
+#'
+#' @examples \dontrun{
+#'
+#' mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "poi")
+#'
+#' }
+#'
 #' @export
 mb_reverse_geocode <- function(coordinates,
                                endpoint = "mapbox.places",

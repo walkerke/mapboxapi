@@ -38,3 +38,30 @@ tippecanoe(
 \description{
 Generate an .mbtiles file with tippecanoe
 }
+\examples{
+\dontrun{
+
+library(mapboxapi)
+library(mapdeck)
+library(httr)
+
+# Get the Microsoft buildings data for Texas and unzip
+GET("https://usbuildingdata.blob.core.windows.net/usbuildings-v1-1/Texas.zip",
+    write_disk("Texas.zip", overwrite = TRUE), progress())
+
+unzip("Texas.zip")
+
+# Use tippecanoe to make a dynamic .mbtiles file that visualizes large data
+appropriately at any zoom level.  sf objects can also be used as input!
+# (requires installing tippecanoe on your machine separately first)
+tippecanoe(input = "Texas.geojson",
+           output = "Texas.mbtiles",
+           layer_name = "texas_buildings")
+
+# Upload the generated tileset to your Mapbox account
+upload_tiles(input = "Texas.mbtiles", username = "kwalkertcu",
+             tileset_id = "TX_buildings",
+             multipart = TRUE)
+}
+
+}

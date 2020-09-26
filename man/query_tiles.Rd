@@ -20,7 +20,7 @@ query_tiles(
 
 \item{tileset_id}{The tileset ID to query.}
 
-\item{radius}{The radius around the point for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.}
+\item{radius}{The radius around the point (in meters) for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.}
 
 \item{limit}{How many features to return (defaults to 5). Can be an integer between 1 and 50.}
 
@@ -33,8 +33,28 @@ query_tiles(
 \item{access_token}{Your Mapbox access token, which can be set with \code{mb_access_token()}.}
 }
 \value{
-A data frame of information about the requested features.
+An R list containing the API response, which includes information about the requested features.  Parse the list to extract desired elements.
 }
 \description{
 Get information about features in a tileset using the Tilequery API
+}
+\examples{
+\dontrun{
+
+library(mapboxapi)
+
+elevation <- query_tiles(
+  location = "Breckenridge, Colorado",
+  tileset_id = "mapbox.mapbox-terrain-v2",
+  layer = "contour",
+  limit = 50
+)
+
+max(elevation$features$properties$ele)
+
+}
+
+}
+\seealso{
+\url{https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/}
 }

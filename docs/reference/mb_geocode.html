@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Geocode an address or place description using the Mapbox Geocoding API — mb_geocode" />
-<meta property="og:description" content="Geocode an address or place description using the Mapbox Geocoding API" />
+<meta property="og:description" content="Geocode an address or place description using the Mapbox Geocoding API
+Perform reverse geocoding for a coordinate pair" />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -133,6 +134,7 @@
 
     <div class="ref-description">
     <p>Geocode an address or place description using the Mapbox Geocoding API</p>
+<p>Perform reverse geocoding for a coordinate pair</p>
     </div>
 
     <pre class="usage"><span class='fu'>mb_geocode</span>(
@@ -143,6 +145,16 @@
   <span class='kw'>search_within</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>language</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"coordinates"</span>,
+  <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)
+
+<span class='fu'>mb_reverse_geocode</span>(
+  <span class='no'>coordinates</span>,
+  <span class='kw'>endpoint</span> <span class='kw'>=</span> <span class='st'>"mapbox.places"</span>,
+  <span class='kw'>limit</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>types</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"text"</span>,
   <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
@@ -175,15 +187,34 @@
     </tr>
     <tr>
       <th>output</th>
-      <td><p>If <code>"coordinates"</code> (the default), returns a length-two vector of coordinates or a list of coordinates.  If <code>"sf"</code>, returns an sf object with the result geometries. If <code>"full"</code>, returns the full response from the API.</p></td>
+      <td><p>one of <code>"text"</code> (the default), which will return a character string or list of character strings representing the returned results; <code>output = "sf"</code>, returning an sf object; or <code>"full"</code>, which will return a list with the full API response.</p></td>
     </tr>
     <tr>
       <th>access_token</th>
       <td><p>The Mapbox access token (required); can be set with <code>mb_access_token</code>.</p></td>
     </tr>
+    <tr>
+      <th>coordinates</th>
+      <td><p>The coordinates of a location in format <code><a href='https://rdrr.io/r/base/c.html'>c(longitude, latitude)</a></code> for which you'd like to return information.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A character vector, list, or sf object representing the query results.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='no'>whitehouse</span> <span class='kw'>&lt;-</span> <span class='fu'>mb_geocode</span>(<span class='st'>"1600 Pennsylvania Ave, Washington DC"</span>)
+
+}
+
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+
+<span class='fu'>mb_reverse_geocode</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>77.5958768</span>, <span class='fl'>12.9667046</span>), <span class='kw'>limit</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>types</span> <span class='kw'>=</span> <span class='st'>"poi"</span>)
+
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

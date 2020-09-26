@@ -44,3 +44,21 @@ An sf object representing the isochrone(s) around the location(s).
 \description{
 Generate an isochrone using the Mapbox API
 }
+\examples{
+\dontrun{
+
+library(mapboxapi)
+library(mapdeck)
+isochrones <- mb_isochrone("The Kremlin, Moscow Russia",
+                           time = c(4, 8, 12),
+                           profile = "walking")
+
+mapdeck(style = mapdeck_style("light")) \%>\%
+  add_polygon(data = isochrones,
+              fill_colour = "time",
+              fill_opacity = 0.5,
+              legend = TRUE)
+
+}
+
+}
