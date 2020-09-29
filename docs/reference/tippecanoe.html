@@ -190,7 +190,45 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='co'># Workflow: create a dynamic tileset for dot-density mapping</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tidycensus</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapboxapi</span>)
+
+<span class='co'># Get population data for Census tracts in Vermont</span>
+<span class='no'>vt_population</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tidycensus/man/get_decennial.html'>get_decennial</a></span>(
+  <span class='kw'>geography</span> <span class='kw'>=</span> <span class='st'>"tract"</span>,
+  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='st'>"P001001"</span>,
+  <span class='kw'>state</span> <span class='kw'>=</span> <span class='st'>"Vermont"</span>,
+  <span class='kw'>year</span> <span class='kw'>=</span> <span class='fl'>2010</span>,
+  <span class='kw'>geometry</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
+
+<span class='co'># Convert to representative dots - 1 per person</span>
+<span class='no'>vt_dots</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_sample.html'>st_sample</a></span>(
+  <span class='no'>vt_population</span>,
+  <span class='kw'>size</span> <span class='kw'>=</span> <span class='no'>vt_population</span>$<span class='no'>value</span>
+)
+
+<span class='co'># Use tippecanoe to create dynamic tiles</span>
+<span class='fu'>tippecanoe</span>(
+  <span class='kw'>input</span> <span class='kw'>=</span> <span class='no'>vt_dots</span>,
+  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"vt_population.mbtiles"</span>,
+  <span class='kw'>layer_name</span> <span class='kw'>=</span> <span class='st'>"vermont_population"</span>,
+  <span class='kw'>max_zoom</span> <span class='kw'>=</span> <span class='fl'>18</span>,
+  <span class='kw'>drop_rate</span> <span class='kw'>=</span> <span class='fl'>1.5</span>
+)
+<span class='co'># Upload to your Mapbox account for visualization</span>
+<span class='co'># A Mapbox secret access token must be set with mb_access_token()</span>
+<span class='co'># to upload data to your account</span>
+<span class='fu'><a href='upload_tiles.html'>upload_tiles</a></span>(
+  <span class='kw'>input</span> <span class='kw'>=</span> <span class='st'>"vt_population.mbtiles"</span>,
+  <span class='kw'>username</span> <span class='kw'>=</span> <span class='st'>"kwalkertcu"</span>,
+  <span class='kw'>tileset_id</span> <span class='kw'>=</span> <span class='st'>"vt_population_dots"</span>,
+  <span class='kw'>multipart</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

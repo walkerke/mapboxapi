@@ -41,27 +41,45 @@ Generate an .mbtiles file with tippecanoe
 \examples{
 \dontrun{
 
+# Workflow: create a dynamic tileset for dot-density mapping
+library(tidycensus)
+library(sf)
 library(mapboxapi)
-library(mapdeck)
-library(httr)
 
-# Get the Microsoft buildings data for Texas and unzip
-GET("https://usbuildingdata.blob.core.windows.net/usbuildings-v1-1/Texas.zip",
-    write_disk("Texas.zip", overwrite = TRUE), progress())
+# Get population data for Census tracts in Vermont
+vt_population <- get_decennial(
+  geography = "tract",
+  variables = "P001001",
+  state = "Vermont",
+  year = 2010,
+  geometry = TRUE
+)
 
-unzip("Texas.zip")
+# Convert to representative dots - 1 per person
+vt_dots <- st_sample(
+  vt_population,
+  size = vt_population$value
+)
 
-# Use tippecanoe to make a dynamic .mbtiles file that visualizes large data
-appropriately at any zoom level.  sf objects can also be used as input!
-# (requires installing tippecanoe on your machine separately first)
-tippecanoe(input = "Texas.geojson",
-           output = "Texas.mbtiles",
-           layer_name = "texas_buildings")
+# Use tippecanoe to create dynamic tiles
+tippecanoe(
+  input = vt_dots,
+  output = "vt_population.mbtiles",
+  layer_name = "vermont_population",
+  max_zoom = 18,
+  drop_rate = 1.5
+)
 
-# Upload the generated tileset to your Mapbox account
-upload_tiles(input = "Texas.mbtiles", username = "kwalkertcu",
-             tileset_id = "TX_buildings",
-             multipart = TRUE)
+# Upload to your Mapbox account for visualization
+# A Mapbox secret access token must be set with mb_access_token()
+# to upload data to your account
+upload_tiles(
+  input = "vt_population.mbtiles",
+  username = "kwalkertcu",
+  tileset_id = "vt_population_dots",
+  multipart = TRUE
+)
+
 }
 
 }
