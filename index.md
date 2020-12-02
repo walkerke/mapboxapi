@@ -1,9 +1,9 @@
 ## mapboxapi
 
-__mapboxapi__ is an R package that interfaces with [Mapbox web services APIs](https://docs.mapbox.com/api/).  Its purpose is to help R users incorporate the suite of Mapbox tools into their spatial data science projects.  Install from GitHub with the following command: 
+__mapboxapi__ is an R package that interfaces with [Mapbox web services APIs](https://docs.mapbox.com/api/).  Its purpose is to help R users incorporate the suite of Mapbox tools into their spatial data science projects.  Install from CRAN with the following command: 
 
 ```r
-remotes::install_github("walkerke/mapboxapi")
+install.packages("mapboxapi")
 ```
 
 To get started, [sign up for a Mapbox account](https://account.mapbox.com/) and generate an access token.  Set your public or secret token for use in the package with `mb_access_token()`: 

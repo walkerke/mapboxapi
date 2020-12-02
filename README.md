@@ -4,10 +4,12 @@ An R interface to Mapbox APIs and web services
 
 The purpose of {mapboxapi} is to facilitate the use of [Mapbox web services](https://docs.mapbox.com/api/) for spatial data science tasks in R.  Current and future versions of the package allow R users to return Mapbox navigation requests as simple features (sf) objects, convert R objects to Mapbox vector tilesets, and query Mapbox tilesets from R, among other tasks.  The package is not a complete wrapper of the API (though new features will continually be added) nor is it an interface to [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/), Mapbox's web mapping API. 
 
-To install from GitHub, then store your Mapbox access token for use in the package: 
+Install the package from CRAN then store your Mapbox access token for use in the package: 
 
 ```r
-remotes::install_github("walkerke/mapboxapi")
+install.packages("mapboxapi")
+# For the development version:
+# remotes::install_github("walkerke/mapboxapi")
 
 # Get your access token from your Mapbox account and save it in R; save a public token, 
 # secret token, or both with successive calls to mb_access_token()
