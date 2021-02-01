@@ -119,7 +119,8 @@ tippecanoe <- function(input,
 
       path <- file.path(dir, outfile)
 
-      sf::st_write(input, path, quiet = TRUE)
+      sf::st_write(input, path, quiet = TRUE,
+                   delete_dsn = TRUE, delete_layer = TRUE)
 
     } else {
 
@@ -129,7 +130,8 @@ tippecanoe <- function(input,
 
       path <- file.path(tmp, tempfile)
 
-      sf::st_write(input, path, quiet = TRUE)
+      sf::st_write(input, path, quiet = TRUE,
+                   delete_dsn = TRUE, delete_layer = TRUE)
 
     }
 
