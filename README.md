@@ -1,5 +1,9 @@
 ## mapboxapi
 
+  <!-- badges: start -->
+  [![CRAN status](https://www.r-pkg.org/badges/version/mapboxapi)](https://CRAN.R-project.org/package=mapboxapi) ![CRAN Downloads](http://cranlogs.r-pkg.org/badges/mapboxapi)
+  <!-- badges: end -->
+
 An R interface to Mapbox APIs and web services
 
 The purpose of {mapboxapi} is to facilitate the use of [Mapbox web services](https://docs.mapbox.com/api/) for spatial data science tasks in R.  Current and future versions of the package allow R users to return Mapbox navigation requests as simple features (sf) objects, convert R objects to Mapbox vector tilesets, and query Mapbox tilesets from R, among other tasks.  The package is not a complete wrapper of the API (though new features will continually be added) nor is it an interface to [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/), Mapbox's web mapping API. 
