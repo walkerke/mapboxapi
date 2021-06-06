@@ -551,6 +551,7 @@ get_vector_tiles <- function(tileset_id,
 #' @param longitude The longitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.
 #' @param latitude The latitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.
 #' @param zoom The map zoom.  The map will infer this from the overlay unless longitude, latitude, and zoom are all specified.
+#' @param bbox The bounding box for the requested map. Not needed if longitude/latitude/zoom are provided.
 #' @param width The map width; defaults to 600px
 #' @param height The map height; defaults to 600px
 #' @param bearing The map bearing; defaults to 0
@@ -598,6 +599,7 @@ static_mapbox <- function(style_id,
                           longitude = NULL,
                           latitude = NULL,
                           zoom = NULL,
+                          bbox = NULL,
                           width = 600,
                           height = 400,
                           bearing = NULL,
@@ -695,7 +697,14 @@ static_mapbox <- function(style_id,
   focus_args <- c(longitude, latitude, zoom)
 
   if (all(is.null(focus_args))) {
-    focus <- "auto"
+
+    if (is.null(bbox)) {
+      focus <- "auto"
+    } else {
+      collapsed_bbox <- paste0(bbox, collapse = ",")
+      focus <- paste0("[", collapsed_bbox, "]")
+    }
+
   } else {
     if (is.null(bearing)) {
       bearing <- 0
@@ -709,6 +718,9 @@ static_mapbox <- function(style_id,
 
     focus <- paste0(focus_args, collapse = ",")
   }
+
+  # If a bounding box is supplied, use it instead
+
 
   base <- paste(base, focus, sep = "/")
 
