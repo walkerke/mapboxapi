@@ -1,8 +1,8 @@
 Package: mapboxapi
 Type: Package
 Title: R Interface to 'Mapbox' Web Services
-Date: 2021-06-09
-Version: 0.2.1.9000
+Date: 2021-11-04
+Version: 0.2.9.9000
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
     role = c("aut", "cre")))
@@ -31,9 +31,13 @@ Imports:
   rlang,
   geojsonsf,
   magick,
-  leaflet
+  leaflet,
+  units,
+  raster
 Suggests:
   mapdeck,
   tigris,
-  tidycensus
+  tidycensus,
+  tmap,
+  ggspatial
 RoxygenNote: 7.1.1

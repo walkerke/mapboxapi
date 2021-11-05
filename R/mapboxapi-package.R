@@ -21,4 +21,6 @@
 #' @importFrom magick image_read
 #' @importFrom tidyr unnest_wider
 #' @importFrom utils read.table write.table
+#' @importFrom units set_units
+#' @importFrom raster raster projection brick extent cellsFromExtent setValues values crop res
 NULL

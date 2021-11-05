@@ -971,4 +971,194 @@ addMapboxTiles <- function(map,
 }
 
 
+#' Get static tiles from a Mapbox style for use as a basemap
+#'
+#' This function queries the Mapbox Static Tiles API and composites the tiles as a
+#' raster suitable for use as a basemap in tmap or ggplot2 (with the layer_spatial()
+#' function in ggspatial).  It returns a raster layer that corresponds either to
+#' an input bounding box or a buffered area around an input shape.
+#'
+#' @param location An input location for which you would like to request tiles. Can be a length-4 vector representing a bounding box, or an sf object.  If an input sf object is supplied, use the \code{buffer_dist} argument to control how much area you want to capture around the layer.
+#' @param zoom The zoom level for which you'd like to return tiles.
+#' @param style_id A Mapbox style ID; retrieve yours from your Mapbox account.
+#' @param username A Mapbox username.
+#' @param scaling_factor The scaling factor to use; one of \code{"1x"} or \code{"2x"}.
+#' @param buffer_dist The distance to buffer around an input sf object for determining tile extent, specified in meters.  Defaults to 5000.
+#' @param crop Whether or not to crop the result to the specified bounding box or buffer area.
+#'             Defaults to \code{TRUE}; \code{FALSE} will return the extent of the overlapping
+#'             tiles.
+#' @param access_token Your Mapbox access token.  Supply yours here or set globally with the \code{mb_access_token()} function.
+#'
+#' @return A raster layer of tiles from the requested Mapbox style representing the area around the input location.  The raster layer is projected in the Web Mercator coordinate reference system.
+#' @export
+get_static_tiles <- function(
+  location,
+  zoom,
+  style_id,
+  username,
+  scaling_factor = c("1x", "2x"),
+  buffer_dist = 5000,
+  crop = TRUE,
+  access_token = NULL
+) {
 
+  message("Attribution is required if using Mapbox tiles on a map.\nAdd the text '© Mapbox, © OpenStreetMap' to your map for proper attribution.")
+
+  if (is.null(access_token)) {
+    # Use public token first, then secret token
+    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
+      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+    } else {
+      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
+        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+
+    }
+  }
+
+  if ("RasterLayer" %in% class(location)) {
+    location <- location %>%
+      sf::st_bbox() %>%
+      sf::st_as_sfc()
+  }
+
+  # If object is from the sp package, convert to sf
+  if (any(grepl("Spatial", class(location)))) {
+    input <- sf::st_as_sf(location)
+  }
+
+  if ("sfc" %in% class(location)) {
+    location <- sf::st_sf(location)
+  }
+
+  # If location is an sf object, get a buffered bbox to query the tiles
+  if (any(grepl("^sf", class(location)))) {
+
+    # If the input dataset is not a polygon, make it one
+    geom_type <- unique(sf::st_geometry_type(location))
+
+    # Consider at later date how to handle mixed geometries
+    # Also consider whether to use concave hulls instead to avoid edge cases
+
+    if (geom_type %in% c("POINT", "MULTIPOINT")) {
+      # If it is one or two points, buffer it
+      if (nrow(location) %in% 1:2) {
+        sf_proj <- sf::st_buffer(sf_proj, units::as_units(1000, "m"))
+      }
+
+      sf_poly <- location %>%
+        sf::st_union() %>%
+        sf::st_convex_hull()
+    } else if (geom_type %in% c("LINESTRING", "MULTILINESTRING")) {
+      sf_poly <- location %>%
+        sf::st_cast("MULTIPOINT") %>%
+        sf::st_union() %>%
+        sf::st_convex_hull()
+    } else if (geom_type %in% c("POLYGON", "MULTIPOLYGON")) {
+      sf_poly <- location %>%
+        sf::st_union()
+    }
+
+    # Get a buffered bbox of custom size
+    bbox <- sf_poly %>%
+      sf::st_buffer(units::as_units(buffer_dist, "m")) %>%
+      sf::st_transform(4326) %>%
+      sf::st_bbox(.)
+  } else {
+    bbox <- sf::st_bbox(location)
+  }
+
+  tile_grid <- slippymath::bbox_to_tile_grid(bbox = bbox, zoom = zoom)
+
+  tile_ids <- tile_grid$tiles
+
+  sfactor <- match.arg(scaling_factor)
+
+  tile_list <- purrr::map2(tile_ids$x, tile_ids$y, ~{
+    # Build the request to Mapbox
+    if (sfactor == "2x") {
+
+      url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/%s/%s/%s@2x",
+                     username, style_id, zoom, .x, .y)
+
+    } else {
+      url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s/tiles/%s/%s/%s",
+                     username, style_id, zoom, .x, .y)
+    }
+
+    box <- slippymath::tile_bbox(.x, .y, zoom)
+
+    tmp <- tempdir()
+
+    loc <- file.path(tmp, sprintf("%s_%s.png", .x, .y))
+
+    request <- httr::GET(url, query = list(access_token = access_token),
+                         httr::write_disk(loc, overwrite = TRUE))
+
+    # Only try to read the data if there is data available
+    if (request$status_code == 200) {
+      my_png <- png::readPNG(loc)
+
+      my_png <- my_png * 255
+
+      merc <- sf::st_crs(3857)$proj4string
+
+      ras <- raster::brick(my_png)
+      raster::extent(ras) <- box
+      suppressWarnings(raster::projection(ras) <- merc)
+
+      return(ras)
+    }
+
+  })
+
+  # Assemble the list of raster tiles
+  # Adapted from Michael Sumner's ceramic code: https://github.com/hypertidy/ceramic/blob/master/R/raster.R
+  if (length(tile_list) == 1) {
+    out_brick <- tile_list[[1]]
+  } else {
+
+    target_crs <- suppressWarnings(raster::projection(tile_list[[1]]))
+
+    out_raster <- suppressWarnings(tile_list %>%
+      purrr::map(function(tile) {
+        raster::extent(tile)
+      }) %>%
+      purrr::reduce(raster::union) %>%
+      raster::raster(crs = target_crs))
+
+    raster::res(out_raster) <- suppressWarnings(raster::res(tile_list[[1]]))
+
+    raster_cells <- suppressWarnings(tile_list %>%
+      map(function(tile) {
+        raster::cellsFromExtent(out_raster, tile)
+      }) %>%
+      unlist(use.names = FALSE))
+
+    raster_values <- suppressWarnings(tile_list %>%
+      map(function(tile) {
+        raster::values(tile)
+      }) %>%
+      reduce(rbind))
+
+    out_brick <- suppressWarnings(raster::brick(out_raster, out_raster, out_raster) %>%
+      raster::setValues(raster_values[order(raster_cells), ]))
+
+  }
+
+  if (crop) {
+    bb_shape <- bbox %>%
+      sf::st_as_sfc(crs = 4326) %>%
+      sf::st_sf() %>%
+      sf::st_transform(sf::st_crs(out_brick))
+
+    cropped_brick <- raster::crop(out_brick, bb_shape)
+
+    return(cropped_brick)
+  } else {
+    return(out_brick)
+  }
+
+}

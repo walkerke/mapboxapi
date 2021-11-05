@@ -14,6 +14,7 @@ static_mapbox(
   longitude = NULL,
   latitude = NULL,
   zoom = NULL,
+  bbox = NULL,
   width = 600,
   height = 400,
   bearing = NULL,
@@ -49,6 +50,8 @@ prep_overlay_markers(
 \item{latitude}{A vector of latitudes; inferred from the input dataset if \code{data} is provided.}
 
 \item{zoom}{The map zoom.  The map will infer this from the overlay unless longitude, latitude, and zoom are all specified.}
+
+\item{bbox}{The bounding box for the requested map. Not needed if longitude/latitude/zoom are provided.}
 
 \item{width}{The map width; defaults to 600px}
 
