@@ -43,3 +43,39 @@ raster suitable for use as a basemap in tmap or ggplot2 (with the layer_spatial(
 function in ggspatial).  It returns a raster layer that corresponds either to
 an input bounding box or a buffered area around an input shape.
 }
+\examples{
+\dontrun{
+
+library(mapboxapi)
+library(tigris)
+library(tmap)
+library(ggspatial)
+library(ggplot2)
+
+ny_tracts <- tracts("NY", "New York", cb = TRUE)
+
+ny_tiles <- get_static_tiles(
+  location = ny_tracts,
+  zoom = 10,
+  style_id = "light-v9",
+  username = "mapbox"
+)
+
+# tmap usage:
+tm_shape(ny_tiles) +
+  tm_rgb() +
+  tm_shape(ny_tracts) +
+  tm_polygons(alpha = 0.5, col = "navy") +
+  tm_credits("Basemap © Mapbox, © OpenStreetMap",
+             position = c("RIGHT", "BOTTOM"))
+
+# ggplot2 usage:
+ggplot() +
+  layer_spatial(ny_tiles) +
+  geom_sf(data = ny_tracts, fill = "navy", alpha = 0.5) +
+  theme_void() +
+  labs(caption = "Basemap © Mapbox, © OpenStreetMap")
+
+}
+
+}

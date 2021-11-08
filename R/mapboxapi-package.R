@@ -23,4 +23,6 @@
 #' @importFrom utils read.table write.table
 #' @importFrom units set_units
 #' @importFrom raster raster projection brick extent cellsFromExtent setValues values crop res
+#' @importFrom png readPNG
+#' @importFrom jpeg readJPEG
 NULL

@@ -1,7 +1,7 @@
 Package: mapboxapi
 Type: Package
 Title: R Interface to 'Mapbox' Web Services
-Date: 2021-11-04
+Date: 2021-11-08
 Version: 0.2.9.9000
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
@@ -33,7 +33,9 @@ Imports:
   magick,
   leaflet,
   units,
-  raster
+  raster,
+  png,
+  jpeg
 Suggests:
   mapdeck,
   tigris,

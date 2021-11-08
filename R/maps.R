@@ -990,6 +990,41 @@ addMapboxTiles <- function(map,
 #' @param access_token Your Mapbox access token.  Supply yours here or set globally with the \code{mb_access_token()} function.
 #'
 #' @return A raster layer of tiles from the requested Mapbox style representing the area around the input location.  The raster layer is projected in the Web Mercator coordinate reference system.
+#'
+#' @examples \dontrun{
+#'
+#' library(mapboxapi)
+#' library(tigris)
+#' library(tmap)
+#' library(ggspatial)
+#' library(ggplot2)
+#'
+#' ny_tracts <- tracts("NY", "New York", cb = TRUE)
+#'
+#' ny_tiles <- get_static_tiles(
+#'   location = ny_tracts,
+#'   zoom = 10,
+#'   style_id = "light-v9",
+#'   username = "mapbox"
+#' )
+#'
+#' # tmap usage:
+#' tm_shape(ny_tiles) +
+#'   tm_rgb() +
+#'   tm_shape(ny_tracts) +
+#'   tm_polygons(alpha = 0.5, col = "navy") +
+#'   tm_credits("Basemap © Mapbox, © OpenStreetMap",
+#'              position = c("RIGHT", "BOTTOM"))
+#'
+#' # ggplot2 usage:
+#' ggplot() +
+#'   layer_spatial(ny_tiles) +
+#'   geom_sf(data = ny_tracts, fill = "navy", alpha = 0.5) +
+#'   theme_void() +
+#'   labs(caption = "Basemap © Mapbox, © OpenStreetMap")
+#'
+#' }
+#'
 #' @export
 get_static_tiles <- function(
   location,
@@ -1099,13 +1134,21 @@ get_static_tiles <- function(
 
     # Only try to read the data if there is data available
     if (request$status_code == 200) {
-      my_png <- png::readPNG(loc)
 
-      my_png <- my_png * 255
+      # Most styles will be returned as PNG as they are composed entirely
+      # of vector layers.  However, if a style includes satellite imagery it will
+      # be returned as JPEG.  Check this at this step.
+      my_img <- try(png::readPNG(loc), silent = TRUE)
+
+      if ("try-error" %in% class(my_img)) {
+        my_img <- jpeg::readJPEG(loc)
+      }
+
+      my_img <- my_img * 255
 
       merc <- sf::st_crs(3857)$proj4string
 
-      ras <- raster::brick(my_png)
+      ras <- raster::brick(my_img)
       raster::extent(ras) <- box
       suppressWarnings(raster::projection(ras) <- merc)
 
