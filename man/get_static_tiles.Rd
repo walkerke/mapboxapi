@@ -16,7 +16,14 @@ get_static_tiles(
 )
 }
 \arguments{
-\item{location}{An input location for which you would like to request tiles. Can be a length-4 vector representing a bounding box, or an sf object.  If an input sf object is supplied, use the \code{buffer_dist} argument to control how much area you want to capture around the layer.}
+\item{location}{An input location for which you would like to request tiles.
+Can be a length-4 vector representing a bounding box, or an sf object.
+If an input sf object is supplied, use the \code{buffer_dist} argument to
+control how much area you want to capture around the layer.
+While the input sf object can be in an arbitrary coordinate reference system,
+if a length-4 bounding box vector is supplied instead it must represent
+WGS84 longitude/latitude coordinates and be in the order
+\code{c(xmin, ymin, xmax, ymax)}.}
 
 \item{zoom}{The zoom level for which you'd like to return tiles.}
 

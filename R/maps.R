@@ -978,7 +978,14 @@ addMapboxTiles <- function(map,
 #' function in ggspatial).  It returns a raster layer that corresponds either to
 #' an input bounding box or a buffered area around an input shape.
 #'
-#' @param location An input location for which you would like to request tiles. Can be a length-4 vector representing a bounding box, or an sf object.  If an input sf object is supplied, use the \code{buffer_dist} argument to control how much area you want to capture around the layer.
+#' @param location An input location for which you would like to request tiles.
+#'                 Can be a length-4 vector representing a bounding box, or an sf object.
+#'                 If an input sf object is supplied, use the \code{buffer_dist} argument to
+#'                 control how much area you want to capture around the layer.
+#'                 While the input sf object can be in an arbitrary coordinate reference system,
+#'                 if a length-4 bounding box vector is supplied instead it must represent
+#'                 WGS84 longitude/latitude coordinates and be in the order
+#'                 \code{c(xmin, ymin, xmax, ymax)}.
 #' @param zoom The zoom level for which you'd like to return tiles.
 #' @param style_id A Mapbox style ID; retrieve yours from your Mapbox account.
 #' @param username A Mapbox username.
@@ -1102,7 +1109,15 @@ get_static_tiles <- function(
       sf::st_transform(4326) %>%
       sf::st_bbox(.)
   } else {
-    bbox <- sf::st_bbox(location)
+    # Make sure a length-4 vector was supplied
+    if (length(location) != 4) {
+      stop("To use a bounding box vector as an input location, it must be of length 4 in the format `c(xmin, ymin, xmax, ymax)`.", call. = FALSE)
+    }
+    bbox <- sf::st_bbox(c(xmin = location[1],
+                          ymin = location[2],
+                          xmax = location[3],
+                          ymax = location[4]),
+                        crs = 4326)
   }
 
   tile_grid <- slippymath::bbox_to_tile_grid(bbox = bbox, zoom = zoom)
