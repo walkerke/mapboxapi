@@ -369,11 +369,16 @@ mb_matrix <- function(origins,
 }
 
 
-#' Generate an isochrone using the Mapbox API
+#' Generate isochrones using the Mapbox Navigation API
+#'
+#' This function returns isochrones from the Mapbox Navigation API, which are shapes that represent the reachable area around one or more locations within a given travel time.  Isochrones can be computed for driving, walking, or cycling routing profiles, and can optionally be set to return distances rather than times.  \code{mb_isochrone()} returns isochrones as simple features objects in the WGS 1984 geographic coordinate system.
 #'
 #' @param location A vector of form \code{c(longitude, latitude)}, an address that can be geocoded as a character string, or an sf object.
 #' @param profile One of "driving", "walking", or "cycling".  "driving" is the default.
 #' @param time A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}.  The maximum time supported is 60 minutes.
+#' @param distance A vector of distance contours specified in meters.  If supplied, will supercede
+#'                 any call to the \code{time} parameter as time and distance cannot be used
+#'                 simultaneously.  Defaults to \code{NULL}.
 #' @param access_token A valid Mapbox access token.
 #' @param denoise A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.
 #' @param geometry one of \code{"polygon"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.
@@ -404,6 +409,7 @@ mb_matrix <- function(origins,
 mb_isochrone <- function(location,
                          profile = "driving",
                          time = c(5, 10, 15),
+                         distance = NULL,
                          access_token = NULL,
                          denoise = 1,
                          geometry = "polygon",
@@ -426,9 +432,21 @@ mb_isochrone <- function(location,
     }
   }
 
+  # If distance is supplied, time should be set to NULL
+  if (!is.null(distance)) {
+    time <- NULL
+
+    if (max(distance) > 100000) {
+      stop("The maximum distance you can request is 100,000 meters (100km).",
+           call. = FALSE)
+    }
+  }
+
   # Check to ensure the max time does not exceed the limit
-  if (max(time) > 60) {
-    stop("The maximum time you can request is 60 minutes.", call. = FALSE)
+  if (!is.null(time)) {
+    if (max(time) > 60) {
+      stop("The maximum time you can request is 60 minutes.", call. = FALSE)
+    }
   }
 
 
@@ -466,6 +484,7 @@ mb_isochrone <- function(location,
       mb_isochrone_limited(location = .x,
                            profile = profile,
                            time = time,
+                           distance = distance,
                            access_token = access_token,
                            denoise = denoise,
                            geometry = geometry,
@@ -473,8 +492,7 @@ mb_isochrone <- function(location,
         dplyr::mutate(id = .y)
     }) %>%
       dplyr::bind_rows()
-      # data.table::rbindlist() %>%
-      # st_as_sf(crs = 4326)
+
 
   }
 
@@ -512,15 +530,28 @@ mb_isochrone <- function(location,
 
   # Once assembled, we can check to see how many times have been requested
   # to handle rate-limiting internally.
-  request_isochrones <- function(base, access_token, time, denoise, polygons,
+  request_isochrones <- function(base, access_token, time, distance, denoise, polygons,
                                  output, keep_color_cols) {
-    request <- GET(base,
-                   query = list(
-                     access_token = access_token,
-                     contours_minutes = paste0(time, collapse = ","),
-                     denoise = as.character(denoise),
-                     polygons = polygons
-                   ))
+
+    if (!is.null(time)) {
+      request <- GET(base,
+                     query = list(
+                       access_token = access_token,
+                       contours_minutes = paste0(time, collapse = ","),
+                       denoise = as.character(denoise),
+                       polygons = polygons
+                     ))
+    } else if (!is.null(distance)) {
+      request <- GET(base,
+                     query = list(
+                       access_token = access_token,
+                       contours_meters = paste0(distance, collapse = ","),
+                       denoise = as.character(denoise),
+                       polygons = polygons
+                     ))
+    }
+
+
 
     content <- content(request, as = "text")
 
@@ -530,66 +561,131 @@ mb_isochrone <- function(location,
     }
 
     if (output == "sf") {
-      isos <- sf::read_sf(content) %>%
-        dplyr::rename(time = contour)
+
+      if (!is.null(time)) {
+        isos <- sf::read_sf(content) %>%
+          dplyr::rename(time = contour)
+      } else if (!is.null(distance)) {
+        isos <- sf::read_sf(content) %>%
+          dplyr::rename(distance = contour)
+      }
 
       if (keep_color_cols) {
         return(isos)
       } else {
-        return(dplyr::select(isos, time))
+        if (!is.null(time)) {
+          return(dplyr::select(isos, time))
+        } else if (!is.null(distance)) {
+          return(dplyr::select(isos, distance))
+        }
+
+
       }
 
-      return(isos)
     } else if (output == "list") {
       return(content)
     }
   }
 
   # Handle the requested times with respect to the contour limit of 4
-  if (length(time) <= 4) {
-    iso_request <- request_isochrones(
-      base = base,
-      access_token = access_token,
-      time = time,
-      denoise = denoise,
-      polygons = polygons,
-      output = output,
-      keep_color_cols = keep_color_cols
-    )
-
-    return(iso_request)
-  } else {
-    if (output == "list") {
-      stop("The maximum number of times you can request for list output is 4.", call. = FALSE)
-    }
-
-    # Chunk the times into groups of 4 or less
-    times_chunked <- split(time, ceiling(seq_along(time) / 4))
-
-    # Iterate over the times and reassemble in a rate-limited way
-    request_isochrones_times <- purrr::slowly(request_isochrones,
-                                              rate = purrr::rate_delay(60 / rate_limit),
-                                              quiet = TRUE)
-
-    iso_requests <- purrr::map(times_chunked, ~{
-      request_isochrones_times(
+  if (!is.null(time)) {
+    if (length(time) <= 4) {
+      iso_request <- request_isochrones(
         base = base,
         access_token = access_token,
-        time = .x,
+        time = time,
+        distance = distance,
         denoise = denoise,
         polygons = polygons,
-        output = "sf",
+        output = output,
         keep_color_cols = keep_color_cols
       )
-    }) %>%
-      dplyr::bind_rows() %>%
-      # data.table::rbindlist() %>%
-      # st_as_sf(crs = 4326) %>%
-      dplyr::arrange(dplyr::desc(time))
 
-    return(iso_requests)
+      return(iso_request)
+    } else {
+      if (output == "list") {
+        stop("The maximum number of times you can request for list output is 4.", call. = FALSE)
+      }
 
+      # Chunk the times into groups of 4 or less
+      times_chunked <- split(time, ceiling(seq_along(time) / 4))
+
+      # Iterate over the times and reassemble in a rate-limited way
+      request_isochrones_times <- purrr::slowly(request_isochrones,
+                                                rate = purrr::rate_delay(60 / rate_limit),
+                                                quiet = TRUE)
+
+      iso_requests <- purrr::map(times_chunked, ~{
+        request_isochrones_times(
+          base = base,
+          access_token = access_token,
+          time = .x,
+          denoise = denoise,
+          polygons = polygons,
+          output = "sf",
+          keep_color_cols = keep_color_cols
+        )
+      }) %>%
+        dplyr::bind_rows() %>%
+        # data.table::rbindlist() %>%
+        # st_as_sf(crs = 4326) %>%
+        dplyr::arrange(dplyr::desc(time))
+
+      return(iso_requests)
+
+    }
+  } else if (!is.null(distance)) {
+    if (length(distance) <= 4) {
+      iso_request <- request_isochrones(
+        base = base,
+        access_token = access_token,
+        time = time,
+        distance = distance,
+        denoise = denoise,
+        polygons = polygons,
+        output = output,
+        keep_color_cols = keep_color_cols
+      )
+
+      return(iso_request)
+    } else {
+      if (output == "list") {
+        stop("The maximum number of distances you can request for list output is 4.",
+             call. = FALSE)
+      }
+
+      # Chunk the distances into groups of 4 or less
+      distances_chunked <- split(distance, ceiling(seq_along(distance) / 4))
+
+      # Iterate over the distances and reassemble in a rate-limited way
+      request_isochrones_distances <- purrr::slowly(request_isochrones,
+                                                rate = purrr::rate_delay(60 / rate_limit),
+                                                quiet = TRUE)
+
+      iso_requests <- purrr::map(distances_chunked, ~{
+        request_isochrones_distances(
+          base = base,
+          access_token = access_token,
+          distance = .x,
+          time = time,
+          denoise = denoise,
+          polygons = polygons,
+          output = "sf",
+          keep_color_cols = keep_color_cols
+        )
+      }) %>%
+        dplyr::bind_rows() %>%
+        # data.table::rbindlist() %>%
+        # st_as_sf(crs = 4326) %>%
+        dplyr::arrange(dplyr::desc(distance))
+
+      return(iso_requests)
+
+    }
   }
+
+
+
 
 
 

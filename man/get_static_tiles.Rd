@@ -46,7 +46,7 @@ A raster layer of tiles from the requested Mapbox style representing the area ar
 }
 \description{
 This function queries the Mapbox Static Tiles API and composites the tiles as a
-raster suitable for use as a basemap in tmap or ggplot2 (with the layer_spatial()
+raster suitable for use as a basemap in tmap or ggplot2 (with the \code{layer_spatial()}
 function in ggspatial).  It returns a raster layer that corresponds either to
 an input bounding box or a buffered area around an input shape.
 }
@@ -73,7 +73,7 @@ tm_shape(ny_tiles) +
   tm_rgb() +
   tm_shape(ny_tracts) +
   tm_polygons(alpha = 0.5, col = "navy") +
-  tm_credits("Basemap © Mapbox, © OpenStreetMap",
+  tm_credits("Basemap (c) Mapbox, (c) OpenStreetMap",
              position = c("RIGHT", "BOTTOM"))
 
 # ggplot2 usage:
@@ -81,7 +81,7 @@ ggplot() +
   layer_spatial(ny_tiles) +
   geom_sf(data = ny_tracts, fill = "navy", alpha = 0.5) +
   theme_void() +
-  labs(caption = "Basemap © Mapbox, © OpenStreetMap")
+  labs(caption = "Basemap (c) Mapbox, (c) OpenStreetMap")
 
 }
 

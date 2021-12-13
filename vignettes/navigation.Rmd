@@ -73,7 +73,7 @@ optimized_map
 
 ## Isochrones and travel-time matrices
 
-The Mapbox Isochrone API returns polygons representing _isochrones_, or areas reachable within a given travel time, around a given location.  __mapboxapi__ returns Mapbox isochrones as sf objects for visualization and analysis.  Up to 4 isochrone contours can be be requested for a given location with the `time` argument; input locations can be coordinate pairs, addresses, or sf objects.  
+The Mapbox Isochrone API returns polygons representing _isochrones_, or areas reachable within a given travel time, around a given location.  __mapboxapi__ returns Mapbox isochrones as sf objects for visualization and analysis.  Input locations can be coordinate pairs, addresses, or sf objects themselves.  The example below returns three walking isochrones around The Kremlin in Moscow; users can also optionally get street network-aware distances by using the `distance` argument instead of `time` and supplying a vector of distances in meters.    
 
 ```{r}
 library(mapdeck)

@@ -7,3 +7,4 @@
 ^pkgdown$
 ^index\.md$
 ^vignettes$
+^.github$
