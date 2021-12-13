@@ -29,7 +29,7 @@ leaflet() %>%
           zoom = 13)
 ```
 
-In some cases, you may be more interested in a static map rather than an interactive one.  Static maps can be generated in __mapboxapi__ with the `static_mapbox()` function.  This function accepts sf polygon/linestring (of limited size) or marker overlays.  
+In some cases, you may be more interested in a static map rather than an interactive one.  Static maps can be created with __mapboxapi__ in two ways.  Static maps can be generated directly in __mapboxapi__ with the `static_mapbox()` function.  This function accepts sf polygon/linestring (of limited size) or marker overlays.  
 
 ```{r}
 points_of_interest <- tibble::tibble(
@@ -56,6 +56,39 @@ map
 ```
 
 The output is an object from the [magick](https://github.com/ropensci/magick) R package that can be further customized with __magick__ functions.  
+
+Alternatively, users might be interested in retrieving static tiles for use as a basemap in tmap or ggplot2 maps.  For an input sf object, the `get_static_tiles()` function will retrieve static tiles as a raster object around the input.  The example below fetches the standard Light Mapbox basemap and uses it as a basemap for demographic data obtained with tidycensus.  
+
+```{r}
+library(tidycensus)
+library(tmap)
+
+travis_income <- get_acs(
+  geography = "tract",
+  variables = "B19013_001",
+  state = "TX",
+  county = "Travis",
+  geometry = TRUE,
+  year = 2019
+)
+
+travis_tiles <- get_static_tiles(
+  location = travis_income,
+  zoom = 9,
+  style_id = "light-v9",
+  username = "mapbox"
+)
+
+tm_shape(travis_tiles) + 
+  tm_rgb() + 
+  tm_shape(travis_income) + 
+  tm_polygons(col = "estimate",  
+              alpha = 0.5, palette = "cividis", 
+              title = "Median household income\n2015-2019 ACS") + 
+  tm_layout(legend.outside = TRUE) + 
+  tm_credits("Basemap © Mapbox, © OpenStreetMap", position = c("RIGHT", "BOTTOM"))
+```
+
 
 ## Reading vector tile data into R
 

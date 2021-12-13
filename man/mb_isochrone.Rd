@@ -2,12 +2,13 @@
 % Please edit documentation in R/navigation.R
 \name{mb_isochrone}
 \alias{mb_isochrone}
-\title{Generate an isochrone using the Mapbox API}
+\title{Generate isochrones using the Mapbox Navigation API}
 \usage{
 mb_isochrone(
   location,
   profile = "driving",
   time = c(5, 10, 15),
+  distance = NULL,
   access_token = NULL,
   denoise = 1,
   geometry = "polygon",
@@ -23,6 +24,10 @@ mb_isochrone(
 \item{profile}{One of "driving", "walking", or "cycling".  "driving" is the default.}
 
 \item{time}{A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}.  The maximum time supported is 60 minutes.}
+
+\item{distance}{A vector of distance contours specified in meters.  If supplied, will supercede
+any call to the \code{time} parameter as time and distance cannot be used
+simultaneously.  Defaults to \code{NULL}.}
 
 \item{access_token}{A valid Mapbox access token.}
 
@@ -42,7 +47,7 @@ mb_isochrone(
 An sf object representing the isochrone(s) around the location(s).
 }
 \description{
-Generate an isochrone using the Mapbox API
+This function returns isochrones from the Mapbox Navigation API, which are shapes that represent the reachable area around one or more locations within a given travel time.  Isochrones can be computed for driving, walking, or cycling routing profiles, and can optionally be set to return distances rather than times.  \code{mb_isochrone()} returns isochrones as simple features objects in the WGS 1984 geographic coordinate system.
 }
 \examples{
 \dontrun{
