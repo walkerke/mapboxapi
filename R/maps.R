@@ -1046,7 +1046,6 @@ get_static_tiles <- function(
 
   message("Attribution is required if using Mapbox tiles on a map.\nAdd the text '(c) Mapbox, (c) OpenStreetMap' to your map for proper attribution.")
 
-
   if (is.null(access_token)) {
     # Use public token first, then secret token
     if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
