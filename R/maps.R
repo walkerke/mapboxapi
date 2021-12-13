@@ -974,7 +974,7 @@ addMapboxTiles <- function(map,
 #' Get static tiles from a Mapbox style for use as a basemap
 #'
 #' This function queries the Mapbox Static Tiles API and composites the tiles as a
-#' raster suitable for use as a basemap in tmap or ggplot2 (with the layer_spatial()
+#' raster suitable for use as a basemap in tmap or ggplot2 (with the \code{layer_spatial()}
 #' function in ggspatial).  It returns a raster layer that corresponds either to
 #' an input bounding box or a buffered area around an input shape.
 #'
@@ -1020,7 +1020,7 @@ addMapboxTiles <- function(map,
 #'   tm_rgb() +
 #'   tm_shape(ny_tracts) +
 #'   tm_polygons(alpha = 0.5, col = "navy") +
-#'   tm_credits("Basemap © Mapbox, © OpenStreetMap",
+#'   tm_credits("Basemap (c) Mapbox, (c) OpenStreetMap",
 #'              position = c("RIGHT", "BOTTOM"))
 #'
 #' # ggplot2 usage:
@@ -1028,7 +1028,7 @@ addMapboxTiles <- function(map,
 #'   layer_spatial(ny_tiles) +
 #'   geom_sf(data = ny_tracts, fill = "navy", alpha = 0.5) +
 #'   theme_void() +
-#'   labs(caption = "Basemap © Mapbox, © OpenStreetMap")
+#'   labs(caption = "Basemap (c) Mapbox, (c) OpenStreetMap")
 #'
 #' }
 #'
@@ -1044,7 +1044,7 @@ get_static_tiles <- function(
   access_token = NULL
 ) {
 
-  message("Attribution is required if using Mapbox tiles on a map.\nAdd the text '© Mapbox, © OpenStreetMap' to your map for proper attribution.")
+  message("Attribution is required if using Mapbox tiles on a map.\nAdd the text '(c) Mapbox, (c) OpenStreetMap' to your map for proper attribution.")
 
   if (is.null(access_token)) {
     # Use public token first, then secret token
