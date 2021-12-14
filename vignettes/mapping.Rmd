@@ -5,6 +5,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+options(tigris_use_cache = TRUE)
 ```
 
 While __mapboxapi__ is not an interface to [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/), the Mapbox JavaScript library for web mapping, it does have functionality for map-making and visualization in combination with your spatial analysis workflows.  
