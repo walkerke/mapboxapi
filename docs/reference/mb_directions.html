@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -135,35 +135,35 @@
     <p>Make a request to the Mapbox Directions API</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mb_directions</span>(
-  <span class='kw'>input_data</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>origin</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>destination</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>profile</span> <span class='kw'>=</span> <span class='st'>"driving"</span>,
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"sf"</span>,
-  <span class='kw'>alternatives</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>annotations</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>bearings</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>continue_straight</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>geometries</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>overview</span> <span class='kw'>=</span> <span class='st'>"simplified"</span>,
-  <span class='kw'>radiuses</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>approaches</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>steps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>banner_instructions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>language</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>roundabout_exits</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>voice_instructions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>voice_units</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>waypoint_names</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>waypoint_targets</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>waypoints</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>walking_speed</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>walkway_bias</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>alley_bias</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>mb_directions</span><span class='op'>(</span>
+  input_data <span class='op'>=</span> <span class='cn'>NULL</span>,
+  origin <span class='op'>=</span> <span class='cn'>NULL</span>,
+  destination <span class='op'>=</span> <span class='cn'>NULL</span>,
+  profile <span class='op'>=</span> <span class='st'>"driving"</span>,
+  output <span class='op'>=</span> <span class='st'>"sf"</span>,
+  alternatives <span class='op'>=</span> <span class='cn'>NULL</span>,
+  annotations <span class='op'>=</span> <span class='cn'>NULL</span>,
+  bearings <span class='op'>=</span> <span class='cn'>NULL</span>,
+  continue_straight <span class='op'>=</span> <span class='cn'>NULL</span>,
+  exclude <span class='op'>=</span> <span class='cn'>NULL</span>,
+  geometries <span class='op'>=</span> <span class='cn'>NULL</span>,
+  overview <span class='op'>=</span> <span class='st'>"simplified"</span>,
+  radiuses <span class='op'>=</span> <span class='cn'>NULL</span>,
+  approaches <span class='op'>=</span> <span class='cn'>NULL</span>,
+  steps <span class='op'>=</span> <span class='cn'>NULL</span>,
+  banner_instructions <span class='op'>=</span> <span class='cn'>NULL</span>,
+  language <span class='op'>=</span> <span class='cn'>NULL</span>,
+  roundabout_exits <span class='op'>=</span> <span class='cn'>NULL</span>,
+  voice_instructions <span class='op'>=</span> <span class='cn'>NULL</span>,
+  voice_units <span class='op'>=</span> <span class='cn'>NULL</span>,
+  waypoint_names <span class='op'>=</span> <span class='cn'>NULL</span>,
+  waypoint_targets <span class='op'>=</span> <span class='cn'>NULL</span>,
+  waypoints <span class='op'>=</span> <span class='cn'>NULL</span>,
+  walking_speed <span class='op'>=</span> <span class='cn'>NULL</span>,
+  walkway_bias <span class='op'>=</span> <span class='cn'>NULL</span>,
+  alley_bias <span class='op'>=</span> <span class='cn'>NULL</span>,
+  access_token <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -283,24 +283,25 @@
     <p>An sf object (or list of sf objects), or full R list representing the API response.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapboxapi</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>leaflet</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>mapboxapi</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rstudio.github.io/leaflet/'>leaflet</a></span><span class='op'>)</span>
 
-<span class='no'>my_route</span> <span class='kw'>&lt;-</span> <span class='fu'>mb_directions</span>(
- <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"10 Avenue de Wagram, 75008 Paris France"</span>,
-  <span class='kw'>destination</span> <span class='kw'>=</span> <span class='st'>"59 Rue de Tocqueville, 75017 Paris France"</span>,
-  <span class='kw'>profile</span> <span class='kw'>=</span> <span class='st'>"cycling"</span>,
-  <span class='kw'>steps</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"fr"</span>
-)
+<span class='va'>my_route</span> <span class='op'>&lt;-</span> <span class='fu'>mb_directions</span><span class='op'>(</span>
+ origin <span class='op'>=</span> <span class='st'>"10 Avenue de Wagram, 75008 Paris France"</span>,
+  destination <span class='op'>=</span> <span class='st'>"59 Rue de Tocqueville, 75017 Paris France"</span>,
+  profile <span class='op'>=</span> <span class='st'>"cycling"</span>,
+  steps <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  language <span class='op'>=</span> <span class='st'>"fr"</span>
+<span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/leaflet.html'>leaflet</a></span>(<span class='no'>my_route</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='addMapboxTiles.html'>addMapboxTiles</a></span>(<span class='kw'>style_id</span> <span class='kw'>=</span> <span class='st'>"light-v9"</span>,
-                 <span class='kw'>username</span> <span class='kw'>=</span> <span class='st'>"mapbox"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>addPolylines</a></span>()
+<span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/leaflet.html'>leaflet</a></span><span class='op'>(</span><span class='va'>my_route</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='addMapboxTiles.html'>addMapboxTiles</a></span><span class='op'>(</span>style_id <span class='op'>=</span> <span class='st'>"light-v9"</span>,
+                 username <span class='op'>=</span> <span class='st'>"mapbox"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/leaflet/man/map-layers.html'>addPolylines</a></span><span class='op'>(</span><span class='op'>)</span>
 
-}</div></pre>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -316,7 +317,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

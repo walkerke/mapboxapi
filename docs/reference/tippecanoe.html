@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -135,17 +135,17 @@
     <p>Generate an .mbtiles file with tippecanoe</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tippecanoe</span>(
-  <span class='no'>input</span>,
-  <span class='no'>output</span>,
-  <span class='kw'>layer_name</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>min_zoom</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>max_zoom</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>drop_rate</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>overwrite</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>other_options</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>keep_geojson</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>tippecanoe</span><span class='op'>(</span>
+  <span class='va'>input</span>,
+  <span class='va'>output</span>,
+  layer_name <span class='op'>=</span> <span class='cn'>NULL</span>,
+  min_zoom <span class='op'>=</span> <span class='cn'>NULL</span>,
+  max_zoom <span class='op'>=</span> <span class='cn'>NULL</span>,
+  drop_rate <span class='op'>=</span> <span class='cn'>NULL</span>,
+  overwrite <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  other_options <span class='op'>=</span> <span class='cn'>NULL</span>,
+  keep_geojson <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,48 +190,50 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Workflow: create a dynamic tileset for dot-density mapping</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tidycensus</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapboxapi</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://walker-data.com/tidycensus/'>tidycensus</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>mapboxapi</span><span class='op'>)</span>
 
 <span class='co'># Get population data for Census tracts in Vermont</span>
-<span class='no'>vt_population</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/tidycensus/man/get_decennial.html'>get_decennial</a></span>(
-  <span class='kw'>geography</span> <span class='kw'>=</span> <span class='st'>"tract"</span>,
-  <span class='kw'>variables</span> <span class='kw'>=</span> <span class='st'>"P001001"</span>,
-  <span class='kw'>state</span> <span class='kw'>=</span> <span class='st'>"Vermont"</span>,
-  <span class='kw'>year</span> <span class='kw'>=</span> <span class='fl'>2010</span>,
-  <span class='kw'>geometry</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+<span class='va'>vt_population</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://walker-data.com/tidycensus/reference/get_decennial.html'>get_decennial</a></span><span class='op'>(</span>
+  geography <span class='op'>=</span> <span class='st'>"tract"</span>,
+  variables <span class='op'>=</span> <span class='st'>"P001001"</span>,
+  state <span class='op'>=</span> <span class='st'>"Vermont"</span>,
+  year <span class='op'>=</span> <span class='fl'>2010</span>,
+  geometry <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
 <span class='co'># Convert to representative dots - 1 per person</span>
-<span class='no'>vt_dots</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_sample.html'>st_sample</a></span>(
-  <span class='no'>vt_population</span>,
-  <span class='kw'>size</span> <span class='kw'>=</span> <span class='no'>vt_population</span>$<span class='no'>value</span>
-)
+<span class='va'>vt_dots</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_sample.html'>st_sample</a></span><span class='op'>(</span>
+  <span class='va'>vt_population</span>,
+  size <span class='op'>=</span> <span class='va'>vt_population</span><span class='op'>$</span><span class='va'>value</span>
+<span class='op'>)</span>
 
 <span class='co'># Use tippecanoe to create dynamic tiles</span>
-<span class='fu'>tippecanoe</span>(
-  <span class='kw'>input</span> <span class='kw'>=</span> <span class='no'>vt_dots</span>,
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"vt_population.mbtiles"</span>,
-  <span class='kw'>layer_name</span> <span class='kw'>=</span> <span class='st'>"vermont_population"</span>,
-  <span class='kw'>max_zoom</span> <span class='kw'>=</span> <span class='fl'>18</span>,
-  <span class='kw'>drop_rate</span> <span class='kw'>=</span> <span class='fl'>1.5</span>
-)
+<span class='fu'>tippecanoe</span><span class='op'>(</span>
+  input <span class='op'>=</span> <span class='va'>vt_dots</span>,
+  output <span class='op'>=</span> <span class='st'>"vt_population.mbtiles"</span>,
+  layer_name <span class='op'>=</span> <span class='st'>"vermont_population"</span>,
+  max_zoom <span class='op'>=</span> <span class='fl'>18</span>,
+  drop_rate <span class='op'>=</span> <span class='fl'>1.5</span>
+<span class='op'>)</span>
 
 <span class='co'># Upload to your Mapbox account for visualization</span>
 <span class='co'># A Mapbox secret access token must be set with mb_access_token()</span>
 <span class='co'># to upload data to your account</span>
-<span class='fu'><a href='upload_tiles.html'>upload_tiles</a></span>(
-  <span class='kw'>input</span> <span class='kw'>=</span> <span class='st'>"vt_population.mbtiles"</span>,
-  <span class='kw'>username</span> <span class='kw'>=</span> <span class='st'>"kwalkertcu"</span>,
-  <span class='kw'>tileset_id</span> <span class='kw'>=</span> <span class='st'>"vt_population_dots"</span>,
-  <span class='kw'>multipart</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+<span class='fu'><a href='upload_tiles.html'>upload_tiles</a></span><span class='op'>(</span>
+  input <span class='op'>=</span> <span class='st'>"vt_population.mbtiles"</span>,
+  username <span class='op'>=</span> <span class='st'>"kwalkertcu"</span>,
+  tileset_id <span class='op'>=</span> <span class='st'>"vt_population_dots"</span>,
+  multipart <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
-}</div></pre>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -247,7 +249,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

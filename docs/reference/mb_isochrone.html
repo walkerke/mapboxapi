@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate an isochrone using the Mapbox API — mb_isochrone • mapboxapi</title>
+<title>Generate isochrones using the Mapbox Navigation API — mb_isochrone • mapboxapi</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Generate an isochrone using the Mapbox API — mb_isochrone" />
-<meta property="og:description" content="Generate an isochrone using the Mapbox API" />
+<meta property="og:title" content="Generate isochrones using the Mapbox Navigation API — mb_isochrone" />
+<meta property="og:description" content="This function returns isochrones from the Mapbox Navigation API, which are shapes that represent the reachable area around one or more locations within a given travel time.  Isochrones can be computed for driving, walking, or cycling routing profiles, and can optionally be set to return distances rather than times.  mb_isochrone() returns isochrones as simple features objects in the WGS 1984 geographic coordinate system." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -126,27 +126,28 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate an isochrone using the Mapbox API</h1>
+    <h1>Generate isochrones using the Mapbox Navigation API</h1>
     
     <div class="hidden name"><code>mb_isochrone.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generate an isochrone using the Mapbox API</p>
+    <p>This function returns isochrones from the Mapbox Navigation API, which are shapes that represent the reachable area around one or more locations within a given travel time.  Isochrones can be computed for driving, walking, or cycling routing profiles, and can optionally be set to return distances rather than times.  <code>mb_isochrone()</code> returns isochrones as simple features objects in the WGS 1984 geographic coordinate system.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mb_isochrone</span>(
-  <span class='no'>location</span>,
-  <span class='kw'>profile</span> <span class='kw'>=</span> <span class='st'>"driving"</span>,
-  <span class='kw'>time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>),
-  <span class='kw'>access_token</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>denoise</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>geometry</span> <span class='kw'>=</span> <span class='st'>"polygon"</span>,
-  <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"sf"</span>,
-  <span class='kw'>rate_limit</span> <span class='kw'>=</span> <span class='fl'>300</span>,
-  <span class='kw'>keep_color_cols</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>id_column</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>mb_isochrone</span><span class='op'>(</span>
+  <span class='va'>location</span>,
+  profile <span class='op'>=</span> <span class='st'>"driving"</span>,
+  time <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span><span class='op'>)</span>,
+  distance <span class='op'>=</span> <span class='cn'>NULL</span>,
+  access_token <span class='op'>=</span> <span class='cn'>NULL</span>,
+  denoise <span class='op'>=</span> <span class='fl'>1</span>,
+  geometry <span class='op'>=</span> <span class='st'>"polygon"</span>,
+  output <span class='op'>=</span> <span class='st'>"sf"</span>,
+  rate_limit <span class='op'>=</span> <span class='fl'>300</span>,
+  keep_color_cols <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  id_column <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,6 +163,12 @@
     <tr>
       <th>time</th>
       <td><p>A vector of isochrone contours, specified in minutes. Defaults to <code><a href='https://rdrr.io/r/base/c.html'>c(5, 10, 15)</a></code>.  The maximum time supported is 60 minutes.</p></td>
+    </tr>
+    <tr>
+      <th>distance</th>
+      <td><p>A vector of distance contours specified in meters.  If supplied, will supercede
+any call to the <code>time</code> parameter as time and distance cannot be used
+simultaneously.  Defaults to <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>access_token</th>
@@ -198,21 +205,23 @@
     <p>An sf object representing the isochrone(s) around the location(s).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapboxapi</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mapdeck</span>)
-<span class='no'>isochrones</span> <span class='kw'>&lt;-</span> <span class='fu'>mb_isochrone</span>(<span class='st'>"The Kremlin, Moscow Russia"</span>,
-                           <span class='kw'>time</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>8</span>, <span class='fl'>12</span>),
-                           <span class='kw'>profile</span> <span class='kw'>=</span> <span class='st'>"walking"</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>mapboxapi</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://symbolixau.github.io/mapdeck/articles/mapdeck.html'>mapdeck</a></span><span class='op'>)</span>
+<span class='va'>isochrones</span> <span class='op'>&lt;-</span> <span class='fu'>mb_isochrone</span><span class='op'>(</span><span class='st'>"The Kremlin, Moscow Russia"</span>,
+                           time <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>, <span class='fl'>8</span>, <span class='fl'>12</span><span class='op'>)</span>,
+                           profile <span class='op'>=</span> <span class='st'>"walking"</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck.html'>mapdeck</a></span>(<span class='kw'>style</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck_style.html'>mapdeck_style</a></span>(<span class='st'>"light"</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/add_polygon.html'>add_polygon</a></span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>isochrones</span>,
-              <span class='kw'>fill_colour</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
-              <span class='kw'>fill_opacity</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-              <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck.html'>mapdeck</a></span><span class='op'>(</span>style <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/mapdeck_style.html'>mapdeck_style</a></span><span class='op'>(</span><span class='st'>"light"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/mapdeck/man/add_polygon.html'>add_polygon</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>isochrones</span>,
+              fill_colour <span class='op'>=</span> <span class='st'>"time"</span>,
+              fill_opacity <span class='op'>=</span> <span class='fl'>0.5</span>,
+              legend <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-}</div></pre>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -228,7 +237,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

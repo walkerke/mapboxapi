@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -82,8 +82,7 @@
 
       
 
-      </header><script src="creating-tiles_files/header-attrs-2.5.3/header-attrs.js"></script><script src="creating-tiles_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="creating-tiles_files/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet">
-<script src="creating-tiles_files/anchor-sections-1.0.1/anchor-sections.js"></script><div class="row">
+      </header><script src="creating-tiles_files/header-attrs-2.10.5/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Creating and uploading Mapbox vector tilesets</h1>
@@ -99,37 +98,38 @@
 <p><strong>mapboxapi</strong> includes a series of tools to help R users generate vector tiles from their data to be used in Mapbox Studio visualization projects. The function <code><a href="../reference/upload_tiles.html">upload_tiles()</a></code> allows you to upload an sf object or a spatial file on disk to your Mapbox account using the Mapbox Uploads API. This will convert your spatial data into vector tiles that can be added to a style in Mapbox Studio.</p>
 <p>Visualization of massive datasets, however, may require specialized tools. Mapbox recommends the <a href="https://github.com/mapbox/tippecanoe">tippecanoe</a> tile-generation utility for these tasks. tippecanoe generates a scale-sensitive <code>.mbtiles</code> file that adds or removes complexity in a large dataset at different zoom levels.</p>
 <p><strong>mapboxapi</strong> allows R users to call tippecanoe from R with the <code><a href="../reference/tippecanoe.html">tippecanoe()</a></code> function. This requires that tippecanoe is installed on your system; <a href="https://github.com/mapbox/tippecanoe">see the tippecanoe documentation for installation instructions</a>. Once installed, tippecanoe can be used in large visualization workflows in concert with Mapbox Studio, such as the example below with Microsoft building footprints data for Texas.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mapboxapi</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mapdeck</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">httr</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mapboxapi</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://symbolixau.github.io/mapdeck/articles/mapdeck.html">mapdeck</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr.r-lib.org/">httr</a></span><span class="op">)</span>
 
 <span class="co"># Get the Microsoft buildings data for Texas and unzip</span>
-<span class="fu"><a href="https://httr.r-lib.org/reference/GET.html">GET</a></span>(<span class="st">"https://usbuildingdata.blob.core.windows.net/usbuildings-v1-1/Texas.zip"</span>,
-    <span class="fu"><a href="https://httr.r-lib.org/reference/write_disk.html">write_disk</a></span>(<span class="st">"Texas.zip"</span>, <span class="kw">overwrite</span> <span class="kw">=</span> <span class="fl">TRUE</span>), <span class="fu"><a href="https://httr.r-lib.org/reference/progress.html">progress</a></span>())
+<span class="fu"><a href="https://httr.r-lib.org/reference/GET.html">GET</a></span><span class="op">(</span><span class="st">"https://usbuildingdata.blob.core.windows.net/usbuildings-v1-1/Texas.zip"</span>,
+    <span class="fu"><a href="https://httr.r-lib.org/reference/write_disk.html">write_disk</a></span><span class="op">(</span><span class="st">"Texas.zip"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu"><a href="https://httr.r-lib.org/reference/progress.html">progress</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span>(<span class="st">"Texas.zip"</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span><span class="op">(</span><span class="st">"Texas.zip"</span><span class="op">)</span>
 
 <span class="co"># Use tippecanoe to make a dynamic .mbtiles file that visualizes large data appropriately</span>
 <span class="co"># at any zoom level.  sf objects can also be used as input!</span>
 <span class="co"># (requires installing tippecanoe on your machine separately first)</span>
-<span class="fu"><a href="../reference/tippecanoe.html">tippecanoe</a></span>(<span class="kw">input</span> <span class="kw">=</span> <span class="st">"Texas.geojson"</span>,
-           <span class="kw">output</span> <span class="kw">=</span> <span class="st">"Texas.mbtiles"</span>,
-           <span class="kw">layer_name</span> <span class="kw">=</span> <span class="st">"texas_buildings"</span>)
+<span class="fu"><a href="../reference/tippecanoe.html">tippecanoe</a></span><span class="op">(</span>input <span class="op">=</span> <span class="st">"Texas.geojson"</span>,
+           output <span class="op">=</span> <span class="st">"Texas.mbtiles"</span>,
+           layer_name <span class="op">=</span> <span class="st">"texas_buildings"</span><span class="op">)</span>
 
 <span class="co"># Upload the generated tileset to your Mapbox account (requires a Mapbox secret access token</span>
 <span class="co"># to be set as an environment variable)</span>
-<span class="fu"><a href="../reference/upload_tiles.html">upload_tiles</a></span>(<span class="kw">input</span> <span class="kw">=</span> <span class="st">"Texas.mbtiles"</span>, <span class="kw">username</span> <span class="kw">=</span> <span class="st">"kwalkertcu"</span>,
-             <span class="kw">tileset_id</span> <span class="kw">=</span> <span class="st">"TX_buildings"</span>,
-             <span class="kw">multipart</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="fu"><a href="../reference/upload_tiles.html">upload_tiles</a></span><span class="op">(</span>input <span class="op">=</span> <span class="st">"Texas.mbtiles"</span>, username <span class="op">=</span> <span class="st">"kwalkertcu"</span>,
+             tileset_id <span class="op">=</span> <span class="st">"TX_buildings"</span>,
+             multipart <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 
 <span class="co"># Head over to Mapbox Studio when the upload is done (check the status with</span>
 <span class="co"># `check_upload_status()`) and add it to a style.  When you've styled it, bring it back</span>
 <span class="co"># into R with mapdeck by referencing the style ID:</span>
-<span class="fu"><a href="https://rdrr.io/pkg/mapdeck/man/mapdeck.html">mapdeck</a></span>(<span class="kw">token</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span>(<span class="st">"MAPBOX_PUBLIC_TOKEN"</span>),
-        <span class="kw">style</span> <span class="kw">=</span> <span class="st">"mapbox://styles/kwalkertcu/ckaf9qxim1pyk1io7r2e8exj2/draft"</span>,
-        <span class="kw">zoom</span> <span class="kw">=</span> <span class="fl">6</span>,
-        <span class="kw">location</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">98.7382803</span>, <span class="fl">31.7678448</span>))</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/mapdeck/man/mapdeck.html">mapdeck</a></span><span class="op">(</span>token <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span><span class="op">(</span><span class="st">"MAPBOX_PUBLIC_TOKEN"</span><span class="op">)</span>,
+        style <span class="op">=</span> <span class="st">"mapbox://styles/kwalkertcu/ckaf9qxim1pyk1io7r2e8exj2/draft"</span>,
+        zoom <span class="op">=</span> <span class="fl">6</span>,
+        location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">98.7382803</span>, <span class="fl">31.7678448</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="img/tippecanoe-example.gif" style="width: 800px"></p>
 <p>These tools can also be used as part of larger research and visualization workflows, such as my <a href="http://personal.tcu.edu/kylewalker/immigrant-america/#11/41.8643/-87.6307">Mapping Immigrant America project</a>.</p>
 <p><img src="img/immigrant-america.png" style="width: 800px"></p>
@@ -148,7 +148,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
