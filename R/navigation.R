@@ -381,6 +381,7 @@ mb_matrix <- function(origins,
 #'                 simultaneously.  Defaults to \code{NULL}.
 #' @param access_token A valid Mapbox access token.
 #' @param denoise A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.
+#' @param generalize A value expressed in meters of the tolerance for the Douglas-Peucker generalization algorithm used to simplify the isochrone shapes.  If \code{NULL} (the default), the Mapbox API will choose an optimal value for you.
 #' @param geometry one of \code{"polygon"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.
 #' @param output one of \code{"sf"} (the default), which returns an sf object representing the isochrone(s), or \code{"list"}, which returns the GeoJSON response from the API as an R list.
 #' @param rate_limit The rate limit for the API, expressed in maximum number of calls per minute.  For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.
@@ -412,6 +413,7 @@ mb_isochrone <- function(location,
                          distance = NULL,
                          access_token = NULL,
                          denoise = 1,
+                         generalize = NULL,
                          geometry = "polygon",
                          output = "sf",
                          rate_limit = 300,
@@ -487,6 +489,7 @@ mb_isochrone <- function(location,
                            distance = distance,
                            access_token = access_token,
                            denoise = denoise,
+                           generalize = generalize,
                            geometry = geometry,
                            output = "sf") %>%
         dplyr::mutate(id = .y)
@@ -530,7 +533,8 @@ mb_isochrone <- function(location,
 
   # Once assembled, we can check to see how many times have been requested
   # to handle rate-limiting internally.
-  request_isochrones <- function(base, access_token, time, distance, denoise, polygons,
+  request_isochrones <- function(base, access_token, time, distance, denoise,
+                                 generalize, polygons,
                                  output, keep_color_cols) {
 
     if (!is.null(time)) {
@@ -539,6 +543,7 @@ mb_isochrone <- function(location,
                        access_token = access_token,
                        contours_minutes = paste0(time, collapse = ","),
                        denoise = as.character(denoise),
+                       generalize = generalize,
                        polygons = polygons
                      ))
     } else if (!is.null(distance)) {
@@ -547,6 +552,7 @@ mb_isochrone <- function(location,
                        access_token = access_token,
                        contours_meters = paste0(distance, collapse = ","),
                        denoise = as.character(denoise),
+                       generalize = generalize,
                        polygons = polygons
                      ))
     }
@@ -596,6 +602,7 @@ mb_isochrone <- function(location,
         time = time,
         distance = distance,
         denoise = denoise,
+        generalize = generalize,
         polygons = polygons,
         output = output,
         keep_color_cols = keep_color_cols
@@ -621,6 +628,7 @@ mb_isochrone <- function(location,
           access_token = access_token,
           time = .x,
           denoise = denoise,
+          generalize = generalize,
           polygons = polygons,
           output = "sf",
           keep_color_cols = keep_color_cols
@@ -642,6 +650,7 @@ mb_isochrone <- function(location,
         time = time,
         distance = distance,
         denoise = denoise,
+        generalize = generalize,
         polygons = polygons,
         output = output,
         keep_color_cols = keep_color_cols
@@ -669,6 +678,7 @@ mb_isochrone <- function(location,
           distance = .x,
           time = time,
           denoise = denoise,
+          generalize = generalize,
           polygons = polygons,
           output = "sf",
           keep_color_cols = keep_color_cols

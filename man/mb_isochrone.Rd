@@ -11,6 +11,7 @@ mb_isochrone(
   distance = NULL,
   access_token = NULL,
   denoise = 1,
+  generalize = NULL,
   geometry = "polygon",
   output = "sf",
   rate_limit = 300,
@@ -32,6 +33,8 @@ simultaneously.  Defaults to \code{NULL}.}
 \item{access_token}{A valid Mapbox access token.}
 
 \item{denoise}{A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.}
+
+\item{generalize}{A value expressed in meters of the tolerance for the Douglas-Peucker generalization algorithm used to simplify the isochrone shapes.  If \code{NULL} (the default), the Mapbox API will choose an optimal value for you.}
 
 \item{geometry}{one of \code{"polygon"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.}
 
