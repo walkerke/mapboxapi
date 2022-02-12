@@ -6,6 +6,8 @@
 \title{Return a static Mapbox map from a specified style}
 \usage{
 static_mapbox(
+  location = NULL,
+  buffer_dist = 1000,
   style_id,
   username,
   overlay_sf = NULL,
@@ -14,14 +16,15 @@ static_mapbox(
   longitude = NULL,
   latitude = NULL,
   zoom = NULL,
-  bbox = NULL,
-  width = 600,
-  height = 400,
+  width = NULL,
+  height = NULL,
   bearing = NULL,
   pitch = NULL,
+  scale = 0.5,
   scaling_factor = c("1x", "2x"),
   before_layer = NULL,
-  access_token = NULL
+  access_token = NULL,
+  image = TRUE
 )
 
 prep_overlay_markers(
@@ -35,13 +38,24 @@ prep_overlay_markers(
 )
 }
 \arguments{
+\item{location}{An input location for which you would like to request tiles.
+Can be a length-4 vector representing a bounding box, or an sf object.
+If an input sf object is supplied, use the \code{buffer_dist} argument to
+control how much area you want to capture around the layer.
+While the input sf object can be in an arbitrary coordinate reference system,
+if a length-4 bounding box vector is supplied instead it must represent
+WGS84 longitude/latitude coordinates and be in the order
+\code{c(xmin, ymin, xmax, ymax)}.}
+
+\item{buffer_dist}{The distance to buffer around an input sf object for determining static map, specified in meters.  Defaults to 1000.}
+
 \item{style_id}{The style ID}
 
-\item{username}{Your Mapbox username}
+\item{username}{A Mapbox username}
 
 \item{overlay_sf}{The overlay sf object (optional).  The function will convert the sf object to GeoJSON then plot over the basemap style.  Spatial data that are too large will trigger an error, and should be added to the style in Mapbox Studio instead.}
 
-\item{overlay_style}{A named list of vectors pecifying how to style the sf overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity", "fill", and "fill-opacity".  The fill and stroke color values should be specified as six-digit hex codes, and the opacity and width values should be supplied as floating-point numbers.}
+\item{overlay_style}{A named list of vectors specifying how to style the sf overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity", "fill", and "fill-opacity".  The fill and stroke color values should be specified as six-digit hex codes, and the opacity and width values should be supplied as floating-point numbers.}
 
 \item{overlay_markers}{The prepared overlay markers (optional).  See the function \code{\link{prep_overlay_markers}} for more information on how to specify a marker overlay.}
 
@@ -51,21 +65,23 @@ prep_overlay_markers(
 
 \item{zoom}{The map zoom.  The map will infer this from the overlay unless longitude, latitude, and zoom are all specified.}
 
-\item{bbox}{The bounding box for the requested map. Not needed if longitude/latitude/zoom are provided.}
+\item{width}{The map width; defaults to NULL}
 
-\item{width}{The map width; defaults to 600px}
-
-\item{height}{The map height; defaults to 600px}
+\item{height}{The map height; defaults to NULL}
 
 \item{bearing}{The map bearing; defaults to 0}
 
 \item{pitch}{The map pitch; defaults to 0}
+
+\item{scale}{ratio to scale the output image; `scale_ratio = 1` will return the largest possible image. defaults to 0.5}
 
 \item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"} (the default) or \code{"2x"}}
 
 \item{before_layer}{A character string that specifies where in the hierarchy of layer elements the overlay should be inserted.  The overlay will be placed just above the specified layer in the given Mapbox styles.}
 
 \item{access_token}{Your Mapbox access token; can be set with \code{mb_access_token()}.}
+
+\item{image}{If FALSE, return the a \code{response()} object from \code{httr::GET()} using the static image URL; defaults to TRUE}
 
 \item{data}{An input data frame with longitude and latitude columns (X and Y or lon and lat as names are also acceptable) or an sf object with geometry type POINT.}
 
@@ -78,7 +94,7 @@ prep_overlay_markers(
 \item{url}{The URL of the image to be used for the icon if \code{marker_type = "url"}.}
 }
 \value{
-A pointer to an image of class \code{"magick-image"}.  The resulting image can be manipulated further with functions from the magick package.
+A pointer to an image of class \code{"magick-image"} if `image = TRUE`. The resulting image can be manipulated further with functions from the magick package.
 
 A formatted list of marker specifications that can be passed to the \code{\link{static_mapbox}} function.
 }

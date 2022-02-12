@@ -543,24 +543,27 @@ get_vector_tiles <- function(tileset_id,
 
 #' Return a static Mapbox map from a specified style
 #'
+#' @inheritParams get_static_tiles
+#' @param buffer_dist The distance to buffer around an input sf object for determining static map, specified in meters.  Defaults to 1000.
 #' @param style_id The style ID
-#' @param username Your Mapbox username
+#' @param username A Mapbox username
 #' @param overlay_sf The overlay sf object (optional).  The function will convert the sf object to GeoJSON then plot over the basemap style.  Spatial data that are too large will trigger an error, and should be added to the style in Mapbox Studio instead.
-#' @param overlay_style A named list of vectors pecifying how to style the sf overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity", "fill", and "fill-opacity".  The fill and stroke color values should be specified as six-digit hex codes, and the opacity and width values should be supplied as floating-point numbers.
+#' @param overlay_style A named list of vectors specifying how to style the sf overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity", "fill", and "fill-opacity".  The fill and stroke color values should be specified as six-digit hex codes, and the opacity and width values should be supplied as floating-point numbers.
 #' @param overlay_markers The prepared overlay markers (optional).  See the function \code{\link{prep_overlay_markers}} for more information on how to specify a marker overlay.
 #' @param longitude The longitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.
 #' @param latitude The latitude of the map center.  If an overlay is supplied, the map will default to the extent of the overlay unless longitude, latitude, and zoom are all specified.
 #' @param zoom The map zoom.  The map will infer this from the overlay unless longitude, latitude, and zoom are all specified.
-#' @param bbox The bounding box for the requested map. Not needed if longitude/latitude/zoom are provided.
-#' @param width The map width; defaults to 600px
-#' @param height The map height; defaults to 600px
+#' @param width The map width; defaults to NULL
+#' @param height The map height; defaults to NULL
 #' @param bearing The map bearing; defaults to 0
 #' @param pitch The map pitch; defaults to 0
+#' @param scale ratio to scale the output image; `scale_ratio = 1` will return the largest possible image. defaults to 0.5
 #' @param scaling_factor The scaling factor of the tiles; either \code{"1x"} (the default) or \code{"2x"}
 #' @param before_layer A character string that specifies where in the hierarchy of layer elements the overlay should be inserted.  The overlay will be placed just above the specified layer in the given Mapbox styles.
 #' @param access_token Your Mapbox access token; can be set with \code{mb_access_token()}.
+#' @param image If FALSE, return the a \code{response()} object from \code{httr::GET()} using the static image URL; defaults to TRUE
 #'
-#' @return A pointer to an image of class \code{"magick-image"}.  The resulting image can be manipulated further with functions from the magick package.
+#' @return A pointer to an image of class \code{"magick-image"} if `image = TRUE`. The resulting image can be manipulated further with functions from the magick package.
 #'
 #' @examples \dontrun{
 #'
@@ -591,7 +594,9 @@ get_vector_tiles <- function(tileset_id,
 #' }
 #'
 #' @export
-static_mapbox <- function(style_id,
+static_mapbox <- function(location = NULL,
+                          buffer_dist = 1000,
+                          style_id,
                           username,
                           overlay_sf = NULL,
                           overlay_style = NULL,
@@ -599,14 +604,15 @@ static_mapbox <- function(style_id,
                           longitude = NULL,
                           latitude = NULL,
                           zoom = NULL,
-                          bbox = NULL,
-                          width = 600,
-                          height = 400,
+                          width = NULL,
+                          height = NULL,
                           bearing = NULL,
                           pitch = NULL,
+                          scale = 0.5,
                           scaling_factor = c("1x", "2x"),
                           before_layer = NULL,
-                          access_token = NULL) {
+                          access_token = NULL,
+                          image = TRUE) {
 
   if (is.null(access_token)) {
     # Use public token first, then secret token
@@ -694,6 +700,8 @@ static_mapbox <- function(style_id,
     base <- paste(base, overlay, sep = "/")
   }
 
+  bbox <- location_to_bbox(location, buffer_dist)
+
   focus_args <- c(longitude, latitude, zoom)
 
   if (all(is.null(focus_args))) {
@@ -703,6 +711,14 @@ static_mapbox <- function(style_id,
     } else {
       collapsed_bbox <- paste0(bbox, collapse = ",")
       focus <- paste0("[", collapsed_bbox, "]")
+
+      if (all(is.null(c(width, height)))) {
+        asp <- as.numeric(abs(bbox$xmax - bbox$xmin) / abs(bbox$ymax - bbox$ymin))
+        max_size <- min(1280, round(1280 * scale))
+        width <- min(max_size, round(max_size * asp))
+        height <- min(max_size, round(max_size / asp))
+      }
+
     }
 
   } else {
@@ -744,10 +760,62 @@ static_mapbox <- function(style_id,
     stop(print(jsonlite::fromJSON(content)), call. = FALSE)
   }
 
-  img <- magick::image_read(httr::content(request))
+  if (image) {
+    img <- magick::image_read(httr::content(request))
+    return(img)
+  } else {
+    return(request)
+  }
 
-  return(img)
+}
 
+#' ggplot2 layer with static_mapbox and layer_spatial
+#'
+#' @inheritParams static_mapbox
+#' @rdname layer_static_mapbox
+#' @param ... additional parameters passed to \code{\link[ggspatial]{layer_spatial}}
+#' @export
+#' @importFrom sf st_crs
+#' @importFrom raster brick extent projection
+#' @importFrom httr content
+#' @importFrom ggspatial layer_spatial
+layer_static_mapbox <- function(location = NULL,
+                                buffer_dist = 1000,
+                                style_id,
+                                username,
+                                overlay_sf = NULL,
+                                overlay_style = NULL,
+                                overlay_markers = NULL,
+                                width = NULL,
+                                height = NULL,
+                                scale = 0.5,
+                                scaling_factor = c("1x", "2x"),
+                                before_layer = NULL,
+                                access_token = NULL,
+                                ...) {
+
+  request <- static_mapbox(location = location,
+                           buffer_dist = buffer_dist,
+                           style_id = style_id,
+                           username = username,
+                           overlay_sf = overlay_sf,
+                           overlay_style = overlay_style,
+                           overlay_markers = overlay_markers,
+                           width = width,
+                           height = height,
+                           scale = scale,
+                           scaling_factor = scaling_factor,
+                           before_layer = before_layer,
+                           access_token = access_token,
+                           image = FALSE)
+
+  ras <- raster::brick(httr::content(request))
+
+  merc <- sf::st_crs(3857)$proj4string
+  raster::extent(ras) <- location_to_bbox(location, buffer_dist)
+  suppressWarnings(raster::projection(ras) <- merc)
+
+  return(ggspatial::layer_spatial(data = ras, ...))
 }
 
 
@@ -1060,65 +1128,7 @@ get_static_tiles <- function(
     }
   }
 
-  if ("RasterLayer" %in% class(location)) {
-    location <- location %>%
-      sf::st_bbox() %>%
-      sf::st_as_sfc()
-  }
-
-  # If object is from the sp package, convert to sf
-  if (any(grepl("Spatial", class(location)))) {
-    input <- sf::st_as_sf(location)
-  }
-
-  if ("sfc" %in% class(location)) {
-    location <- sf::st_sf(location)
-  }
-
-  # If location is an sf object, get a buffered bbox to query the tiles
-  if (any(grepl("^sf", class(location)))) {
-
-    # If the input dataset is not a polygon, make it one
-    geom_type <- unique(sf::st_geometry_type(location))
-
-    # Consider at later date how to handle mixed geometries
-    # Also consider whether to use concave hulls instead to avoid edge cases
-
-    if (geom_type %in% c("POINT", "MULTIPOINT")) {
-      # If it is one or two points, buffer it
-      if (nrow(location) %in% 1:2) {
-        sf_proj <- sf::st_buffer(sf_proj, units::as_units(1000, "m"))
-      }
-
-      sf_poly <- location %>%
-        sf::st_union() %>%
-        sf::st_convex_hull()
-    } else if (geom_type %in% c("LINESTRING", "MULTILINESTRING")) {
-      sf_poly <- location %>%
-        sf::st_cast("MULTIPOINT") %>%
-        sf::st_union() %>%
-        sf::st_convex_hull()
-    } else if (geom_type %in% c("POLYGON", "MULTIPOLYGON")) {
-      sf_poly <- location %>%
-        sf::st_union()
-    }
-
-    # Get a buffered bbox of custom size
-    bbox <- sf_poly %>%
-      sf::st_buffer(units::as_units(buffer_dist, "m")) %>%
-      sf::st_transform(4326) %>%
-      sf::st_bbox(.)
-  } else {
-    # Make sure a length-4 vector was supplied
-    if (length(location) != 4) {
-      stop("To use a bounding box vector as an input location, it must be of length 4 in the format `c(xmin, ymin, xmax, ymax)`.", call. = FALSE)
-    }
-    bbox <- sf::st_bbox(c(xmin = location[1],
-                          ymin = location[2],
-                          xmax = location[3],
-                          ymax = location[4]),
-                        crs = 4326)
-  }
+  bbox <- location_to_bbox(location, buffer_dist)
 
   tile_grid <- slippymath::bbox_to_tile_grid(bbox = bbox, zoom = zoom)
 
