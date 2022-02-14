@@ -58,6 +58,10 @@ location_to_bbox <- function(location, buffer_dist, crs = 4326) {
     location <- sf::st_sf(location)
   }
 
+  if ("bbox" %in% class(location)) {
+    location <- sf::st_as_sf(sf::st_as_sfc(location))
+  }
+
   # If location is an sf object, get a buffered bbox to query the tiles
   if (any(grepl("^sf", class(location)))) {
 
