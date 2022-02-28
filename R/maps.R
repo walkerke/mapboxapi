@@ -812,7 +812,7 @@ layer_static_mapbox <- function(location = NULL,
   ras <- raster::brick(httr::content(request))
 
   merc <- sf::st_crs(3857)$proj4string
-  raster::extent(ras) <- location_to_bbox(location, buffer_dist)
+  raster::extent(ras) <- location_to_bbox(location, buffer_dist, crs = 3857)
   suppressWarnings(raster::projection(ras) <- merc)
 
   return(ggspatial::layer_spatial(data = ras, ...))
