@@ -1,11 +1,13 @@
 Package: mapboxapi
 Type: Package
 Title: R Interface to 'Mapbox' Web Services
-Date: 2021-12-15
-Version: 0.3.1.9000
+Date: 2022-03-27
+Version: 0.3.2.9000
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
-    role = c("aut", "cre")))
+    role = c("aut", "cre")), 
+    person(given = "Eli", family = "Pousson", email = "eli.pousson@gmail.com",
+    role = "ctb"))
 Maintainer: Kyle Walker <kyle@walker-data.com>
 Description: Includes support for 'Mapbox' Navigation APIs, including directions, 
   isochrones, and route optimization; the Search API for forward and reverse geocoding; 
