@@ -1,12 +1,11 @@
 coords_to_tiles <- function(lon, lat, zoom) {
-
   lat_rad <- lat * pi / 180
 
-  n <- 2.0 ^ zoom
+  n <- 2.0^zoom
 
   xtile <- floor((lon + 180.0) / 360.0 * n)
 
-  ytile = floor((1.0 - log(tan(lat_rad) + (1 / cos(lat_rad))) / pi) / 2.0 * n)
+  ytile <- floor((1.0 - log(tan(lat_rad) + (1 / cos(lat_rad))) / pi) / 2.0 * n)
 
   return(c(xtile, ytile))
   #  return(paste(paste("https://a.tile.openstreetmap.org", zoom, xtile, ytile, sep="/"),".png",sep=""))
@@ -41,7 +40,10 @@ lonlat_to_worldcoords <- function(lon, lat, tile_size = 512) {
 #' @importFrom sf st_bbox st_as_sfc st_as_sf st_sf st_geometry_type st_buffer st_union st_convex_hull st_cast st_transform
 #' @importFrom units as_units
 #' @noRd
-location_to_bbox <- function(location, buffer_dist, crs = 4326) {
+location_to_bbox <- function(location, buffer_dist, crs = 4326, null.ok = TRUE) {
+  if (is.null(location) && null.ok) {
+    return(location)
+  }
 
   if ("RasterLayer" %in% class(location)) {
     location <- location %>%
@@ -100,14 +102,15 @@ location_to_bbox <- function(location, buffer_dist, crs = 4326) {
     if (length(location) != 4) {
       stop("To use a bounding box vector as an input location, it must be of length 4 in the format `c(xmin, ymin, xmax, ymax)`.", call. = FALSE)
     }
-    bbox <- sf::st_bbox(c(xmin = location[1],
-                          ymin = location[2],
-                          xmax = location[3],
-                          ymax = location[4]),
-                        crs = crs)
+    bbox <- sf::st_bbox(c(
+      xmin = location[1],
+      ymin = location[2],
+      xmax = location[3],
+      ymax = location[4]
+    ),
+    crs = crs
+    )
   }
 
   return(bbox)
-
 }
-
