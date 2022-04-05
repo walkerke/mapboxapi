@@ -47,41 +47,58 @@ if a length-4 bounding box vector is supplied instead it must represent
 WGS84 longitude/latitude coordinates and be in the order
 \code{c(xmin, ymin, xmax, ymax)}.}
 
-\item{buffer_dist}{The distance to buffer around an input sf object for determining static map, specified in meters.  Defaults to 1000.}
+\item{buffer_dist}{The distance to buffer around an input sf object for
+determining static map, specified in meters.  Defaults to 1000.}
 
-\item{style_id}{The style ID}
+\item{style_id}{A style ID}
 
 \item{username}{A Mapbox username}
 
-\item{overlay_sf}{The overlay sf object (optional).  The function will convert the sf object to GeoJSON then plot over the basemap style.  Spatial data that are too large will trigger an error, and should be added to the style in Mapbox Studio instead.}
+\item{overlay_sf}{The overlay sf object (optional).  The function will
+convert the sf object to GeoJSON then plot over the basemap style.  Spatial
+data that are too large will trigger an error, and should be added to the
+style in Mapbox Studio instead.}
 
-\item{overlay_style}{A named list of vectors specifying how to style the sf overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity", "fill", and "fill-opacity".  The fill and stroke color values should be specified as six-digit hex codes, and the opacity and width values should be supplied as floating-point numbers.}
+\item{overlay_style}{A named list of vectors specifying how to style the sf
+overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity",
+"fill", and "fill-opacity".  The fill and stroke color values should be
+specified as six-digit hex codes, and the opacity and width values should
+be supplied as floating-point numbers.}
 
-\item{overlay_markers}{The prepared overlay markers (optional).  See the function \code{\link{prep_overlay_markers}} for more information on how to specify a marker overlay.}
+\item{overlay_markers}{The prepared overlay markers (optional).  See the
+function \code{\link{prep_overlay_markers}} for more information on how to
+specify a marker overlay.}
 
 \item{longitude}{A vector of longitudes; inferred from the input dataset if \code{data} is provided.}
 
 \item{latitude}{A vector of latitudes; inferred from the input dataset if \code{data} is provided.}
 
-\item{zoom}{The map zoom.  The map will infer this from the overlay unless longitude, latitude, and zoom are all specified.}
+\item{zoom}{The map zoom.  The map will infer this from the overlay unless
+longitude, latitude, and zoom are all specified.}
 
 \item{width}{The map width; defaults to NULL}
 
 \item{height}{The map height; defaults to NULL}
 
-\item{bearing}{The map bearing; defaults to 0}
+\item{bearing}{The map bearing; defaults to NULL}
 
-\item{pitch}{The map pitch; defaults to 0}
+\item{pitch}{The map pitch; defaults to NULL}
 
-\item{scale}{ratio to scale the output image; `scale_ratio = 1` will return the largest possible image. defaults to 0.5}
+\item{scale}{ratio to scale the output image; `scale = 1` will return the
+largest possible image. defaults to 0.5}
 
-\item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"} (the default) or \code{"2x"}}
+\item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"}
+(the default) or \code{"2x"}}
 
-\item{before_layer}{A character string that specifies where in the hierarchy of layer elements the overlay should be inserted.  The overlay will be placed just above the specified layer in the given Mapbox styles.}
+\item{before_layer}{A character string that specifies where in the hierarchy
+of layer elements the overlay should be inserted.  The overlay will be
+placed just above the specified layer in the given Mapbox styles.}
 
-\item{access_token}{Your Mapbox access token; can be set with \code{mb_access_token()}.}
+\item{access_token}{A Mapbox access token; can be set with
+\code{mb_access_token()}.}
 
-\item{image}{If FALSE, return the a \code{response()} object from \code{httr::GET()} using the static image URL; defaults to TRUE}
+\item{image}{If FALSE, return the a \code{response()} object from
+\code{httr::GET()} using the static image URL; defaults to TRUE}
 
 \item{data}{An input data frame with longitude and latitude columns (X and Y or lon and lat as names are also acceptable) or an sf object with geometry type POINT.}
 
