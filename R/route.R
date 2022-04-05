@@ -5,6 +5,7 @@
 #' @param destination An address or coordinate pair that represents the destination of your requested route.
 #' @param profile One of "driving" (the default), "driving-traffic", "walking", or "cycling".
 #' @param output One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.
+#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns.  If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.
 #' @param alternatives Whether or not to return alternative routes with your request. If TRUE, a list of up to 3 possible routes will be returned.
 #' @param annotations A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".
 #' @param bearings A semicolon-delimited character string of bearings
@@ -55,6 +56,7 @@ mb_directions <- function(input_data = NULL,
                           destination = NULL,
                           profile = "driving",
                           output = "sf",
+                          depart_at = NULL,
                           alternatives = NULL,
                           annotations = NULL,
                           bearings = NULL,
@@ -249,6 +251,7 @@ mb_directions <- function(input_data = NULL,
     url = base,
     query = list(
       access_token = access_token,
+      depart_at = depart_at,
       alternatives = alternatives,
       annotations = annotations,
       bearings = bearings,
