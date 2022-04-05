@@ -1,17 +1,26 @@
-#' Install a Mapbox access token in your .Renviron for repeated use
+#' Install or retrieve a Mapbox access token in your .Renviron for repeated use
 #'
-#' @param token The Mapbox access token; can be public (starting with 'pk') or secret (starting with 'sk') scope, which the function will interpret for you
-#' @param overwrite Whether or not to overwrite an existing Mapbox access token.  Defaults to FALSE.
-#' @param install if TRUE, will install the key in your \code{.Renviron} file for use in future sessions.  Defaults to FALSE.
-#'
+#' @param token A Mapbox access token; can be public (starting with 'pk') or
+#'   secret (starting with 'sk') scope, which the function will interpret for
+#'   you.
+#' @param overwrite Whether or not to overwrite an existing Mapbox access token.
+#'   Defaults to FALSE.
+#' @param install if TRUE, will install the key in your \code{.Renviron} file
+#'   for use in future sessions.  Defaults to FALSE.
+#' @param default Default token name to return first [get_mb_access_token],
+#'   "MAPBOX_PUBLIC_TOKEN" or "MAPBOX_SECRET_TOKEN".
+#' @param secret_required If TRUE, a secret token is required. If FALSE, the
+#'   default token is provided first and the other token provided second if the
+#'   first is unavailable.
 #' @export
 #' @examples \dontrun{
 #' my_token <- "..." # The token generated from your Mapbox account
 #' mb_access_token(my_token, install = TRUE)
 #' Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+#'
+#' get_mb_access_token()
 #' }
-mb_access_token <- function(token, overwrite = FALSE, install = FALSE){
-
+mb_access_token <- function(token, overwrite = FALSE, install = FALSE) {
   if (grepl("^pk", token)) {
     type <- "MAPBOX_PUBLIC_TOKEN"
   } else if (grepl("^sk", token)) {
@@ -23,25 +32,25 @@ mb_access_token <- function(token, overwrite = FALSE, install = FALSE){
   if (install) {
     home <- Sys.getenv("HOME")
     renv <- file.path(home, ".Renviron")
-    if(file.exists(renv)){
+    if (file.exists(renv)) {
       # Backup original .Renviron before doing anything else here.
       file.copy(renv, file.path(home, ".Renviron_backup"))
     }
-    if(!file.exists(renv)){
+    if (!file.exists(renv)) {
       file.create(renv)
-    }
-    else{
-      if(isTRUE(overwrite)){
+    } else {
+      if (isTRUE(overwrite)) {
         message("Your original .Renviron will be backed up and stored in your R HOME directory if needed.")
-        oldenv=read.table(renv, stringsAsFactors = FALSE)
-        newenv <- oldenv[-grep(type, oldenv),]
-        write.table(newenv, renv, quote = FALSE, sep = "\n",
-                    col.names = FALSE, row.names = FALSE)
-      }
-      else{
+        oldenv <- read.table(renv, stringsAsFactors = FALSE)
+        newenv <- oldenv[-grep(type, oldenv), ]
+        write.table(newenv, renv,
+          quote = FALSE, sep = "\n",
+          col.names = FALSE, row.names = FALSE
+        )
+      } else {
         tv <- readLines(renv)
-        if(any(grepl(type,tv))){
-          stop(sprintf("A %s already exists. You can overwrite it with the argument overwrite=TRUE", type), call.=FALSE)
+        if (any(grepl(type, tv))) {
+          stop(sprintf("A %s already exists. You can overwrite it with the argument overwrite=TRUE", type), call. = FALSE)
         }
       }
     }
@@ -55,9 +64,41 @@ mb_access_token <- function(token, overwrite = FALSE, install = FALSE){
     message("To install your access token for use in future sessions, run this function with `install = TRUE`.")
     Sys.setenv(type = token)
   }
-
 }
 
+#' @name get_mb_access_token
+#' @rdname mb_access_token
+#' @export
+get_mb_access_token <- function(token = NULL,
+                                default = c("MAPBOX_PUBLIC_TOKEN", "MAPBOX_SECRET_TOKEN"),
+                                secret_required = FALSE) {
+  primary_token <- match.arg(default)
+
+  secondary_token <-
+    switch(primary_token,
+      "MAPBOX_PUBLIC_TOKEN" = "MAPBOX_SECRET_TOKEN",
+      "MAPBOX_SECRET_TOKEN" = "MAPBOX_PUBLIC_TOKEN"
+    )
+
+  if (is.null(token)) {
+    # Use public token first, then secret token
+    if ((Sys.getenv(primary) != "") && !secret_required) {
+      token <- Sys.getenv(primary_token)
+    } else {
+      if (Sys.getenv(secondary_token) != "") {
+        token <- Sys.getenv(secondary_token)
+      } else if (secret_required) {
+        stop("A Mapbox secret access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      } else {
+        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+      }
+    }
+  } else if (!(grepl("^pk", token) && !grepl("^sk", token))) {
+    stop("Your supplied token appears to be invalid. Check your Mapbox account for details.", call. = FALSE)
+  }
+
+  return(token)
+}
 
 
 #' List tokens from a Mapbox account
@@ -77,9 +118,8 @@ mb_access_token <- function(token, overwrite = FALSE, install = FALSE){
 #' token_list <- list_tokens(
 #'   username = "kwalkertcu", # You would use your own username here
 #'   limit = 10,
-#'   sortby = "modified"#'
+#'   sortby = "modified" #'
 #' )
-#'
 #' }
 #'
 #' @export
@@ -89,39 +129,25 @@ list_tokens <- function(username,
                         sortby = "created",
                         usage = NULL,
                         access_token = NULL) {
-
-  if (is.null(access_token)) {
-    # Use secret token first, then public token
-    if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-
-    }
-  }
+  access_token <- get_mb_access_token(access_token)
 
   base <- sprintf("https://api.mapbox.com/tokens/v2/%s", username)
 
-
   if (!is.null(default)) {
     if (default) {
-      default <- 'true'
+      default <- "true"
     } else {
-      default <- 'false'
+      default <- "false"
     }
-
   }
 
-  request <- httr::GET(base, query = list(access_token = access_token,
-                                          default = default,
-                                          limit = limit,
-                                          sortby = sortby,
-                                          usage = usage
-                                          ))
+  request <- httr::GET(base, query = list(
+    access_token = access_token,
+    default = default,
+    limit = limit,
+    sortby = sortby,
+    usage = usage
+  ))
 
   if (request$status_code != 200) {
     pull <- fromJSON(content)
@@ -134,5 +160,4 @@ list_tokens <- function(username,
     dplyr::as_tibble()
 
   return(output)
-
 }

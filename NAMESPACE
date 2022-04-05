@@ -2,6 +2,7 @@
 
 export(addMapboxTiles)
 export(check_upload_status)
+export(get_mb_access_token)
 export(get_static_tiles)
 export(get_style)
 export(get_vector_tiles)
