@@ -57,13 +57,11 @@ Perform reverse geocoding for a coordinate pair
 \dontrun{
 
 whitehouse <- mb_geocode("1600 Pennsylvania Ave, Washington DC")
-
 }
 
 \dontrun{
 
 mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "poi")
-
 }
 
 }

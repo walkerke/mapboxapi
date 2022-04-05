@@ -36,7 +36,6 @@ vector_extract <- get_vector_tiles(
 ggplot(vector_extract$building$polygons) +
   geom_sf() +
   theme_void()
-
 }
 
 }

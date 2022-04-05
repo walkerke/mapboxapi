@@ -12,7 +12,6 @@
 #' @examples \dontrun{
 #'
 #' whitehouse <- mb_geocode("1600 Pennsylvania Ave, Washington DC")
-#'
 #' }
 #'
 #' @export
@@ -24,19 +23,7 @@ mb_geocode <- function(search_text,
                        language = NULL,
                        output = "coordinates",
                        access_token = NULL) {
-
-  if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-    }
-  }
+  access_token <- get_mb_access_token(access_token)
 
   if (!is.null(search_within)) {
     if (any(grepl("^sf", class(search_within)))) {
@@ -58,8 +45,10 @@ mb_geocode <- function(search_text,
 
   search_text <- curl::curl_escape(search_text)
 
-  base <- sprintf("https://api.mapbox.com/geocoding/v5/%s/%s.json",
-                  endpoint, search_text)
+  base <- sprintf(
+    "https://api.mapbox.com/geocoding/v5/%s/%s.json",
+    endpoint, search_text
+  )
 
   req <- httr::GET(base, query = list(
     access_token = access_token,
@@ -82,7 +71,6 @@ mb_geocode <- function(search_text,
   if (output == "sf") {
     return(sf::st_read(content, quiet = TRUE))
   } else if (output == "coordinates") {
-
     cont2 <- jsonlite::fromJSON(content)
 
     coords <- cont2$features$geometry$coordinates
@@ -92,13 +80,11 @@ mb_geocode <- function(search_text,
     } else {
       return(coords)
     }
-
   } else if (output == "full") {
     return(jsonlite::fromJSON(content))
   } else {
     stop("The requested output must be one of 'coordinates', 'sf', or 'full'.")
   }
-
 }
 
 
@@ -118,7 +104,6 @@ mb_geocode <- function(search_text,
 #' @examples \dontrun{
 #'
 #' mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "poi")
-#'
 #' }
 #'
 #' @export
@@ -129,19 +114,7 @@ mb_reverse_geocode <- function(coordinates,
                                types = NULL,
                                output = "text",
                                access_token = NULL) {
-
-  if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-    }
-  }
+  access_token <- get_mb_access_token(access_token)
 
   coords <- paste0(coordinates, collapse = ",")
 
@@ -149,8 +122,10 @@ mb_reverse_geocode <- function(coordinates,
     types <- paste0(types, collapse = ",")
   }
 
-  base <- sprintf("https://api.mapbox.com/geocoding/v5/%s/%s.json",
-                  endpoint, coords)
+  base <- sprintf(
+    "https://api.mapbox.com/geocoding/v5/%s/%s.json",
+    endpoint, coords
+  )
 
   req <- httr::GET(base, query = list(
     access_token = access_token,
@@ -173,12 +148,9 @@ mb_reverse_geocode <- function(coordinates,
     text <- content2$features$place_name
 
     return(text)
-
   } else if (output == "sf") {
     return(sf::st_read(content, quiet = TRUE))
   } else if (output == "full") {
     return(jsonlite::fromJSON(content))
   }
-
-
 }

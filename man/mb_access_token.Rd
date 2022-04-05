@@ -2,10 +2,17 @@
 % Please edit documentation in R/accounts.R
 \name{mb_access_token}
 \alias{mb_access_token}
+\alias{get_mb_access_token}
 \alias{list_tokens}
-\title{Install a Mapbox access token in your .Renviron for repeated use}
+\title{Install or retrieve a Mapbox access token in your .Renviron for repeated use}
 \usage{
 mb_access_token(token, overwrite = FALSE, install = FALSE)
+
+get_mb_access_token(
+  token = NULL,
+  default = c("MAPBOX_PUBLIC_TOKEN", "MAPBOX_SECRET_TOKEN"),
+  secret_required = FALSE
+)
 
 list_tokens(
   username,
@@ -17,15 +24,23 @@ list_tokens(
 )
 }
 \arguments{
-\item{token}{The Mapbox access token; can be public (starting with 'pk') or secret (starting with 'sk') scope, which the function will interpret for you}
+\item{token}{A Mapbox access token; can be public (starting with 'pk') or
+secret (starting with 'sk') scope, which the function will interpret for
+you.}
 
-\item{overwrite}{Whether or not to overwrite an existing Mapbox access token.  Defaults to FALSE.}
+\item{overwrite}{Whether or not to overwrite an existing Mapbox access token.
+Defaults to FALSE.}
 
-\item{install}{if TRUE, will install the key in your \code{.Renviron} file for use in future sessions.  Defaults to FALSE.}
-
-\item{username}{The Mapbox username for which you'd like to list access tokens.}
+\item{install}{if TRUE, will install the key in your \code{.Renviron} file
+for use in future sessions.  Defaults to FALSE.}
 
 \item{default}{If TRUE, will only include the default token for an account. If FALSE, will include all other tokens except for the default.  Defaults to NULL.}
+
+\item{secret_required}{If TRUE, a secret token is required. If FALSE, the
+default token is provided first and the other token provided second if the
+first is unavailable.}
+
+\item{username}{The Mapbox username for which you'd like to list access tokens.}
 
 \item{limit}{The maximum number of tokens to return. Defaults to NULL.}
 
@@ -39,7 +54,7 @@ list_tokens(
 A tibble of information about tokens in your Mapbox account.
 }
 \description{
-Install a Mapbox access token in your .Renviron for repeated use
+Install or retrieve a Mapbox access token in your .Renviron for repeated use
 
 List tokens from a Mapbox account
 }
@@ -48,15 +63,16 @@ List tokens from a Mapbox account
 my_token <- "..." # The token generated from your Mapbox account
 mb_access_token(my_token, install = TRUE)
 Sys.getenv("MAPBOX_PUBLIC_TOKEN")
+
+get_mb_access_token()
 }
 \dontrun{
 
 token_list <- list_tokens(
   username = "kwalkertcu", # You would use your own username here
   limit = 10,
-  sortby = "modified"#'
+  sortby = "modified" #'
 )
-
 }
 
 }

@@ -13,7 +13,8 @@ addMapboxTiles(
   layerId = NULL,
   group = NULL,
   options = leaflet::tileOptions(),
-  data = leaflet::getMapData(map)
+  data = leaflet::getMapData(map),
+  attribution = TRUE
 )
 }
 \arguments{
@@ -23,20 +24,31 @@ addMapboxTiles(
 
 \item{username}{Your Mapbox username}
 
-\item{scaling_factor}{The scaling factor to use when rendering the tiles.  A scaling factor of 1 (the default) returns 512px by 512px tiles.  A factor of \code{0.5} returns 256x256 tiles, and a factor of \code{2} returns 1024x1024 tiles.}
+\item{scaling_factor}{The scaling factor to use when rendering the tiles.  A
+scaling factor of 1 (the default) returns 512px by 512px tiles.  A factor
+of \code{0.5} returns 256x256 tiles, and a factor of \code{2} returns
+1024x1024 tiles.}
 
-\item{access_token}{Your Mapbox access token; can be set with \code{mb_access_token()}.}
+\item{access_token}{Your Mapbox access token; can be set with
+\code{mb_access_token()}.}
 
 \item{layerId}{the layer ID}
 
-\item{group}{The name of the group the Mapbox tile layer should belong to (for use in Shiny and to modify layers control in a Leaflet workflow)}
+\item{group}{The name of the group the Mapbox tile layer should belong to
+(for use in Shiny and to modify layers control in a Leaflet workflow)}
 
 \item{options}{A list of extra options (optional)}
 
-\item{data}{The data object used to derive argument values; can be provided to the initial call to \code{leaflet::leaflet()}}
+\item{data}{The data object used to derive argument values; can be provided
+to the initial call to \code{leaflet::leaflet()}}
+
+\item{attribution}{If `TRUE`, pass a standard attribution to
+[leaflet::addTiles]. If `FALSE`, attribution is `NULL`. attribution can also be
+a character string including HTML.}
 }
 \value{
-A pointer to the Mapbox Static Tiles API which will be translated appropriately by the leaflet R package.
+A pointer to the Mapbox Static Tiles API which will be translated
+  appropriately by the leaflet R package.
 }
 \description{
 Use a Mapbox style in a Leaflet map
@@ -48,12 +60,15 @@ library(leaflet)
 library(mapboxapi)
 
 leaflet() \%>\%
-  addMapboxTiles(style_id = "light-v9",
-                 username = "mapbox") \%>\%
-  setView(lng = -74.0051,
-          lat = 40.7251,
-          zoom = 13)
-
+  addMapboxTiles(
+    style_id = "light-v9",
+    username = "mapbox"
+  ) \%>\%
+  setView(
+    lng = -74.0051,
+    lat = 40.7251,
+    zoom = 13
+  )
 }
 
 }

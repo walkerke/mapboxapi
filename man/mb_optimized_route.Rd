@@ -72,8 +72,8 @@ to_visit <- data.frame(
   st_as_sf(coords = c("X", "Y"), crs = 4326)
 
 optimized_route <- mb_optimized_route(to_visit,
-                                      profile = "driving-traffic")
-
+  profile = "driving-traffic"
+)
 }
 
 }

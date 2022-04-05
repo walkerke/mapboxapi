@@ -55,7 +55,6 @@ upload_tiles(
   tileset_id = "median_age",
   tileset_name = "us_median_age_2014_to_2018"
 )
-
 }
 
 }

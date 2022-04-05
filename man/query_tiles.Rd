@@ -51,7 +51,6 @@ elevation <- query_tiles(
 )
 
 max(elevation$features$properties$ele)
-
 }
 
 }

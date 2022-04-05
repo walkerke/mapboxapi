@@ -74,7 +74,8 @@ tm_shape(ny_tiles) +
   tm_shape(ny_tracts) +
   tm_polygons(alpha = 0.5, col = "navy") +
   tm_credits("Basemap (c) Mapbox, (c) OpenStreetMap",
-             position = c("RIGHT", "BOTTOM"))
+    position = c("RIGHT", "BOTTOM")
+  )
 
 # ggplot2 usage:
 ggplot() +
@@ -82,7 +83,6 @@ ggplot() +
   geom_sf(data = ny_tracts, fill = "navy", alpha = 0.5) +
   theme_void() +
   labs(caption = "Basemap (c) Mapbox, (c) OpenStreetMap")
-
 }
 
 }

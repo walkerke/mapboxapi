@@ -146,7 +146,6 @@ map <- static_mapbox(
 )
 
 map
-
 }
 
 }

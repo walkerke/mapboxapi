@@ -25,11 +25,12 @@
 #' philly_tracts$time <- time_to_downtown
 #'
 #' mapdeck(style = mapdeck_style("light")) %>%
-#'   add_polygon(data = philly_tracts,
-#'               fill_colour = "time",
-#'               fill_opacity = 0.6,
-#'               legend = TRUE)
-#'
+#'   add_polygon(
+#'     data = philly_tracts,
+#'     fill_colour = "time",
+#'     fill_opacity = 0.6,
+#'     legend = TRUE
+#'   )
 #' }
 #'
 #' @export
@@ -39,20 +40,7 @@ mb_matrix <- function(origins,
                       fallback_speed = NULL,
                       access_token = NULL,
                       duration_output = "minutes") {
-
-  if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-
-    }
-  }
+  access_token <- get_mb_access_token(access_token)
 
   if (!profile %in% c("driving", "driving-traffic", "walking", "cycling")) {
     stop("The following travel profiles are supported: 'driving', 'driving-traffic', 'walking', and 'cycling'.  Please modify your request accordingly", call. = FALSE)
@@ -120,29 +108,33 @@ mb_matrix <- function(origins,
         matrix_output <- origins %>%
           dplyr::mutate(ix = c(0, rep(1:(nrow(origins) - 1) %/% chunk_size))) %>%
           split(.$ix) %>%
-          purrr::map(., ~{
+          purrr::map(., ~ {
             suppressMessages(
-              mb_matrix_limited(origins = .x,
-                                destinations = destinations,
-                                profile = profile,
-                                fallback_speed = fallback_speed,
-                                access_token = access_token,
-                                duration_output = duration_output)
+              mb_matrix_limited(
+                origins = .x,
+                destinations = destinations,
+                profile = profile,
+                fallback_speed = fallback_speed,
+                access_token = access_token,
+                duration_output = duration_output
+              )
             )
-        }) %>%
+          }) %>%
           purrr::reduce(rbind)
         return(matrix_output)
       } else {
         ix <- c(0, rep(1:(length(origins) - 1) %/% chunk_size))
         matrix_output <- origins %>%
           split(.$ix) %>%
-          purrr::map(., ~{
-            mb_matrix_limited(origins = .x,
-                              destinations = destinations,
-                              profile = profile,
-                              fallback_speed = fallback_speed,
-                              access_token = access_token,
-                              duration_output = duration_output)
+          purrr::map(., ~ {
+            mb_matrix_limited(
+              origins = .x,
+              destinations = destinations,
+              profile = profile,
+              fallback_speed = fallback_speed,
+              access_token = access_token,
+              duration_output = duration_output
+            )
           }) %>%
           purrr::reduce(rbind)
         return(matrix_output)
@@ -159,14 +151,16 @@ mb_matrix <- function(origins,
         matrix_output <- destinations %>%
           dplyr::mutate(ix = c(0, rep(1:(nrow(destinations) - 1) %/% chunk_size))) %>%
           split(.$ix) %>%
-          purrr::map(., ~{
+          purrr::map(., ~ {
             suppressMessages(
-              mb_matrix_limited(origins = origins,
-                                destinations = .x,
-                                profile = profile,
-                                fallback_speed = fallback_speed,
-                                access_token = access_token,
-                                duration_output = duration_output)
+              mb_matrix_limited(
+                origins = origins,
+                destinations = .x,
+                profile = profile,
+                fallback_speed = fallback_speed,
+                access_token = access_token,
+                duration_output = duration_output
+              )
             )
           }) %>%
           purrr::reduce(cbind)
@@ -175,13 +169,15 @@ mb_matrix <- function(origins,
         ix <- c(0, rep(1:(length(destinations) - 1) %/% chunk_size))
         matrix_output <- destinations %>%
           split(ix) %>%
-          purrr::map(., ~{
-            mb_matrix_limited(origins = origins,
-                              destinations = .x,
-                              profile = profile,
-                              fallback_speed = fallback_speed,
-                              access_token = access_token,
-                              duration_output = duration_output)
+          purrr::map(., ~ {
+            mb_matrix_limited(
+              origins = origins,
+              destinations = .x,
+              profile = profile,
+              fallback_speed = fallback_speed,
+              access_token = access_token,
+              duration_output = duration_output
+            )
           }) %>%
           purrr::reduce(cbind)
         return(matrix_output)
@@ -209,7 +205,6 @@ mb_matrix <- function(origins,
 
   # Parse the request
   if (any(grepl("^sf", class(origins)))) {
-
     if (sf::st_geometry_type(origins, by_geometry = FALSE) != "POINT") {
       origins <- suppressWarnings(sf::st_centroid(origins))
       message("Using feature centroids for origins")
@@ -221,7 +216,7 @@ mb_matrix <- function(origins,
       as.data.frame() %>%
       purrr::transpose()
 
-    formatted_origins <- purrr::map(coords, ~{
+    formatted_origins <- purrr::map(coords, ~ {
       paste0(.x, collapse = ",")
     }) %>%
       unlist() %>%
@@ -283,25 +278,23 @@ mb_matrix <- function(origins,
       destination_ix <- "all"
     }
 
-    formatted_origins <- map(origins, ~{
+    formatted_origins <- map(origins, ~ {
       paste0(.x, collapse = ",")
     }) %>%
       unlist() %>%
       paste0(collapse = ";")
 
     formatted_coords <- formatted_origins
-
   }
 
   # If destinations is supplied, process the data accordingly
   if (!is.null(destinations)) {
     if (any(grepl("^sf", class(destinations)))) {
-
       if (sf::st_geometry_type(destinations,
-                               by_geometry = FALSE) != "POINT") {
+        by_geometry = FALSE
+      ) != "POINT") {
         destinations <- suppressWarnings(sf::st_centroid(destinations))
         message("Using feature centroids for destinations")
-
       }
 
       destinations <- sf::st_transform(destinations, 4326)
@@ -313,14 +306,10 @@ mb_matrix <- function(origins,
       formatted_destinations <- purrr::map_chr(coords, function(x) {
         unlist(x) %>%
           paste0(collapse = ",")
-
       }) %>%
         paste0(collapse = ";")
-
-    }
-
-    else if ("list" %in% class(destinations)) {
-      formatted_destinations <- map(destinations, ~{
+    } else if ("list" %in% class(destinations)) {
+      formatted_destinations <- map(destinations, ~ {
         paste0(.x, collapse = ",")
       }) %>%
         unlist() %>%
@@ -328,24 +317,27 @@ mb_matrix <- function(origins,
     }
 
     formatted_coords <- paste(formatted_origins, formatted_destinations,
-                               sep = ";")
-
+      sep = ";"
+    )
   }
 
 
 
-  base_url <- paste0("https://api.mapbox.com/directions-matrix/v1/mapbox/",
-                     profile,
-                     "/",
-                     formatted_coords)
+  base_url <- paste0(
+    "https://api.mapbox.com/directions-matrix/v1/mapbox/",
+    profile,
+    "/",
+    formatted_coords
+  )
 
   request <- httr::GET(base_url,
-                 query = list(
-                   access_token = access_token,
-                   sources = origin_ix,
-                   destinations = destination_ix,
-                   fallback_speed = fallback_speed
-                 ))
+    query = list(
+      access_token = access_token,
+      sources = origin_ix,
+      destinations = destination_ix,
+      fallback_speed = fallback_speed
+    )
+  )
 
   content <- httr::content(request, as = "text") %>%
     jsonlite::fromJSON(flatten = TRUE)
@@ -365,7 +357,6 @@ mb_matrix <- function(origins,
   } else {
     stop("`duration_output` must be one of 'minutes' or 'seconds'", call. = FALSE)
   }
-
 }
 
 
@@ -395,15 +386,17 @@ mb_matrix <- function(origins,
 #' library(mapboxapi)
 #' library(mapdeck)
 #' isochrones <- mb_isochrone("The Kremlin, Moscow Russia",
-#'                            time = c(4, 8, 12),
-#'                            profile = "walking")
+#'   time = c(4, 8, 12),
+#'   profile = "walking"
+#' )
 #'
 #' mapdeck(style = mapdeck_style("light")) %>%
-#'   add_polygon(data = isochrones,
-#'               fill_colour = "time",
-#'               fill_opacity = 0.5,
-#'               legend = TRUE)
-#'
+#'   add_polygon(
+#'     data = isochrones,
+#'     fill_colour = "time",
+#'     fill_opacity = 0.5,
+#'     legend = TRUE
+#'   )
 #' }
 #'
 #' @export
@@ -419,20 +412,7 @@ mb_isochrone <- function(location,
                          rate_limit = 300,
                          keep_color_cols = FALSE,
                          id_column = NULL) {
-
-  if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-
-    }
-  }
+  access_token <- get_mb_access_token(access_token)
 
   # If distance is supplied, time should be set to NULL
   if (!is.null(distance)) {
@@ -440,7 +420,8 @@ mb_isochrone <- function(location,
 
     if (max(distance) > 100000) {
       stop("The maximum distance you can request is 100,000 meters (100km).",
-           call. = FALSE)
+        call. = FALSE
+      )
     }
   }
 
@@ -468,8 +449,9 @@ mb_isochrone <- function(location,
       transpose()
 
     mb_isochrone_limited <- purrr::slowly(mb_isochrone,
-                                          rate = purrr::rate_delay(60 / rate_limit),
-                                          quiet = TRUE)
+      rate = purrr::rate_delay(60 / rate_limit),
+      quiet = TRUE
+    )
 
     # Grab IDs to allocate to isochrones
     if ("data.frame" %in% class(location)) {
@@ -482,29 +464,27 @@ mb_isochrone <- function(location,
       iso_ids <- 1:length(location)
     }
 
-    purrr::map2(coords, iso_ids, ~{
-      mb_isochrone_limited(location = .x,
-                           profile = profile,
-                           time = time,
-                           distance = distance,
-                           access_token = access_token,
-                           denoise = denoise,
-                           generalize = generalize,
-                           geometry = geometry,
-                           output = "sf") %>%
+    purrr::map2(coords, iso_ids, ~ {
+      mb_isochrone_limited(
+        location = .x,
+        profile = profile,
+        time = time,
+        distance = distance,
+        access_token = access_token,
+        denoise = denoise,
+        generalize = generalize,
+        geometry = geometry,
+        output = "sf"
+      ) %>%
         dplyr::mutate(id = .y)
     }) %>%
       dplyr::bind_rows()
-
-
   }
 
   if (any(grepl("^sf", class(location)))) {
-
     sf_isos <- mb_isochrone_sf(location)
 
     return(sf_isos)
-
   }
 
   if (geometry == "polygon") {
@@ -522,7 +502,8 @@ mb_isochrone <- function(location,
     coords <- location
   } else {
     stop("The specified location must either be a coordinate pair or a valid address",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   base <- sprintf(
@@ -536,25 +517,26 @@ mb_isochrone <- function(location,
   request_isochrones <- function(base, access_token, time, distance, denoise,
                                  generalize, polygons,
                                  output, keep_color_cols) {
-
     if (!is.null(time)) {
       request <- GET(base,
-                     query = list(
-                       access_token = access_token,
-                       contours_minutes = paste0(time, collapse = ","),
-                       denoise = as.character(denoise),
-                       generalize = generalize,
-                       polygons = polygons
-                     ))
+        query = list(
+          access_token = access_token,
+          contours_minutes = paste0(time, collapse = ","),
+          denoise = as.character(denoise),
+          generalize = generalize,
+          polygons = polygons
+        )
+      )
     } else if (!is.null(distance)) {
       request <- GET(base,
-                     query = list(
-                       access_token = access_token,
-                       contours_meters = paste0(distance, collapse = ","),
-                       denoise = as.character(denoise),
-                       generalize = generalize,
-                       polygons = polygons
-                     ))
+        query = list(
+          access_token = access_token,
+          contours_meters = paste0(distance, collapse = ","),
+          denoise = as.character(denoise),
+          generalize = generalize,
+          polygons = polygons
+        )
+      )
     }
 
 
@@ -567,7 +549,6 @@ mb_isochrone <- function(location,
     }
 
     if (output == "sf") {
-
       if (!is.null(time)) {
         isos <- sf::read_sf(content) %>%
           dplyr::rename(time = contour)
@@ -584,10 +565,7 @@ mb_isochrone <- function(location,
         } else if (!is.null(distance)) {
           return(dplyr::select(isos, distance))
         }
-
-
       }
-
     } else if (output == "list") {
       return(content)
     }
@@ -619,10 +597,11 @@ mb_isochrone <- function(location,
 
       # Iterate over the times and reassemble in a rate-limited way
       request_isochrones_times <- purrr::slowly(request_isochrones,
-                                                rate = purrr::rate_delay(60 / rate_limit),
-                                                quiet = TRUE)
+        rate = purrr::rate_delay(60 / rate_limit),
+        quiet = TRUE
+      )
 
-      iso_requests <- purrr::map(times_chunked, ~{
+      iso_requests <- purrr::map(times_chunked, ~ {
         request_isochrones_times(
           base = base,
           access_token = access_token,
@@ -640,7 +619,6 @@ mb_isochrone <- function(location,
         dplyr::arrange(dplyr::desc(time))
 
       return(iso_requests)
-
     }
   } else if (!is.null(distance)) {
     if (length(distance) <= 4) {
@@ -660,7 +638,8 @@ mb_isochrone <- function(location,
     } else {
       if (output == "list") {
         stop("The maximum number of distances you can request for list output is 4.",
-             call. = FALSE)
+          call. = FALSE
+        )
       }
 
       # Chunk the distances into groups of 4 or less
@@ -668,10 +647,11 @@ mb_isochrone <- function(location,
 
       # Iterate over the distances and reassemble in a rate-limited way
       request_isochrones_distances <- purrr::slowly(request_isochrones,
-                                                rate = purrr::rate_delay(60 / rate_limit),
-                                                quiet = TRUE)
+        rate = purrr::rate_delay(60 / rate_limit),
+        quiet = TRUE
+      )
 
-      iso_requests <- purrr::map(distances_chunked, ~{
+      iso_requests <- purrr::map(distances_chunked, ~ {
         request_isochrones_distances(
           base = base,
           access_token = access_token,
@@ -690,13 +670,6 @@ mb_isochrone <- function(location,
         dplyr::arrange(dplyr::desc(distance))
 
       return(iso_requests)
-
     }
   }
-
-
-
-
-
-
 }

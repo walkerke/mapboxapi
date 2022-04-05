@@ -72,7 +72,7 @@ mb_access_token <- function(token, overwrite = FALSE, install = FALSE) {
 get_mb_access_token <- function(token = NULL,
                                 default = c("MAPBOX_PUBLIC_TOKEN", "MAPBOX_SECRET_TOKEN"),
                                 secret_required = FALSE) {
-  primary_token <- match.arg(default)
+  default <- match.arg(default)
 
   secondary_token <-
     switch(primary_token,
@@ -80,12 +80,25 @@ get_mb_access_token <- function(token = NULL,
       "MAPBOX_SECRET_TOKEN" = "MAPBOX_PUBLIC_TOKEN"
     )
 
+  allow_primary <- TRUE
+  allow_secondary <- TRUE
+
+  if (secret_required) {
+    if (primary_token == "MAPBOX_PUBLIC_TOKEN") {
+      allow_primary <- FALSE
+      allow_secondary <- TRUE
+    } else {
+      allow_primary <- TRUE
+      allow_secondary <- FALSE
+    }
+  }
+
   if (is.null(token)) {
-    # Use public token first, then secret token
-    if ((Sys.getenv(primary) != "") && !secret_required) {
+    # Use primary token first, then secondary token
+    if ((Sys.getenv(primary) != "") && allow_primary) {
       token <- Sys.getenv(primary_token)
     } else {
-      if (Sys.getenv(secondary_token) != "") {
+      if ((Sys.getenv(secondary_token) != "") && allow_secondary) {
         token <- Sys.getenv(secondary_token)
       } else if (secret_required) {
         stop("A Mapbox secret access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
