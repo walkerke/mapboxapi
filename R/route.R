@@ -35,7 +35,7 @@
 #' library(leaflet)
 #'
 #' my_route <- mb_directions(
-#'  origin = "10 Avenue de Wagram, 75008 Paris France",
+#'   origin = "10 Avenue de Wagram, 75008 Paris France",
 #'   destination = "59 Rue de Tocqueville, 75017 Paris France",
 #'   profile = "cycling",
 #'   steps = TRUE,
@@ -43,10 +43,11 @@
 #' )
 #'
 #' leaflet(my_route) %>%
-#'   addMapboxTiles(style_id = "light-v9",
-#'                  username = "mapbox") %>%
+#'   addMapboxTiles(
+#'     style_id = "light-v9",
+#'     username = "mapbox"
+#'   ) %>%
 #'   addPolylines()
-#'
 #' }
 #' @export
 mb_directions <- function(input_data = NULL,
@@ -75,21 +76,8 @@ mb_directions <- function(input_data = NULL,
                           walking_speed = NULL,
                           walkway_bias = NULL,
                           alley_bias = NULL,
-                          access_token = NULL
-) {
-
-  if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-    }
-  }
+                          access_token = NULL) {
+  access_token <- get_mb_access_token(access_token)
 
   # Check for co-existence of input data and origin/destination
   if (!is.null(input_data)) {
@@ -144,7 +132,6 @@ mb_directions <- function(input_data = NULL,
   # If input_data is an sf object, process it accordingly
   if (!is.null(input_data)) {
     if (any(grepl("^sf", class(input_data)))) {
-
       if (unique(sf::st_geometry_type(input_data)) != "POINT") {
         input_data <- suppressWarnings(sf::st_centroid(input_data))
       }
@@ -155,14 +142,13 @@ mb_directions <- function(input_data = NULL,
         as.data.frame() %>%
         purrr::transpose()
 
-      formatted_coords <- purrr::map(coords, ~{
+      formatted_coords <- purrr::map(coords, ~ {
         paste0(.x, collapse = ",")
       }) %>%
         unlist() %>%
         paste0(collapse = ";")
     } else if ("list" %in% class(input_data)) {
-
-      formatted_coords <- map(input_data, ~{
+      formatted_coords <- map(input_data, ~ {
         # If list element is an address, geocode it
         if (class(.x) == "character") {
           cxy <- mb_geocode(.x)
@@ -173,7 +159,6 @@ mb_directions <- function(input_data = NULL,
       }) %>%
         unlist() %>%
         paste0(collapse = ";")
-
     }
   }
 
@@ -196,25 +181,27 @@ mb_directions <- function(input_data = NULL,
   }
 
   # Assemble the request
-  base <- sprintf("https://api.mapbox.com/directions/v5/mapbox/%s/%s",
-                  profile, formatted_coords)
+  base <- sprintf(
+    "https://api.mapbox.com/directions/v5/mapbox/%s/%s",
+    profile, formatted_coords
+  )
 
   # Account for boolean-to-string logic if applicable
   if (!is.null(alternatives)) {
     if (alternatives) {
-      alternatives <- 'true'
+      alternatives <- "true"
     } else {
-      alternatives <- 'false'
+      alternatives <- "false"
     }
   }
 
 
   if (!is.null(steps)) {
     if (steps) {
-      steps <- 'true'
+      steps <- "true"
     }
   } else {
-    steps <- 'false'
+    steps <- "false"
   }
 
   if (!is.null(banner_instructions)) {
@@ -222,17 +209,17 @@ mb_directions <- function(input_data = NULL,
       if (output == "sf") {
         warning("Banner instructions are being ignored; set `output = 'full'` to retrieve this content.")
       }
-      banner_instructions <- 'true'
+      banner_instructions <- "true"
     } else {
-      banner_instructions <- 'false'
+      banner_instructions <- "false"
     }
   }
 
   if (!is.null(roundabout_exits)) {
     if (roundabout_exits) {
-      roundabout_exits <- 'true'
+      roundabout_exits <- "true"
     } else {
-      roundabout_exits <- 'false'
+      roundabout_exits <- "false"
     }
   }
 
@@ -241,9 +228,9 @@ mb_directions <- function(input_data = NULL,
       if (output == "sf") {
         warning("Voice instructions are being ignored; set `output = 'full'` to retrieve this content.")
       }
-      voice_instructions <- 'true'
+      voice_instructions <- "true"
     } else {
-      voice_instructions <- 'false'
+      voice_instructions <- "false"
     }
   }
 
@@ -252,37 +239,39 @@ mb_directions <- function(input_data = NULL,
       if (output == "sf") {
         warning("Voice units are being ignored; set `output = 'full'` to retrieve this content.")
       }
-      voice_units <- 'true'
+      voice_units <- "true"
     } else {
-      voice_units <- 'false'
+      voice_units <- "false"
     }
   }
 
-  request <- httr::GET(url = base,
-                       query = list(
-                         access_token = access_token,
-                         alternatives = alternatives,
-                         annotations = annotations,
-                         bearings = bearings,
-                         continue_straight = continue_straight,
-                         exclude = exclude,
-                         geometries = "geojson",
-                         overview = "simplified",
-                         radiuses = radiuses,
-                         approaches = approaches,
-                         steps = steps,
-                         banner_instructions = banner_instructions,
-                         language = language,
-                         roundabout_exits = roundabout_exits,
-                         voice_instructions = voice_instructions,
-                         voice_units = voice_units,
-                         waypoint_names = waypoint_names,
-                         waypoint_targets = waypoint_targets,
-                         waypoints = waypoints,
-                         walking_speed = walking_speed,
-                         walkway_bias = walkway_bias,
-                         alley_bias = alley_bias
-                       ))
+  request <- httr::GET(
+    url = base,
+    query = list(
+      access_token = access_token,
+      alternatives = alternatives,
+      annotations = annotations,
+      bearings = bearings,
+      continue_straight = continue_straight,
+      exclude = exclude,
+      geometries = "geojson",
+      overview = "simplified",
+      radiuses = radiuses,
+      approaches = approaches,
+      steps = steps,
+      banner_instructions = banner_instructions,
+      language = language,
+      roundabout_exits = roundabout_exits,
+      voice_instructions = voice_instructions,
+      voice_units = voice_units,
+      waypoint_names = waypoint_names,
+      waypoint_targets = waypoint_targets,
+      waypoints = waypoints,
+      walking_speed = walking_speed,
+      walkway_bias = walkway_bias,
+      alley_bias = alley_bias
+    )
+  )
 
   if (request$status_code != 200) {
     pull <- jsonlite::fromJSON(content)
@@ -293,13 +282,11 @@ mb_directions <- function(input_data = NULL,
     jsonlite::fromJSON()
 
   if (output == "sf") {
-
-    if (steps == 'true') {
-
-      to_return <- purrr::map(content$routes$legs, ~{
+    if (steps == "true") {
+      to_return <- purrr::map(content$routes$legs, ~ {
         geoms <- .x$steps[[1]]$geometry[[1]]
 
-        route <- purrr::map(geoms, ~{
+        route <- purrr::map(geoms, ~ {
           .x %>%
             sf::st_linestring() %>%
             sf::st_sfc(crs = 4326) %>%
@@ -319,10 +306,8 @@ mb_directions <- function(input_data = NULL,
       } else {
         return(to_return)
       }
-
     } else {
-
-      to_return <- purrr::imap(content$routes$geometry$coordinates, ~{
+      to_return <- purrr::imap(content$routes$geometry$coordinates, ~ {
         route <- .x %>%
           sf::st_linestring() %>%
           sf::st_sfc(crs = 4326) %>%
@@ -343,7 +328,6 @@ mb_directions <- function(input_data = NULL,
   } else {
     return(content)
   }
-
 }
 
 
@@ -379,14 +363,16 @@ mb_directions <- function(input_data = NULL,
 #'   st_as_sf(coords = c("X", "Y"), crs = 4326)
 #'
 #' optimized_route <- mb_optimized_route(to_visit,
-#'                                       profile = "driving-traffic")
-#'
+#'   profile = "driving-traffic"
+#' )
 #' }
 #'
 #' @export
 mb_optimized_route <- function(input_data,
-                               profile = c("driving", "walking", "cycling",
-                                           "driving-traffic"),
+                               profile = c(
+                                 "driving", "walking", "cycling",
+                                 "driving-traffic"
+                               ),
                                output = "sf",
                                source = c("any", "first"),
                                destination = c("any", "last"),
@@ -400,28 +386,15 @@ mb_optimized_route <- function(input_data,
                                radiuses = NULL,
                                steps = NULL,
                                access_token = NULL) {
-
   profile <- match.arg(profile)
   source <- match.arg(source)
   destination <- match.arg(destination)
 
-  if (is.null(access_token)) {
-    # Use public token first, then secret token
-    if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-    }
-  }
+  access_token <- get_mb_access_token(access_token)
 
   # If input_data is an sf object, process it accordingly
   if (!is.null(input_data)) {
     if (any(grepl("^sf", class(input_data)))) {
-
       if (unique(sf::st_geometry_type(input_data)) != "POINT") {
         input_data <- suppressWarnings(sf::st_centroid(input_data))
       }
@@ -432,14 +405,13 @@ mb_optimized_route <- function(input_data,
         as.data.frame() %>%
         purrr::transpose()
 
-      formatted_coords <- purrr::map(coords, ~{
+      formatted_coords <- purrr::map(coords, ~ {
         paste0(.x, collapse = ",")
       }) %>%
         unlist() %>%
         paste0(collapse = ";")
     } else if ("list" %in% class(input_data)) {
-
-      formatted_coords <- map(input_data, ~{
+      formatted_coords <- map(input_data, ~ {
         # If list element is an address, geocode it
         if (class(.x) == "character") {
           cxy <- mb_geocode(.x)
@@ -450,46 +422,50 @@ mb_optimized_route <- function(input_data,
       }) %>%
         unlist() %>%
         paste0(collapse = ";")
-
     }
   }
 
   # Assemble the request
-  base <- sprintf("https://api.mapbox.com/optimized-trips/v1/mapbox/%s/%s",
-                  profile, formatted_coords)
+  base <- sprintf(
+    "https://api.mapbox.com/optimized-trips/v1/mapbox/%s/%s",
+    profile, formatted_coords
+  )
 
   # Account for boolean-to-string logic if applicable
   if (!is.null(steps)) {
     if (steps) {
-      steps <- 'true'
+      steps <- "true"
     }
   } else {
-    steps <- 'false'
+    steps <- "false"
   }
 
 
   if (roundtrip) {
-    roundtrip <- 'true'
+    roundtrip <- "true"
   } else {
-    roundtrip <- 'false'
+    roundtrip <- "false"
   }
 
 
-  request <- httr::GET(url = base,
-                       query = list(
-                         access_token = access_token,
-                         annotations = annotations,
-                         bearings = bearings,
-                         destination  = destination,
-                         distributions = distributions,
-                         geometries = "geojson",
-                         overview = "simplified",
-                         radiuses = radiuses,
-                         approaches = approaches,
-                         steps = steps,
-                         language = language,
-                         source = source,
-                         roundtrip = roundtrip))
+  request <- httr::GET(
+    url = base,
+    query = list(
+      access_token = access_token,
+      annotations = annotations,
+      bearings = bearings,
+      destination = destination,
+      distributions = distributions,
+      geometries = "geojson",
+      overview = "simplified",
+      radiuses = radiuses,
+      approaches = approaches,
+      steps = steps,
+      language = language,
+      source = source,
+      roundtrip = roundtrip
+    )
+  )
 
 
   if (request$status_code != 200) {
@@ -501,11 +477,8 @@ mb_optimized_route <- function(input_data,
     jsonlite::fromJSON()
 
   if (output == "sf") {
-
-    if (steps == 'true') {
-
-      to_return <- purrr::map(content$trips$legs[[1]]$steps, ~{
-
+    if (steps == "true") {
+      to_return <- purrr::map(content$trips$legs[[1]]$steps, ~ {
         route <- purrr::map(.x$geometry$coordinates, function(r) {
           r %>%
             sf::st_linestring() %>%
@@ -535,20 +508,16 @@ mb_optimized_route <- function(input_data,
       output$waypoints <- waypoints
 
       if (length(to_return) == 1) {
-
         output$route <- to_return[[1]]
 
         return(output)
       } else {
-
         output$route <- to_return
 
         return(output)
       }
-
     } else {
-
-      to_return <- purrr::imap(content$trips$geometry$coordinates, ~{
+      to_return <- purrr::imap(content$trips$geometry$coordinates, ~ {
         route <- .x %>%
           sf::st_linestring() %>%
           sf::st_sfc(crs = 4326) %>%
@@ -582,5 +551,4 @@ mb_optimized_route <- function(input_data,
   } else {
     return(content)
   }
-
 }

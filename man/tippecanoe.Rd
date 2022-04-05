@@ -79,7 +79,6 @@ upload_tiles(
   tileset_id = "vt_population_dots",
   multipart = TRUE
 )
-
 }
 
 }

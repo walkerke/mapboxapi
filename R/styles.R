@@ -9,25 +9,14 @@
 get_style <- function(style_id,
                       username,
                       access_token = NULL) {
-
-  if (is.null(access_token)) {
-    # Use secret token first, then public token
-    if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_PUBLIC_TOKEN") != "") {
-        access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-
-    }
-  }
+  access_token <- get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN")
 
   url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s", username, style_id)
 
-  request <- httr::GET(url = url,
-                       query = list(access_token = access_token))
+  request <- httr::GET(
+    url = url,
+    query = list(access_token = access_token)
+  )
 
   content <- httr::content(request, as = "text")
 
@@ -36,7 +25,6 @@ get_style <- function(style_id,
   }
 
   return(jsonlite::fromJSON(content))
-
 }
 
 
@@ -48,20 +36,7 @@ get_style <- function(style_id,
 #' @return A data frame of information about styles in your Mapbox account
 #' @export
 list_styles <- function(username, access_token = NULL) {
-
-  if (is.null(access_token)) {
-    # Use secret token first, then public token
-    if (Sys.getenv("MAPBOX_SECRET_TOKEN") != "") {
-      access_token <- Sys.getenv("MAPBOX_SECRET_TOKEN")
-    } else {
-      if (Sys.getenv("MAPBOX_PUBLIC_TOKEN" != "")) {
-        access_token <- Sys.getenv("MAPBOX_PUBLIC_TOKEN")
-      } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
-      }
-
-    }
-  }
+  access_token <- get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN")
 
   url <- sprintf("https://api.mapbox.com/styles/v1/%s", username)
 
@@ -74,5 +49,4 @@ list_styles <- function(username, access_token = NULL) {
   }
 
   return(jsonlite::fromJSON(content))
-
 }

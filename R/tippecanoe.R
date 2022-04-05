@@ -50,7 +50,6 @@
 #'   tileset_id = "vt_population_dots",
 #'   multipart = TRUE
 #' )
-#'
 #' }
 #'
 #' @export
@@ -63,12 +62,12 @@ tippecanoe <- function(input,
                        overwrite = TRUE,
                        other_options = NULL,
                        keep_geojson = FALSE) {
-
   check_install <- system("tippecanoe -v") == 0
 
   if (!check_install) {
     stop("tippecanoe is not installed.  Please visit https://github.com/mapbox/tippecanoe for installation instructions.",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
 
   # Assemble the options
@@ -107,7 +106,6 @@ tippecanoe <- function(input,
 
   # If input is an sf object, it should be first converted to GeoJSON
   if (any(grepl("^sf", class(input)))) {
-
     input <- sf::st_transform(input, 4326)
 
     if (is.null(layer_name)) {
@@ -119,38 +117,39 @@ tippecanoe <- function(input,
 
       path <- file.path(dir, outfile)
 
-      sf::st_write(input, path, quiet = TRUE,
-                   delete_dsn = TRUE, delete_layer = TRUE)
-
+      sf::st_write(input, path,
+        quiet = TRUE,
+        delete_dsn = TRUE, delete_layer = TRUE
+      )
     } else {
-
       tmp <- tempdir()
 
       tempfile <- paste0(layer_name, ".geojson")
 
       path <- file.path(tmp, tempfile)
 
-      sf::st_write(input, path, quiet = TRUE,
-                   delete_dsn = TRUE, delete_layer = TRUE)
-
+      sf::st_write(input, path,
+        quiet = TRUE,
+        delete_dsn = TRUE, delete_layer = TRUE
+      )
     }
 
-    call <- sprintf("tippecanoe -o %s/%s %s %s",
-                    dir, output, collapsed_opts, path)
+    call <- sprintf(
+      "tippecanoe -o %s/%s %s %s",
+      dir, output, collapsed_opts, path
+    )
 
     system(call)
-
-
   } else if (class(input) == "character") {
-
     if (!is.null(layer_name)) {
       collapsed_opts <- paste0(collapsed_opts, " -l ", layer_name)
     }
 
-    call <- sprintf("tippecanoe -o %s/%s %s %s",
-                    dir, output, collapsed_opts, input)
+    call <- sprintf(
+      "tippecanoe -o %s/%s %s %s",
+      dir, output, collapsed_opts, input
+    )
 
     system(call)
   }
-
 }
