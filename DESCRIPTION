@@ -19,29 +19,29 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.3.0)
 Imports: 
-  httr, 
-  sf, 
-  jsonlite, 
-  purrr, 
-  curl,
-  dplyr (>= 1.0.0),
-  tidyr (>= 1.0.0),
-  aws.s3,
-  stringi,
-  slippymath,
-  protolite,
-  rlang,
-  geojsonsf,
-  magick,
-  leaflet,
-  units,
-  raster,
-  png,
-  jpeg
+    httr,
+    sf,
+    jsonlite,
+    purrr,
+    curl,
+    dplyr (>= 1.0.0),
+    tidyr (>= 1.0.0),
+    aws.s3,
+    stringi,
+    slippymath,
+    protolite,
+    rlang,
+    geojsonsf,
+    magick,
+    leaflet,
+    units,
+    raster,
+    png,
+    jpeg
 Suggests:
-  mapdeck,
-  tigris,
-  tidycensus,
-  tmap,
-  ggspatial
+    ggspatial,
+    mapdeck,
+    tigris,
+    tidycensus,
+    tmap
 RoxygenNote: 7.1.2
