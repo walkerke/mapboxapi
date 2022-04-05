@@ -542,6 +542,13 @@ get_vector_tiles <- function(tileset_id,
 #'   largest possible image. defaults to 0.5
 #' @param scaling_factor The scaling factor of the tiles; either \code{"1x"}
 #'   (the default) or \code{"2x"}
+#' @param attribution Controls whether there is attribution on the image. Defaults to `TRUE`.
+#'   Note: If attribution=false, the watermarked attribution is removed from the
+#'   image. You still have a legal responsibility to attribute maps that use
+#'   OpenStreetMap data, which includes most maps from Mapbox. If you specify
+#'   attribution=false, you are legally required to include proper attribution
+#'   elsewhere on the webpage or document.
+#' @param logo Controls whether there is a Mapbox logo on the image. Defaults to `TRUE`.
 #' @param before_layer A character string that specifies where in the hierarchy
 #'   of layer elements the overlay should be inserted.  The overlay will be
 #'   placed just above the specified layer in the given Mapbox styles.
@@ -596,6 +603,8 @@ static_mapbox <- function(location = NULL,
                           pitch = NULL,
                           scale = 0.5,
                           scaling_factor = c("1x", "2x"),
+                          attribution = TRUE,
+                          logo = TRUE,
                           before_layer = NULL,
                           access_token = NULL,
                           image = TRUE) {
@@ -741,6 +750,8 @@ static_mapbox <- function(location = NULL,
 
   request <- httr::GET(base1, query = list(
     access_token = access_token,
+    attribution = tolower(attribution),
+    logo = tolower(logo),
     before_layer = before_layer
   ))
 
@@ -778,6 +789,8 @@ layer_static_mapbox <- function(location = NULL,
                                 height = NULL,
                                 scale = 0.5,
                                 scaling_factor = c("1x", "2x"),
+                                attribution = TRUE,
+                                logo = TRUE,
                                 before_layer = NULL,
                                 access_token = NULL,
                                 ...) {
@@ -797,6 +810,8 @@ layer_static_mapbox <- function(location = NULL,
     height = height,
     scale = scale,
     scaling_factor = scaling_factor,
+    attribution = attribution,
+    logo = logo,
     before_layer = before_layer,
     access_token = access_token,
     image = FALSE
