@@ -700,13 +700,7 @@ static_mapbox <- function(location = NULL,
     }
   } else {
     if (!is.null(bbox) && all(sapply(c(longitude, latitude), is.null))) {
-      location <-
-        sf::st_transform(sf::st_sf(sf::st_as_sfc(bbox)), 4326)
-
-      center <-
-        sf::st_coordinates(
-          suppressWarnings(sf::st_centroid(location))
-        )
+      center <- bbox_to_center(bbox, crs = 4326)
 
       longitude <- center[1]
       latitude <- center[2]

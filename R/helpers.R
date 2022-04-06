@@ -114,3 +114,18 @@ location_to_bbox <- function(location, buffer_dist, crs = 4326, null.ok = TRUE) 
 
   return(bbox)
 }
+
+#' @rdname bbox_to_center
+#' @noRd
+#' @importFrom sf st_transform st_sf st_as_sfc st_coordinates st_centroid
+bbox_to_center <- function(bbox, crs = 4326) {
+  location <-
+    sf::st_transform(sf::st_sf(sf::st_as_sfc(bbox)), crs)
+
+  center <-
+    sf::st_coordinates(
+      suppressWarnings(sf::st_centroid(location))
+    )
+
+  return(center)
+}
