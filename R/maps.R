@@ -512,8 +512,9 @@ get_vector_tiles <- function(tileset_id,
 #' @inheritParams get_static_tiles
 #' @param buffer_dist The distance to buffer around an input sf object for
 #'   determining static map, specified in meters.  Defaults to 1000.
-#' @param style_id A style ID
-#' @param username A Mapbox username
+#' @param style_id A style ID (required if style_url is NULL).
+#' @param username A Mapbox username (required if style_url is NULL).
+#' @param style_url A Mapbox style url; defaults to NULL.
 #' @param overlay_sf The overlay sf object (optional).  The function will
 #'   convert the sf object to GeoJSON then plot over the basemap style.  Spatial
 #'   data that are too large will trigger an error, and should be added to the
@@ -591,6 +592,7 @@ static_mapbox <- function(location = NULL,
                           buffer_dist = 1000,
                           style_id,
                           username,
+                          style_url = NULL,
                           overlay_sf = NULL,
                           overlay_style = NULL,
                           overlay_markers = NULL,
@@ -608,14 +610,10 @@ static_mapbox <- function(location = NULL,
                           before_layer = NULL,
                           access_token = NULL,
                           image = TRUE) {
+
   access_token <- get_mb_access_token(access_token)
 
-  # Construct the request URL
-  # First, do chunk 1
-  base <- sprintf(
-    "https://api.mapbox.com/styles/v1/%s/%s/static",
-    username, style_id
-  )
+  base <- set_static_map_style(style_url, username, style_id)
 
   # Next, figure out the overlay
   # Basically, the idea is that you can string together GeoJSON, markers, etc.
@@ -776,6 +774,7 @@ layer_static_mapbox <- function(location = NULL,
                                 buffer_dist = 1000,
                                 style_id,
                                 username,
+                                style_url = NULL,
                                 overlay_sf = NULL,
                                 overlay_style = NULL,
                                 overlay_markers = NULL,

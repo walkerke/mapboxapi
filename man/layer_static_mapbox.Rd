@@ -9,6 +9,7 @@ layer_static_mapbox(
   buffer_dist = 1000,
   style_id,
   username,
+  style_url = NULL,
   overlay_sf = NULL,
   overlay_style = NULL,
   overlay_markers = NULL,
@@ -36,9 +37,11 @@ WGS84 longitude/latitude coordinates and be in the order
 \item{buffer_dist}{The distance to buffer around an input sf object for
 determining static map, specified in meters.  Defaults to 1000.}
 
-\item{style_id}{A style ID}
+\item{style_id}{A style ID (required if style_url is NULL).}
 
-\item{username}{A Mapbox username}
+\item{username}{A Mapbox username (required if style_url is NULL).}
+
+\item{style_url}{A Mapbox style url; defaults to NULL.}
 
 \item{overlay_sf}{The overlay sf object (optional).  The function will
 convert the sf object to GeoJSON then plot over the basemap style.  Spatial

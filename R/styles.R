@@ -27,7 +27,6 @@ get_style <- function(style_id,
   return(jsonlite::fromJSON(content))
 }
 
-
 #' List styles in your Mapbox account
 #'
 #' @param username Your Mapbox username
@@ -50,3 +49,25 @@ list_styles <- function(username, access_token = NULL) {
 
   return(jsonlite::fromJSON(content))
 }
+
+
+#' Helper function to set style for static maps
+#'
+#' @noRd
+set_static_map_style <- function(style_url = NULL, username, style_id) {
+  if (!is.null(style_url)) {
+    username <- stringi::stri_extract(style_url, paste0("(?<=styles/).+(?=/)"))
+    style_id <- stringi::stri_extract(style_url, paste0("(?<=", username,"/).+"))
+  }
+
+  # Construct the request URL
+  # First, do chunk 1
+  base <- sprintf(
+    "https://api.mapbox.com/styles/v1/%s/%s/static",
+    username, style_id
+  )
+
+  return(base)
+}
+
+
