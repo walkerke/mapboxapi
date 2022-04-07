@@ -365,11 +365,13 @@ mb_matrix <- function(origins,
 #' This function returns isochrones from the Mapbox Navigation API, which are shapes that represent the reachable area around one or more locations within a given travel time.  Isochrones can be computed for driving, walking, or cycling routing profiles, and can optionally be set to return distances rather than times.  \code{mb_isochrone()} returns isochrones as simple features objects in the WGS 1984 geographic coordinate system.
 #'
 #' @param location A vector of form \code{c(longitude, latitude)}, an address that can be geocoded as a character string, or an sf object.
-#' @param profile One of "driving", "walking", or "cycling".  "driving" is the default.
+#' @param profile One of "driving", "walking", "cycling", or "driving-traffic".
+#'                "driving" is the default.
 #' @param time A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}.  The maximum time supported is 60 minutes.
 #' @param distance A vector of distance contours specified in meters.  If supplied, will supercede
 #'                 any call to the \code{time} parameter as time and distance cannot be used
 #'                 simultaneously.  Defaults to \code{NULL}.
+#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns.  If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.
 #' @param access_token A valid Mapbox access token.
 #' @param denoise A floating-point value between 0 and 1 used to remove smaller contours.  1 is the default and returns only the largest contour for an input time.
 #' @param generalize A value expressed in meters of the tolerance for the Douglas-Peucker generalization algorithm used to simplify the isochrone shapes.  If \code{NULL} (the default), the Mapbox API will choose an optimal value for you.
@@ -404,6 +406,7 @@ mb_isochrone <- function(location,
                          profile = "driving",
                          time = c(5, 10, 15),
                          distance = NULL,
+                         depart_at = NULL,
                          access_token = NULL,
                          denoise = 1,
                          generalize = NULL,
@@ -470,6 +473,7 @@ mb_isochrone <- function(location,
         profile = profile,
         time = time,
         distance = distance,
+        depart_at = depart_at,
         access_token = access_token,
         denoise = denoise,
         generalize = generalize,
@@ -514,7 +518,8 @@ mb_isochrone <- function(location,
 
   # Once assembled, we can check to see how many times have been requested
   # to handle rate-limiting internally.
-  request_isochrones <- function(base, access_token, time, distance, denoise,
+  request_isochrones <- function(base, access_token, time, distance, depart_at,
+                                 denoise,
                                  generalize, polygons,
                                  output, keep_color_cols) {
     if (!is.null(time)) {
@@ -522,6 +527,7 @@ mb_isochrone <- function(location,
         query = list(
           access_token = access_token,
           contours_minutes = paste0(time, collapse = ","),
+          depart_at = depart_at,
           denoise = as.character(denoise),
           generalize = generalize,
           polygons = polygons
@@ -532,6 +538,7 @@ mb_isochrone <- function(location,
         query = list(
           access_token = access_token,
           contours_meters = paste0(distance, collapse = ","),
+          depart_at = depart_at,
           denoise = as.character(denoise),
           generalize = generalize,
           polygons = polygons
@@ -579,6 +586,7 @@ mb_isochrone <- function(location,
         access_token = access_token,
         time = time,
         distance = distance,
+        depart_at = depart_at,
         denoise = denoise,
         generalize = generalize,
         polygons = polygons,
@@ -607,6 +615,7 @@ mb_isochrone <- function(location,
           access_token = access_token,
           time = .x,
           denoise = denoise,
+          depart_at = depart_at,
           generalize = generalize,
           polygons = polygons,
           output = "sf",
@@ -627,6 +636,7 @@ mb_isochrone <- function(location,
         access_token = access_token,
         time = time,
         distance = distance,
+        depart_at = depart_at,
         denoise = denoise,
         generalize = generalize,
         polygons = polygons,
@@ -657,6 +667,7 @@ mb_isochrone <- function(location,
           access_token = access_token,
           distance = .x,
           time = time,
+          depart_at = depart_at,
           denoise = denoise,
           generalize = generalize,
           polygons = polygons,
