@@ -30,7 +30,7 @@ query_tiles(
 
 \item{layers}{A vector of layer IDs you'd like to query (recommended); if left blank will query all layers, with the limitation that at most 50 features can be returned.}
 
-\item{access_token}{Your Mapbox access token, which can be set with \code{mb_access_token()}.}
+\item{access_token}{A Mapbox access token, which can be set with \code{mb_access_token()}.}
 }
 \value{
 An R list containing the API response, which includes information about the requested features.  Parse the list to extract desired elements.

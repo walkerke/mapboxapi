@@ -9,6 +9,7 @@ get_static_tiles(
   zoom,
   style_id,
   username,
+  style_url = NULL,
   scaling_factor = c("1x", "2x"),
   buffer_dist = 5000,
   crop = TRUE,
@@ -30,6 +31,8 @@ WGS84 longitude/latitude coordinates and be in the order
 \item{style_id}{A Mapbox style ID; retrieve yours from your Mapbox account.}
 
 \item{username}{A Mapbox username.}
+
+\item{style_url}{A Mapbox style URL.}
 
 \item{scaling_factor}{The scaling factor to use; one of \code{"1x"} or \code{"2x"}.}
 
