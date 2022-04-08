@@ -341,7 +341,7 @@ mb_directions <- function(input_data = NULL,
 #' @param output One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.
 #' @param source One of \code{"any"} (the default) or \code{"first"}.  If "any" is specified, any of the input coordinates may be used as the starting point.  If "first" is specified, the first coordinate will be used.
 #' @param destination One of \code{"any"} (the default) or \code{"last"}.  If "any" is specified, any of the input coordinates may be used as the ending point.  If "last" is specified, the last coordinate will be used.
-#' @param roundtrip If \code{TRUE} (the default), the route will start and end at the same point.
+#' @param roundtrip If \code{TRUE} (the default), the route will start and end at the same point. \code{roundtrip = FALSE} only works when \code{source} is \code{"first"} and \code{destination} is \code{"last"}.  If \code{FALSE} is supplied here, the route will start at the first point in \code{input_data} and end at the last point.
 #' @param annotations A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".
 #' @param approaches A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.
 #' @param bearings A semicolon-delimited character string of bearings.
@@ -448,6 +448,8 @@ mb_optimized_route <- function(input_data,
     roundtrip <- "true"
   } else {
     roundtrip <- "false"
+    source <- "first"
+    destination <- "last"
   }
 
 

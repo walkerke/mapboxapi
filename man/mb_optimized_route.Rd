@@ -33,7 +33,7 @@ mb_optimized_route(
 
 \item{destination}{One of \code{"any"} (the default) or \code{"last"}.  If "any" is specified, any of the input coordinates may be used as the ending point.  If "last" is specified, the last coordinate will be used.}
 
-\item{roundtrip}{If \code{TRUE} (the default), the route will start and end at the same point.}
+\item{roundtrip}{If \code{TRUE} (the default), the route will start and end at the same point. \code{roundtrip = FALSE} only works when \code{source} is \code{"first"} and \code{destination} is \code{"last"}.  If \code{FALSE} is supplied here, the route will start at the first point in \code{input_data} and end at the last point.}
 
 \item{annotations}{A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".}
 
