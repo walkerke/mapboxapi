@@ -2,7 +2,7 @@
 % Please edit documentation in R/maps.R
 \name{layer_static_mapbox}
 \alias{layer_static_mapbox}
-\title{ggplot2 layer with static_mapbox and layer_spatial}
+\title{Make a ggplot2 layer with static_mapbox and ggspatial}
 \usage{
 layer_static_mapbox(
   location = NULL,
@@ -68,14 +68,15 @@ largest possible image. defaults to 0.5}
 \item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"}
 (the default) or \code{"2x"}}
 
-\item{attribution}{Controls whether there is attribution on the image. Defaults to `TRUE`.
-Note: If attribution=false, the watermarked attribution is removed from the
-image. You still have a legal responsibility to attribute maps that use
-OpenStreetMap data, which includes most maps from Mapbox. If you specify
-attribution=false, you are legally required to include proper attribution
-elsewhere on the webpage or document.}
+\item{attribution}{Controls whether there is attribution on the image.
+Defaults to `TRUE`. Note: If attribution=false, the watermarked attribution
+is removed from the image. You still have a legal responsibility to
+attribute maps that use OpenStreetMap data, which includes most maps from
+Mapbox. If you specify attribution=false, you are legally required to
+include proper attribution elsewhere on the webpage or document.}
 
-\item{logo}{Controls whether there is a Mapbox logo on the image. Defaults to `TRUE`.}
+\item{logo}{Controls whether there is a Mapbox logo on the image. Defaults to
+`TRUE`.}
 
 \item{before_layer}{A character string that specifies where in the hierarchy
 of layer elements the overlay should be inserted.  The overlay will be
@@ -87,5 +88,5 @@ placed just above the specified layer in the given Mapbox styles.}
 \item{...}{additional parameters passed to \code{\link[ggspatial]{layer_spatial}}}
 }
 \description{
-ggplot2 layer with static_mapbox and layer_spatial
+Make a ggplot2 layer with static_mapbox and ggspatial
 }

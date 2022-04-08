@@ -119,7 +119,7 @@ get_mb_access_token <- function(token = NULL,
 #' @param limit The maximum number of tokens to return. Defaults to NULL.
 #' @param sortby How to sort the returned tokens; one of \code{"created"} or \code{"modified"}.
 #' @param usage If \code{"pk"}, returns only public tokens; if \code{"sk"}, returns only secret tokens.  Defaults to \code{NULL}, which returns all tokens in the scope of the supplied access token.
-#' @param access_token Your Mapbox access token.  If left blank, will first check to see if you have a secret token stored in .Renviron, then a public token.
+#' @param access_token A Mapbox access token.  If left blank, will first check to see if you have a secret token stored in .Renviron, then a public token.
 #' @rdname mb_access_token
 #'
 #' @return A tibble of information about tokens in your Mapbox account.

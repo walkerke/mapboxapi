@@ -95,14 +95,15 @@ largest possible image. defaults to 0.5}
 \item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"}
 (the default) or \code{"2x"}}
 
-\item{attribution}{Controls whether there is attribution on the image. Defaults to `TRUE`.
-Note: If attribution=false, the watermarked attribution is removed from the
-image. You still have a legal responsibility to attribute maps that use
-OpenStreetMap data, which includes most maps from Mapbox. If you specify
-attribution=false, you are legally required to include proper attribution
-elsewhere on the webpage or document.}
+\item{attribution}{Controls whether there is attribution on the image.
+Defaults to `TRUE`. Note: If attribution=false, the watermarked attribution
+is removed from the image. You still have a legal responsibility to
+attribute maps that use OpenStreetMap data, which includes most maps from
+Mapbox. If you specify attribution=false, you are legally required to
+include proper attribution elsewhere on the webpage or document.}
 
-\item{logo}{Controls whether there is a Mapbox logo on the image. Defaults to `TRUE`.}
+\item{logo}{Controls whether there is a Mapbox logo on the image. Defaults to
+`TRUE`.}
 
 \item{before_layer}{A character string that specifies where in the hierarchy
 of layer elements the overlay should be inserted.  The overlay will be
@@ -125,7 +126,9 @@ placed just above the specified layer in the given Mapbox styles.}
 \item{url}{The URL of the image to be used for the icon if \code{marker_type = "url"}.}
 }
 \value{
-A pointer to an image of class \code{"magick-image"} if `image = TRUE`. The resulting image can be manipulated further with functions from the magick package.
+A pointer to an image of class \code{"magick-image"} if `image =
+  TRUE`. The resulting image can be manipulated further with functions from
+  the magick package.
 
 A formatted list of marker specifications that can be passed to the \code{\link{static_mapbox}} function.
 }

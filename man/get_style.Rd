@@ -4,14 +4,16 @@
 \alias{get_style}
 \title{Get information about a style from your Mapbox account}
 \usage{
-get_style(style_id, username, access_token = NULL)
+get_style(style_id, username, style_url = NULL, access_token = NULL)
 }
 \arguments{
-\item{style_id}{The style ID}
+\item{style_id}{A style ID}
 
-\item{username}{Your Mapbox username}
+\item{username}{A Mapbox username}
 
-\item{access_token}{Your Mapbox public or secret access token; set with \code{mb_access_token()}}
+\item{style_url}{Mapbox style URL}
+
+\item{access_token}{A Mapbox public or secret access token; set with \code{mb_access_token()}}
 }
 \value{
 A list of information about your selected style.

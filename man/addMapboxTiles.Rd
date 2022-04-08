@@ -8,6 +8,7 @@ addMapboxTiles(
   map,
   style_id,
   username,
+  style_url = NULL,
   scaling_factor = c("1x", "0.5x", "2x"),
   access_token = NULL,
   layerId = NULL,
@@ -20,9 +21,11 @@ addMapboxTiles(
 \arguments{
 \item{map}{A map widget object created by \code{leaflet::leaflet()}}
 
-\item{style_id}{The style ID of your Mapbox style}
+\item{style_id}{The style ID of a Mapbox style}
 
-\item{username}{Your Mapbox username}
+\item{username}{A Mapbox username}
+
+\item{style_url}{A Mapbox style URL}
 
 \item{scaling_factor}{The scaling factor to use when rendering the tiles.  A
 scaling factor of 1 (the default) returns 512px by 512px tiles.  A factor

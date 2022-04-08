@@ -13,7 +13,7 @@ get_vector_tiles(tileset_id, location, zoom, access_token = NULL)
 
 \item{zoom}{The zoom level of the request; larger zoom levels will return more detail but will take longer to process.}
 
-\item{access_token}{Your Mapbox access token; can be set with \code{mb_access_token()}.}
+\item{access_token}{A Mapbox access token; can be set with \code{mb_access_token()}.}
 }
 \value{
 A list of sf objects representing the different layer types found in the requested vector tiles.
