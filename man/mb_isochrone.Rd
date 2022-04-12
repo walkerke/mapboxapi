@@ -26,13 +26,13 @@ mb_isochrone(
 \item{profile}{One of "driving", "walking", "cycling", or "driving-traffic".
 "driving" is the default.}
 
-\item{time}{A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}.  The maximum time supported is 60 minutes.}
+\item{time}{A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}.  The maximum time supported is 60 minutes.  Reflects traffic conditions for the date and time at which the function is called.  If reproducibility of isochrones is required, supply an argument to the \code{depart_at} parameter.}
 
 \item{distance}{A vector of distance contours specified in meters.  If supplied, will supercede
 any call to the \code{time} parameter as time and distance cannot be used
 simultaneously.  Defaults to \code{NULL}.}
 
-\item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns.  If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.}
+\item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns.  If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.  If \code{NULL} (the default), isochrones will reflect traffic conditions at the date and time when the function is called.}
 
 \item{access_token}{A valid Mapbox access token.}
 
