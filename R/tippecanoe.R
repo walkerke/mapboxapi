@@ -140,7 +140,7 @@ tippecanoe <- function(input,
     )
 
     system(call)
-  } else if (class(input) == "character") {
+  } else if (inherits(input, "character")) {
     if (!is.null(layer_name)) {
       collapsed_opts <- paste0(collapsed_opts, " -l ", layer_name)
     }

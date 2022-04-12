@@ -152,7 +152,7 @@ mb_directions <- function(input_data = NULL,
     } else if ("list" %in% class(input_data)) {
       formatted_coords <- map(input_data, ~ {
         # If list element is an address, geocode it
-        if (class(.x) == "character") {
+        if (inherits(.x, "character")) {
           cxy <- mb_geocode(.x)
         } else {
           cxy <- .x
@@ -168,12 +168,12 @@ mb_directions <- function(input_data = NULL,
   # or addresses.  If they are addresses, geocode them then process.
   # We've already done error handling to make sure origin and destination are both supplied.
   if (!is.null(origin)) {
-    if (class(origin) == "character") {
+    if (inherits(origin, "character")) {
       oxy <- paste0(mb_geocode(origin), collapse = ",")
     } else {
       oxy <- paste0(origin, collapse = ",")
     }
-    if (class(destination) == "character") {
+    if (inherits(destination, "character")) {
       dxy <- paste0(mb_geocode(destination), collapse = ",")
     } else {
       dxy <- paste0(destination, collapse = ",")
@@ -416,7 +416,7 @@ mb_optimized_route <- function(input_data,
     } else if ("list" %in% class(input_data)) {
       formatted_coords <- map(input_data, ~ {
         # If list element is an address, geocode it
-        if (class(.x) == "character") {
+        if (inherits(.x, "character")) {
           cxy <- mb_geocode(.x)
         } else {
           cxy <- .x

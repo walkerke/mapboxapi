@@ -431,11 +431,11 @@ get_vector_tiles <- function(tileset_id,
   # If location is a length-2 numeric vector of longitude/latitude, get the specific tile IDs
   # If location is an address/text description, geocode it
   if (is.vector(location)) {
-    if (class(location) == "numeric") {
+    if (inherits(location, "numeric")) {
       if (length(location) != 2) {
         stop("Location must be a length-2 vector of format c(lon, lat) if supplying coordinates as input.")
       }
-    } else if (class(location) == "character") {
+    } else if (inherits(location, "character")) {
       location <- mb_geocode(location)
     }
 
