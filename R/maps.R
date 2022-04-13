@@ -830,10 +830,15 @@ set_static_map_dims <- function(base = NULL, bbox = NULL, width = NULL, height =
 
 #' Make a ggplot2 layer with static_mapbox and ggspatial
 #'
+#' This function adapts \code{\link{static_mapbox}} to allow for the use of static Mapbox images as ggplot2 basemaps.  Much of the code was adapted from the MIT-licensed snapbox R package; its license is available at \url{https://github.com/anthonynorth/snapbox/blob/master/LICENSE}.
+#'
 #' @inheritParams static_mapbox
 #' @rdname layer_static_mapbox
 #' @param ... additional parameters passed to \code{\link[ggspatial]{layer_spatial}}
 #' @export
+#' @author Eli Pousson, \email{eli.pousson@gmail.com}
+#' @author Anthony North, \email{anthony.jl.north@gmail.com}
+#' @author Miles McBain, \email{miles.mcbain@gmail.com}
 #' @importFrom sf st_crs
 #' @importFrom raster brick extent projection
 #' @importFrom httr content

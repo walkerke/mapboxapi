@@ -88,5 +88,12 @@ placed just above the specified layer in the given Mapbox styles.}
 \item{...}{additional parameters passed to \code{\link[ggspatial]{layer_spatial}}}
 }
 \description{
-Make a ggplot2 layer with static_mapbox and ggspatial
+This function adapts \code{\link{static_mapbox}} to allow for the use of static Mapbox images as ggplot2 basemaps.  Much of the code was adapted from the MIT-licensed snapbox R package; its license is available at \url{https://github.com/anthonynorth/snapbox/blob/master/LICENSE}.
+}
+\author{
+Eli Pousson, \email{eli.pousson@gmail.com}
+
+Anthony North, \email{anthony.jl.north@gmail.com}
+
+Miles McBain, \email{miles.mcbain@gmail.com}
 }
