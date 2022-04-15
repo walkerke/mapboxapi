@@ -11,29 +11,6 @@ coords_to_tiles <- function(lon, lat, zoom) {
   #  return(paste(paste("https://a.tile.openstreetmap.org", zoom, xtile, ytile, sep="/"),".png",sep=""))
 }
 
-#' Lon/lat to world coordinates
-#'
-#' Compute web mercator world coordinates
-#' @name lonlat_to_worldcoords
-#' @param lon longitude
-#' @param lat latitude
-#' @param tile_size tile size
-#' @seealso <https://en.wikipedia.org/wiki/Web_Mercator_projection#Formulas>
-#'
-#' @noRd
-lonlat_to_worldcoords <- function(lon, lat, tile_size = 512) {
-  rad <- function(deg) deg * pi / 180.0
-
-  lambda <- rad(lon)
-  phi <- rad(lat)
-
-  x <- (tile_size / (2 * pi)) * (lambda + pi)
-  y <- (tile_size / (2 * pi)) * (pi - log(tan(pi / 4 + phi / 2)))
-
-  cbind(x, y)
-}
-
-
 #' Get a bounding box from location
 #'
 #' @rdname location_to_bbox
@@ -64,7 +41,7 @@ location_to_bbox <- function(location, buffer_dist, crs = 4326, null.ok = TRUE) 
     location <- sf::st_as_sf(sf::st_as_sfc(location))
   }
 
-  # If location is an sf object, get a buffered bbox to query the tiles
+  # If location is an `sf` object, get a buffered bbox to query the tiles
   if (any(grepl("^sf", class(location)))) {
 
     # If the input dataset is not a polygon, make it one
