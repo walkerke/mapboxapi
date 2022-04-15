@@ -1,12 +1,12 @@
 #' Upload dataset to your Mapbox account
 #'
-#' @param input An sf object, or the path to the dataset to upload as a character string.
+#' @param input An `sf` object, or the path to the dataset to upload as a character string.
 #' @param username Your Mapbox username
 #' @param access_token Your Mapbox access token; must have secret scope
 #' @param tileset_id The ID of the tileset in your Mapbox account
 #' @param tileset_name The name of the tileset in your Mapbox account
-#' @param keep_geojson Whether or not to keep the temporary GeoJSON used to generate the tiles (if the input is an sf object)
-#' @param multipart Whether or not to upload to the temporary AWS staging bucket as a multipart object; defaults to \code{FALSE}.
+#' @param keep_geojson Whether or not to keep the temporary GeoJSON used to generate the tiles (if the input is an `sf` object)
+#' @param multipart Whether or not to upload to the temporary AWS staging bucket as a multipart object; defaults to `FALSE`.
 #'
 #' @examples \dontrun{
 #'
@@ -42,7 +42,7 @@ upload_tiles <- function(input,
                          multipart = FALSE) {
   access_token <- get_mb_access_token(access_token, secret_required = TRUE)
 
-  # Allow input to be an sf object
+  # Allow input to be an `sf` object
   if (any(grepl("^sf", class(input)))) {
     input <- sf::st_transform(input, 4326)
 
@@ -178,16 +178,27 @@ check_upload_status <- function(upload_id,
 
 #' Get information about features in a tileset using the Tilequery API
 #'
-#' @param location The location for which you'd like to query tiles, expressed as either a length-2 vector of longitude and latitude or an address you'd like to geocode.
+#' @param location The location for which you'd like to query tiles, expressed
+#'   as either a length-2 vector of longitude and latitude or an address you'd
+#'   like to geocode.
 #' @param tileset_id The tileset ID to query.
-#' @param radius The radius around the point (in meters) for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.
-#' @param limit How many features to return (defaults to 5). Can be an integer between 1 and 50.
-#' @param dedupe Whether or not to return duplicate features as identified by their IDs.  The default, TRUE, will de-duplicate your dataset.
-#' @param geometry The feature geometry type to query - can be \code{"point"}, \code{"linestring"}, or \code{"polygon"}. If left blank, all geometry types will be queried.
-#' @param layers A vector of layer IDs you'd like to query (recommended); if left blank will query all layers, with the limitation that at most 50 features can be returned.
-#' @param access_token A Mapbox access token, which can be set with \code{mb_access_token()}.
+#' @param radius The radius around the point (in meters) for which you'd like to
+#'   query features. For point-in-polygon queries (e.g. "what county is my
+#'   point located in?") the default of 0 should be used.
+#' @param limit How many features to return (defaults to 5). Can be an integer
+#'   between 1 and 50.
+#' @param dedupe Whether or not to return duplicate features as identified by
+#'   their IDs. The default, TRUE, will de-duplicate your dataset.
+#' @param geometry The feature geometry type to query - can be \code{"point"},
+#'   \code{"linestring"}, or \code{"polygon"}. If left blank, all geometry types
+#'   will be queried.
+#' @param layers A vector of layer IDs you'd like to query (recommended); if
+#'   left blank will query all layers, with the limitation that at most 50
+#'   features can be returned.
+#' @param access_token A Mapbox access token, which can be set with
+#'   [mb_access_token()].
 #'
-#' @return An R list containing the API response, which includes information about the requested features.  Parse the list to extract desired elements.
+#' @return An R list containing the API response, which includes information about the requested features. Parse the list to extract desired elements.
 #' @seealso \url{https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/}
 #'
 #' @examples \dontrun{
@@ -269,12 +280,20 @@ query_tiles <- function(location,
 
 #' Retrieve vector tiles from a given Mapbox tileset
 #'
-#' @param tileset_id The name of the tileset ID; names can be retrieved from your Mapbox account
-#' @param location The location for which you'd like to retrieve tiles.  If the input is an sf object, the function will return data for all tiles that intersect the object's bounding box.  If the input is a coordinate pair or an address, data will be returned for the specific tile that contains the input.
-#' @param zoom The zoom level of the request; larger zoom levels will return more detail but will take longer to process.
-#' @param access_token A Mapbox access token; can be set with \code{mb_access_token()}.
+#' @param tileset_id The name of the tileset ID; names can be retrieved from
+#'   your Mapbox account
+#' @param location The location for which you'd like to retrieve tiles. If the
+#'   input is an `sf` object, the function will return data for all tiles that
+#'   intersect the object's bounding box. If the input is a coordinate pair or
+#'   an address, data will be returned for the specific tile that contains the
+#'   input.
+#' @param zoom The zoom level of the request; larger zoom levels will return
+#'   more detail but will take longer to process.
+#' @param access_token A Mapbox access token; which can be set with
+#'   [mb_access_token()].
 #'
-#' @return A list of sf objects representing the different layer types found in the requested vector tiles.
+#' @return A list of `sf` objects representing the different layer types found in
+#'   the requested vector tiles.
 #'
 #' @examples \dontrun{
 #'
@@ -299,7 +318,7 @@ get_vector_tiles <- function(tileset_id,
                              access_token = NULL) {
   access_token <- get_mb_access_token(access_token)
 
-  # If location is an sf object, get the bbox and the tiles that intersect it
+  # If location is an `sf` object, get the bbox and the tiles that intersect it
   if (any(grepl("^sf", class(location)))) {
     bbox <- location %>%
       sf::st_transform(4326) %>%
@@ -509,59 +528,59 @@ get_vector_tiles <- function(tileset_id,
 
 #' Return a static Mapbox map from a specified style
 #'
+#' This function uses the [Mapbox Static Maps
+#' API](https://www.mapbox.com/static-maps) to return a pointer to an `"magick-image"` class image or a [httr::response] object from the static map image
+#' URL.
+#'
 #' @inheritParams get_static_tiles
-#' @param buffer_dist The distance to buffer around an input sf object for
-#'   determining static map, specified in meters.  Defaults to 1000.
+#' @param buffer_dist The distance to buffer around an input `sf` object for
+#'   determining static map, specified in meters. Defaults to 1000.
 #' @param style_id A style ID (required if style_url is NULL).
-#' @param username A Mapbox username (required if style_url is NULL).
+#' @param username A Mapbox username (required if `style_url = NULL`).
 #' @param style_url A Mapbox style url; defaults to NULL.
-#' @param overlay_sf The overlay sf object (optional).  The function will
-#'   convert the sf object to GeoJSON then plot over the basemap style.  Spatial
+#' @param overlay_sf The overlay `sf` object (optional). The function will
+#'   convert the `sf` object to GeoJSON then plot over the basemap style. Spatial
 #'   data that are too large will trigger an error, and should be added to the
 #'   style in Mapbox Studio instead.
 #' @param overlay_style A named list of vectors specifying how to style the sf
-#'   overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity",
-#'   "fill", and "fill-opacity".  The fill and stroke color values should be
+#'   overlay. Possible names are "stroke", "stroke-width", "stroke-opacity",
+#'   "fill", and "fill-opacity". The fill and stroke color values should be
 #'   specified as six-digit hex codes, and the opacity and width values should
 #'   be supplied as floating-point numbers.
-#' @param overlay_markers The prepared overlay markers (optional).  See the
-#'   function \code{\link{prep_overlay_markers}} for more information on how to
+#' @param overlay_markers The prepared overlay markers (optional). See the
+#'   function [prep_overlay_markers] for more information on how to
 #'   specify a marker overlay.
-#' @param longitude The longitude of the map center.  If an overlay is supplied,
+#' @param longitude,latitude The longitude and latitude of the map center. If an overlay is supplied,
 #'   the map will default to the extent of the overlay unless longitude,
 #'   latitude, and zoom are all specified.
-#' @param latitude The latitude of the map center.  If an overlay is supplied,
-#'   the map will default to the extent of the overlay unless longitude,
-#'   latitude, and zoom are all specified.
-#' @param zoom The map zoom.  The map will infer this from the overlay unless
+#' @param zoom The map zoom. The map will infer this from the overlay unless
 #'   longitude, latitude, and zoom are all specified.
-#' @param width The map width; defaults to NULL
-#' @param height The map height; defaults to NULL
-#' @param bearing The map bearing; defaults to NULL
-#' @param pitch The map pitch; defaults to NULL
+#' @param width,height The map width and height; defaults to NULL
+#' @param pitch,bearing The map pitch and bearing; defaults to NULL. pitch can
+#'   range from 0 to 60 degrees, and bearing from 0 to 360 degrees.
 #' @param scale ratio to scale the output image; `scale = 1` will return the
 #'   largest possible image. defaults to 0.5
 #' @param scaling_factor The scaling factor of the tiles; either \code{"1x"}
-#'   (the default) or \code{"2x"}
+#'   (the default) or `"2x"`
 #' @param attribution Controls whether there is attribution on the image.
-#'   Defaults to `TRUE`. Note: If attribution=false, the watermarked attribution
+#'   Defaults to `TRUE`. If `FALSE`, the watermarked attribution
 #'   is removed from the image. You still have a legal responsibility to
 #'   attribute maps that use OpenStreetMap data, which includes most maps from
-#'   Mapbox. If you specify attribution=false, you are legally required to
+#'   Mapbox. If you specify `attribution = FALSE`, you are legally required to
 #'   include proper attribution elsewhere on the webpage or document.
 #' @param logo Controls whether there is a Mapbox logo on the image. Defaults to
 #'   `TRUE`.
 #' @param before_layer A character string that specifies where in the hierarchy
-#'   of layer elements the overlay should be inserted.  The overlay will be
+#'   of layer elements the overlay should be inserted. The overlay will be
 #'   placed just above the specified layer in the given Mapbox styles.
-#' @param access_token A Mapbox access token; can be set with
-#'   \code{mb_access_token()}.
-#' @param image If FALSE, return the a \code{response()} object from
-#'   \code{httr::GET()} using the static image URL; defaults to TRUE
+#' @param access_token A Mapbox access token; which can be set with
+#'   [mb_access_token].
+#' @param image If `FALSE`, return the a [httr::response] object from
+#'   [httr::GET] using the static image URL; defaults to TRUE
 #'
-#' @return A pointer to an image of class \code{"magick-image"} if `image =
+#' @return A pointer to an image of class `"magick-image"` if `image =
 #'   TRUE`. The resulting image can be manipulated further with functions from
-#'   the magick package.
+#'   the {magick} package.
 #'
 #' @examples \dontrun{
 #'
@@ -627,7 +646,7 @@ static_mapbox <- function(location = NULL,
 
   # Next, figure out the overlay
   # Basically, the idea is that you can string together GeoJSON, markers, etc.
-  # on a map and put it over a Mapbox style.  overlay should accept such
+  # on a map and put it over a Mapbox style. overlay should accept such
   # components and format them accordingly.
   #
   # `overlay_sf` converts to GeoJSON to make the request.
@@ -714,6 +733,10 @@ static_mapbox <- function(location = NULL,
     stop(print(jsonlite::fromJSON(content)), call. = FALSE)
   }
 
+  if (!rlang::is_installed("magick") && rlang::is_interactive()) {
+    rlang::check_installed("magick")
+  }
+
   if (image) {
     img <- magick::image_read(httr::content(request))
     return(img)
@@ -728,8 +751,8 @@ static_mapbox <- function(location = NULL,
 #' @importFrom stringi stri_extract
 set_static_map_style <- function(style_url = NULL, username, style_id) {
   if (!is.null(style_url)) {
-    username <- stringi::stri_extract(style_url, paste0("(?<=styles/).+(?=/)"))
-    style_id <- stringi::stri_extract(style_url, paste0("(?<=", username, "/).+"))
+    username <- stringi::stri_extract(style_url, regex = paste0("(?<=styles/).+(?=/)"))
+    style_id <- stringi::stri_extract(style_url, regex = paste0("(?<=", username, "/).+"))
   }
 
   # Construct the request URL
@@ -745,6 +768,7 @@ set_static_map_style <- function(style_url = NULL, username, style_id) {
 #' Add overlay to API query for static_mapbox
 #'
 #' @noRd
+#' @importFrom sf st_sf
 #' @importFrom utils URLencode
 #' @importFrom geojsonsf sf_geojson
 set_static_map_overlay <- function(base = NULL, overlay_sf = NULL, overlay_style = NULL, overlay_markers = NULL) {
@@ -752,7 +776,7 @@ set_static_map_overlay <- function(base = NULL, overlay_sf = NULL, overlay_style
 
   if (!is.null(overlay_sf)) {
     if (any(grepl("sfc", class(overlay_sf)))) {
-      overlay_sf <- st_sf(overlay_sf)
+      overlay_sf <- sf::st_sf(overlay_sf)
     }
 
     if (!is.null(overlay_style)) {
@@ -830,7 +854,19 @@ set_static_map_dims <- function(base = NULL, bbox = NULL, width = NULL, height =
 
 #' Make a ggplot2 layer with static_mapbox and ggspatial
 #'
-#' This function adapts \code{\link{static_mapbox}} to allow for the use of static Mapbox images as ggplot2 basemaps.  Much of the code was adapted from the MIT-licensed snapbox R package; its license is available at \url{https://github.com/anthonynorth/snapbox/blob/master/LICENSE}.
+#' This function wraps [static_mapbox()] and [ggspatial::layer_spatial()] to support
+#' the use of images from the [Mapbox Static Maps
+#' API](https://www.mapbox.com/static-maps) as [{ggplot2}](https://ggplot2.tidyverse.org/) basemaps.
+#'
+#' This function uses a different approach than a layer created using
+#' [get_static_tiles()]. Instead, [layer_static_mapbox()] is based largely on
+#' [snapbox::layer_mapbox()] (available under a [MIT
+#' license](https://github.com/anthonynorth/snapbox/blob/master/LICENSE). There
+#' are a few key differences between layer_static_mapbox and
+#' [snapbox::layer_mapbox()]. The "scale" parameter is equivalent to the
+#' "scale_ratio" parameter for {snapbox}. Setting `scale_factor = "2x"` is equivalent to
+#' setting `retina = TRUE.` Both functions return basemaps that are no larger than
+#' a single tile (a maximum of 1280 by 1280 pixels).
 #'
 #' @inheritParams static_mapbox
 #' @rdname layer_static_mapbox
@@ -901,16 +937,33 @@ layer_static_mapbox <- function(location = NULL,
 
 #' Prepare overlay markers for use in a Mapbox static map
 #'
-#' @param data An input data frame with longitude and latitude columns (X and Y or lon and lat as names are also acceptable) or an sf object with geometry type POINT.
-#' @param marker_type The marker type; one of \code{"pin-s"}, for a small pin; \code{"pin-l"}, for a large pin; and \code{"url"}, for an image path.
-#' @param label The marker label (optional).  Can be a letter, number (0 through 99), or a valid Maki icon (see \url{https://labs.mapbox.com/maki-icons/}) for options).
-#' @param color The marker color (optional).  Color should be specified as a three or six-digit hexadecimal code without the number sign.
-#' @param longitude A vector of longitudes; inferred from the input dataset if \code{data} is provided.
-#' @param latitude A vector of latitudes; inferred from the input dataset if \code{data} is provided.
-#' @param url The URL of the image to be used for the icon if \code{marker_type = "url"}.
-#' @rdname static_mapbox
-#' @return A formatted list of marker specifications that can be passed to the \code{\link{static_mapbox}} function.
+#' Markers are prepared to match GeoJSON
+#' [marker-spec](https://github.com/mapbox/mapbox-gl-markers#geojson-marker-spec)
+#' which is a partial implementation of the GeoJSON
+#' [simplestyle-spec](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0)
+#' (described as a work-in-progress by Mapbox).
+#'
+#' @param data An input data frame with longitude and latitude columns (X and Y
+#'   or lon and lat as names are also acceptable) or an `sf` object with
+#'   geometry type POINT.
+#' @param marker_type The marker type; one of \code{"pin-s"}, for a small pin;
+#'   \code{"pin-l"}, for a large pin; and \code{"url"}, for an image path.
+#' @param label The marker label (optional). Can be a letter, number (0 through
+#'   99), or a valid Maki icon (see <https://labs.mapbox.com/maki-icons/>)
+#'   for options).
+#' @param color The marker color (optional). Color should be specified as a
+#'   three or six-digit hexadecimal code without the number sign.
+#' @param longitude A vector of longitudes; inferred from the input dataset if
+#'   \code{data} is provided.
+#' @param latitude A vector of latitudes; inferred from the input dataset if
+#'   \code{data} is provided.
+#' @param url The URL of the image to be used for the icon if \code{marker_type
+#'   = "url"}.
+#' @name prep_overlay_markers
+#' @return A formatted list of marker specifications that can be passed to the [static_mapbox] function.
 #' @export
+#' @importFrom sf st_geometry_type st_coordinates
+#' @importFrom purrr map
 prep_overlay_markers <- function(data = NULL,
                                  marker_type = c("pin-s", "pin-l", "url"),
                                  label = NA,
@@ -921,7 +974,7 @@ prep_overlay_markers <- function(data = NULL,
   if (!is.null(data)) {
     if (any(grepl("^sf", class(data)))) {
       if (sf::st_geometry_type(data, by_geometry = FALSE) != "POINT") {
-        stop("To make markers from sf objects you must use the geometry type POINT",
+        stop("To make markers from `sf` objects you must use the geometry type POINT",
           call. = FALSE
         )
       }
@@ -982,66 +1035,20 @@ prep_overlay_markers <- function(data = NULL,
       }
     }
   } else {
-    coords_df <- data.frame(
-      longitude = longitude,
-      latitude = latitude,
-      marker_type = marker_type,
-      label = label,
-      color = color,
-      url = url
-    )
+    coords_df <-
+      data.frame(
+        longitude = longitude,
+        latitude = latitude,
+        marker_type = marker_type,
+        label = label,
+        color = color,
+        url = url
+      )
   }
 
   # Iterate through the coords_df to make a formatted list of markers
   marker_list <- purrr::map(1:nrow(coords_df), ~ {
-    r <- coords_df[.x, ]
-
-    if (r$marker_type %in% c("pin-s", "pin-l")) {
-      if (!is.na(r$label) && !is.na(r$color)) {
-        return(sprintf(
-          "%s-%s+%s(%s,%s)",
-          r$marker_type,
-          tolower(r$label),
-          r$color,
-          r$longitude,
-          r$latitude
-        ))
-      } else if (is.na(r$label) && !is.na(r$color)) {
-        return(sprintf(
-          "%s-%s(%s,%s)",
-          r$marker_type,
-          r$color,
-          r$longitude,
-          r$latitude
-        ))
-      } else if (!is.na(r$label) && is.na(r$color)) {
-        return(sprintf(
-          "%s-%s(%s,%s)",
-          r$marker_type,
-          tolower(r$label),
-          r$longitude,
-          r$latitude
-        ))
-      } else {
-        return(sprintf(
-          "%s-(%s,%s)",
-          r$marker_type,
-          r$longitude,
-          r$latitude
-        ))
-      }
-    } else if (r$marker_type == "url") {
-      if (is.na(url)) {
-        stop("A valid URL must be provided.")
-      }
-      encoded_url <- utils::URLencode(r$url, reserved = TRUE)
-      return(sprintf(
-        "url-%s(%s,%s)",
-        encoded_url,
-        r$longitude,
-        r$latitude
-      ))
-    }
+    format_marker(.x, coords_df = coords_df, url = url)
   })
 
   attr(marker_list, "mapboxapi") <- "marker_spec"
@@ -1050,27 +1057,84 @@ prep_overlay_markers <- function(data = NULL,
 }
 
 
+#' Format marker using marker_spec based on n row of a coordinate data frame
+#'
+#' @noRd
+#' @importFrom utils URLencode
+format_marker <- function(n, coords_df = NULL, url = NULL) {
+  r <- coords_df[n, ]
+
+  if (r$marker_type %in% c("pin-s", "pin-l")) {
+    if (!is.na(r$label) && !is.na(r$color)) {
+      return(sprintf(
+        "%s-%s+%s(%s,%s)",
+        r$marker_type,
+        tolower(r$label),
+        r$color,
+        r$longitude,
+        r$latitude
+      ))
+    } else if (is.na(r$label) && !is.na(r$color)) {
+      return(sprintf(
+        "%s-%s(%s,%s)",
+        r$marker_type,
+        r$color,
+        r$longitude,
+        r$latitude
+      ))
+    } else if (!is.na(r$label) && is.na(r$color)) {
+      return(sprintf(
+        "%s-%s(%s,%s)",
+        r$marker_type,
+        tolower(r$label),
+        r$longitude,
+        r$latitude
+      ))
+    } else {
+      return(sprintf(
+        "%s-(%s,%s)",
+        r$marker_type,
+        r$longitude,
+        r$latitude
+      ))
+    }
+  } else if (r$marker_type == "url") {
+    if (is.null(url)) {
+      stop("A valid URL must be provided.")
+    }
+    encoded_url <- utils::URLencode(r$url, reserved = TRUE)
+    return(sprintf(
+      "url-%s(%s,%s)",
+      encoded_url,
+      r$longitude,
+      r$latitude
+    ))
+  }
+}
+
 #' Use a Mapbox style in a Leaflet map
 #'
-#' @param map A map widget object created by \code{leaflet::leaflet()}
+#' See the [Mapbox Static Tiles API documentation](https://docs.mapbox.com/api/maps/static-tiles/) for more information.
+#'
+#' @param map A map widget object created by [leaflet::leaflet()]
 #' @param style_url A Mapbox style URL
 #' @param style_id The style ID of a Mapbox style
 #' @param username A Mapbox username
-#' @param scaling_factor The scaling factor to use when rendering the tiles.  A
-#'   scaling factor of 1 (the default) returns 512px by 512px tiles.  A factor
-#'   of \code{0.5} returns 256x256 tiles, and a factor of \code{2} returns
+#' @param scaling_factor The scaling factor to use when rendering the tiles. A
+#'   scaling factor of `"1x"` (the default) returns 512px by 512px tiles. A
+#'   factor of `"1x"` returns 256x256 tiles, and a factor of `"2x"` returns
 #'   1024x1024 tiles.
-#' @param access_token Your Mapbox access token; can be set with
-#'   \code{mb_access_token()}.
+#' @param access_token Your Mapbox access token; which can be set with
+#'   [mb_access_token()].
 #' @param layerId the layer ID
 #' @param group The name of the group the Mapbox tile layer should belong to
 #'   (for use in Shiny and to modify layers control in a Leaflet workflow)
 #' @param options A list of extra options (optional)
 #' @param data The data object used to derive argument values; can be provided
-#'   to the initial call to \code{leaflet::leaflet()}
+#'   to the initial call to [leaflet::leaflet()]
 #' @param attribution If `TRUE`, pass a standard attribution to
-#'   [leaflet::addTiles]. If `FALSE`, attribution is `NULL`. attribution can also be
-#'   a character string including HTML.
+#'   [leaflet::addTiles()]. If `FALSE`, attribution is `NULL`. attribution can
+#'   also be a character string including HTML.
 #' @return A pointer to the Mapbox Static Tiles API which will be translated
 #'   appropriately by the leaflet R package.
 #'
@@ -1106,8 +1170,8 @@ addMapboxTiles <- function(map,
   access_token <- get_mb_access_token(access_token)
 
   if (!is.null(style_url)) {
-    username <- stringi::stri_extract(style_url, paste0("(?<=styles/).+(?=/)"))
-    style_id <- stringi::stri_extract(style_url, paste0("(?<=", username, "/).+"))
+    username <- stringi::stri_extract(style_url, regex = paste0("(?<=styles/).+(?=/)"))
+    style_id <- stringi::stri_extract(style_url, regex = paste0("(?<=", username, "/).+"))
   }
 
   sfactor <- match.arg(scaling_factor)
@@ -1141,16 +1205,20 @@ addMapboxTiles <- function(map,
 
 #' Get static tiles from a Mapbox style for use as a basemap
 #'
-#' This function queries the Mapbox Static Tiles API and composites the tiles as a
-#' raster suitable for use as a basemap in tmap or ggplot2 (with the \code{layer_spatial()}
-#' function in ggspatial).  It returns a raster layer that corresponds either to
-#' an input bounding box or a buffered area around an input shape.
+#' This function queries the [Mapbox Static Tiles
+#' API](https://docs.mapbox.com/api/maps/static-tiles/) and composites the tiles
+#' as a raster suitable for use as a basemap in
+#' [tmap](https://r-tmap.github.io/tmap/) or
+#' [ggplot2](https://ggplot2.tidyverse.org/) (with the
+#' [ggspatial::layer_spatial()] function. It returns a raster
+#' layer that corresponds either to an input bounding box or a buffered area
+#' around an input shape.
 #'
 #' @param location An input location for which you would like to request tiles.
-#'                 Can be a length-4 vector representing a bounding box, or an sf object.
-#'                 If an input sf object is supplied, use the \code{buffer_dist} argument to
+#'                 Can be a length-4 vector representing a bounding box, or an `sf` object.
+#'                 If an input `sf` object is supplied, use the \code{buffer_dist} argument to
 #'                 control how much area you want to capture around the layer.
-#'                 While the input sf object can be in an arbitrary coordinate reference system,
+#'                 While the input `sf` object can be in an arbitrary coordinate reference system,
 #'                 if a length-4 bounding box vector is supplied instead it must represent
 #'                 WGS84 longitude/latitude coordinates and be in the order
 #'                 \code{c(xmin, ymin, xmax, ymax)}.
@@ -1159,13 +1227,13 @@ addMapboxTiles <- function(map,
 #' @param username A Mapbox username.
 #' @param style_url A Mapbox style URL.
 #' @param scaling_factor The scaling factor to use; one of \code{"1x"} or \code{"2x"}.
-#' @param buffer_dist The distance to buffer around an input sf object for determining tile extent, specified in meters.  Defaults to 5000.
+#' @param buffer_dist The distance to buffer around an input `sf` object for determining tile extent, specified in meters. Defaults to 5000.
 #' @param crop Whether or not to crop the result to the specified bounding box or buffer area.
-#'             Defaults to \code{TRUE}; \code{FALSE} will return the extent of the overlapping
+#'             Defaults to `TRUE`; `FALSE` will return the extent of the overlapping
 #'             tiles.
-#' @param access_token Your Mapbox access token.  Supply yours here or set globally with the \code{mb_access_token()} function.
+#' @param access_token A Mapbox access token. Supply yours here or set globally with the [mb_access_token()] function.
 #'
-#' @return A raster layer of tiles from the requested Mapbox style representing the area around the input location.  The raster layer is projected in the Web Mercator coordinate reference system.
+#' @return A raster layer of tiles from the requested Mapbox style representing the area around the input location. The raster layer is projected in the Web Mercator coordinate reference system.
 #'
 #' @examples \dontrun{
 #'
@@ -1216,8 +1284,8 @@ get_static_tiles <- function(location,
   access_token <- get_mb_access_token(access_token)
 
   if (!is.null(style_url)) {
-    username <- stringi::stri_extract(style_url, paste0("(?<=styles/).+(?=/)"))
-    style_id <- stringi::stri_extract(style_url, paste0("(?<=", username, "/).+"))
+    username <- stringi::stri_extract(style_url, regex = paste0("(?<=styles/).+(?=/)"))
+    style_id <- stringi::stri_extract(style_url, regex = paste0("(?<=", username, "/).+"))
   }
 
   bbox <- location_to_bbox(location, buffer_dist)
@@ -1257,8 +1325,8 @@ get_static_tiles <- function(location,
     if (request$status_code == 200) {
 
       # Most styles will be returned as PNG as they are composed entirely
-      # of vector layers.  However, if a style includes satellite imagery it will
-      # be returned as JPEG.  Check this at this step.
+      # of vector layers. However, if a style includes satellite imagery it will
+      # be returned as JPEG. Check this at this step.
       my_img <- try(png::readPNG(loc), silent = TRUE)
 
       if ("try-error" %in% class(my_img)) {

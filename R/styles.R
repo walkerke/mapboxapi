@@ -1,11 +1,18 @@
-#' Get information about a style from your Mapbox account
+#' Get information about a style or list styles from a Mapbox account
 #'
-#' @param style_url Mapbox style URL
+#' See the [Mapbox Styles API](https://docs.mapbox.com/api/maps/styles/)
+#' documentation for more information.
+#'
+#' @param style_url A Mapbox style URL
 #' @param style_id A style ID
 #' @param username A Mapbox username
-#' @param access_token A Mapbox public or secret access token; set with \code{mb_access_token()}
+#' @param access_token A Mapbox public or secret access token; set with
+#'   [mb_access_token()]
 #'
-#' @return A list of information about your selected style.
+#' @return [get_style] returns a list of information about your selected style.
+#'   [list_styles] returns a data frame of information about styles from a
+#'   Mapbox account
+#' @name get_style
 #' @export
 get_style <- function(style_id,
                       username,
@@ -14,8 +21,8 @@ get_style <- function(style_id,
   access_token <- get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN")
 
   if (!is.null(style_url)) {
-    username <- stringi::stri_extract(style_url, paste0("(?<=styles/).+(?=/)"))
-    style_id <- stringi::stri_extract(style_url, paste0("(?<=", username, "/).+"))
+    username <- stringi::stri_extract(style_url, regex = paste0("(?<=styles/).+(?=/)"))
+    style_id <- stringi::stri_extract(style_url, regex = paste0("(?<=", username, "/).+"))
   }
 
   url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s", username, style_id)
@@ -34,12 +41,8 @@ get_style <- function(style_id,
   return(jsonlite::fromJSON(content))
 }
 
-#' List styles in your Mapbox account
-#'
-#' @param username Your Mapbox username
-#' @param access_token Your Mapbox public or secret access token; set with \code{mb_access_token()}
-#'
-#' @return A data frame of information about styles in your Mapbox account
+#' @name list_styles
+#' @rdname get_style
 #' @export
 list_styles <- function(username, access_token = NULL) {
   access_token <- get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN")
@@ -51,7 +54,7 @@ list_styles <- function(username, access_token = NULL) {
   content <- httr::content(request, as = "text")
 
   if (request$status_code != 200) {
-    stop(print(content$message), call. = FALSE)
+    stop(content, call. = FALSE)
   }
 
   return(jsonlite::fromJSON(content))
