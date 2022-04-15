@@ -1,15 +1,19 @@
 #' Install or retrieve a Mapbox access token in your .Renviron for repeated use
 #'
+#' See the Mapbox API documentation for [more information on access tokens and
+#' token
+#' scopes](https://docs.mapbox.com/api/overview/#access-tokens-and-token-scopes).
+#'
 #' @param token A Mapbox access token; can be public (starting with 'pk') or
 #'   secret (starting with 'sk') scope, which the function will interpret for
 #'   you.
 #' @param overwrite Whether or not to overwrite an existing Mapbox access token.
-#'   Defaults to FALSE.
-#' @param install if TRUE, will install the key in your \code{.Renviron} file
-#'   for use in future sessions.  Defaults to FALSE.
-#' @param default Default token name to return first [get_mb_access_token],
+#'   Defaults to `FALSE`.
+#' @param install if `TRUE`, will install the key in your `.Renviron` file for use
+#'   in future sessions. Defaults to `FALSE`.
+#' @param default Default token name to return first [get_mb_access_token()],
 #'   "MAPBOX_PUBLIC_TOKEN" or "MAPBOX_SECRET_TOKEN".
-#' @param secret_required If TRUE, a secret token is required. If FALSE, the
+#' @param secret_required If `TRUE`, a secret token is required. If `FALSE`, the
 #'   default token is provided first and the other token provided second if the
 #'   first is unavailable.
 #' @export
@@ -99,9 +103,9 @@ get_mb_access_token <- function(token = NULL,
       if ((Sys.getenv(secondary_token) != "") && allow_secondary) {
         token <- Sys.getenv(secondary_token)
       } else if (secret_required) {
-        stop("A Mapbox secret access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+        stop("A Mapbox secret access token is required. Please locate yours from your Mapbox account.", call. = FALSE)
       } else {
-        stop("A Mapbox access token is required.  Please locate yours from your Mapbox account.", call. = FALSE)
+        stop("A Mapbox access token is required. Please locate yours from your Mapbox account.", call. = FALSE)
       }
     }
   } else if (!(grepl("^pk", token) && !grepl("^sk", token))) {
@@ -114,12 +118,19 @@ get_mb_access_token <- function(token = NULL,
 
 #' List tokens from a Mapbox account
 #'
-#' @param username The Mapbox username for which you'd like to list access tokens.
-#' @param default If TRUE, will only include the default token for an account. If FALSE, will include all other tokens except for the default.  Defaults to NULL.
-#' @param limit The maximum number of tokens to return. Defaults to NULL.
-#' @param sortby How to sort the returned tokens; one of \code{"created"} or \code{"modified"}.
-#' @param usage If \code{"pk"}, returns only public tokens; if \code{"sk"}, returns only secret tokens.  Defaults to \code{NULL}, which returns all tokens in the scope of the supplied access token.
-#' @param access_token A Mapbox access token.  If left blank, will first check to see if you have a secret token stored in .Renviron, then a public token.
+#' @param username The Mapbox username for which you'd like to list access
+#'   tokens.
+#' @param default If `TRUE`, will only include the default token for an account.
+#'   If `FALSE`, will include all other tokens except for the default. Defaults
+#'   to `NULL`.
+#' @param limit The maximum number of tokens to return. Defaults to `NULL`.
+#' @param sortby How to sort the returned tokens; one of `"created"` or
+#'   `"modified"`.
+#' @param usage If `"pk"`, returns only public tokens; if `"sk"`, returns only
+#'   secret tokens. Defaults to `NULL`, which returns all tokens in the scope of
+#'   the supplied access token.
+#' @param access_token Your Mapbox access token. If left `NULL`, will first check
+#'   to see if you have a secret token stored in .Renviron, then a public token.
 #' @rdname mb_access_token
 #'
 #' @return A tibble of information about tokens in your Mapbox account.

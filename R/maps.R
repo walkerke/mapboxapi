@@ -1,12 +1,15 @@
 #' Upload dataset to your Mapbox account
 #'
-#' @param input An `sf` object, or the path to the dataset to upload as a character string.
+#' @param input An `sf` object, or the path to the dataset to upload as a
+#'   character string.
 #' @param username Your Mapbox username
 #' @param access_token Your Mapbox access token; must have secret scope
 #' @param tileset_id The ID of the tileset in your Mapbox account
 #' @param tileset_name The name of the tileset in your Mapbox account
-#' @param keep_geojson Whether or not to keep the temporary GeoJSON used to generate the tiles (if the input is an `sf` object)
-#' @param multipart Whether or not to upload to the temporary AWS staging bucket as a multipart object; defaults to `FALSE`.
+#' @param keep_geojson Whether or not to keep the temporary GeoJSON used to
+#'   generate the tiles (if the input is an `sf` object)
+#' @param multipart Whether or not to upload to the temporary AWS staging bucket
+#'   as a multipart object; defaults to `FALSE`.
 #'
 #' @examples \dontrun{
 #'
@@ -100,7 +103,6 @@ upload_tiles <- function(input,
     multipart = multipart
   )
 
-
   # Once done, generate the upload
   url <- sprintf(
     "http://%s.s3.amazonaws.com/%s",
@@ -119,8 +121,6 @@ upload_tiles <- function(input,
       url, username, tileset_id, tileset_name
     )
   }
-
-
 
   base2 <- sprintf(
     "https://api.mapbox.com/uploads/v1/%s",
@@ -183,14 +183,14 @@ check_upload_status <- function(upload_id,
 #'   like to geocode.
 #' @param tileset_id The tileset ID to query.
 #' @param radius The radius around the point (in meters) for which you'd like to
-#'   query features. For point-in-polygon queries (e.g. "what county is my
-#'   point located in?") the default of 0 should be used.
+#'   query features. For point-in-polygon queries (e.g. "what county is my point
+#'   located in?") the default of 0 should be used.
 #' @param limit How many features to return (defaults to 5). Can be an integer
 #'   between 1 and 50.
 #' @param dedupe Whether or not to return duplicate features as identified by
 #'   their IDs. The default, TRUE, will de-duplicate your dataset.
-#' @param geometry The feature geometry type to query - can be \code{"point"},
-#'   \code{"linestring"}, or \code{"polygon"}. If left blank, all geometry types
+#' @param geometry The feature geometry type to query - can be `"point"`,
+#'   `"linestring"`, or `"polygon"`. If left blank, all geometry types
 #'   will be queried.
 #' @param layers A vector of layer IDs you'd like to query (recommended); if
 #'   left blank will query all layers, with the limitation that at most 50
@@ -198,8 +198,11 @@ check_upload_status <- function(upload_id,
 #' @param access_token A Mapbox access token, which can be set with
 #'   [mb_access_token()].
 #'
-#' @return An R list containing the API response, which includes information about the requested features. Parse the list to extract desired elements.
-#' @seealso \url{https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/}
+#' @return An R list containing the API response, which includes information
+#'   about the requested features. Parse the list to extract desired elements.
+#' @seealso
+#'   <https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/>
+#'
 #'
 #' @examples \dontrun{
 #'
@@ -292,8 +295,8 @@ query_tiles <- function(location,
 #' @param access_token A Mapbox access token; which can be set with
 #'   [mb_access_token()].
 #'
-#' @return A list of `sf` objects representing the different layer types found in
-#'   the requested vector tiles.
+#' @return A list of `sf` objects representing the different layer types found
+#'   in the requested vector tiles.
 #'
 #' @examples \dontrun{
 #'
@@ -529,8 +532,9 @@ get_vector_tiles <- function(tileset_id,
 #' Return a static Mapbox map from a specified style
 #'
 #' This function uses the [Mapbox Static Maps
-#' API](https://www.mapbox.com/static-maps) to return a pointer to an `"magick-image"` class image or a [httr::response] object from the static map image
-#' URL.
+#' API](https://www.mapbox.com/static-maps) to return a pointer to an
+#' `"magick-image"` class image or a [httr::response] object from the static map
+#' image URL.
 #'
 #' @inheritParams get_static_tiles
 #' @param buffer_dist The distance to buffer around an input `sf` object for
@@ -539,35 +543,35 @@ get_vector_tiles <- function(tileset_id,
 #' @param username A Mapbox username (required if `style_url = NULL`).
 #' @param style_url A Mapbox style url; defaults to NULL.
 #' @param overlay_sf The overlay `sf` object (optional). The function will
-#'   convert the `sf` object to GeoJSON then plot over the basemap style. Spatial
-#'   data that are too large will trigger an error, and should be added to the
-#'   style in Mapbox Studio instead.
+#'   convert the `sf` object to GeoJSON then plot over the basemap style.
+#'   Spatial data that are too large will trigger an error, and should be added
+#'   to the style in Mapbox Studio instead.
 #' @param overlay_style A named list of vectors specifying how to style the sf
 #'   overlay. Possible names are "stroke", "stroke-width", "stroke-opacity",
 #'   "fill", and "fill-opacity". The fill and stroke color values should be
 #'   specified as six-digit hex codes, and the opacity and width values should
 #'   be supplied as floating-point numbers.
 #' @param overlay_markers The prepared overlay markers (optional). See the
-#'   function [prep_overlay_markers] for more information on how to
-#'   specify a marker overlay.
-#' @param longitude,latitude The longitude and latitude of the map center. If an overlay is supplied,
-#'   the map will default to the extent of the overlay unless longitude,
-#'   latitude, and zoom are all specified.
+#'   function [prep_overlay_markers] for more information on how to specify a
+#'   marker overlay.
+#' @param longitude,latitude The longitude and latitude of the map center. If an
+#'   overlay is supplied, the map will default to the extent of the overlay
+#'   unless longitude, latitude, and zoom are all specified.
 #' @param zoom The map zoom. The map will infer this from the overlay unless
 #'   longitude, latitude, and zoom are all specified.
-#' @param width,height The map width and height; defaults to NULL
-#' @param pitch,bearing The map pitch and bearing; defaults to NULL. pitch can
-#'   range from 0 to 60 degrees, and bearing from 0 to 360 degrees.
+#' @param width,height The map width and height; defaults to `NULL`
+#' @param pitch,bearing The map pitch and bearing; defaults to `NULL`. pitch can
+#'   range from 0 to 60, and bearing from 0 to 360.
 #' @param scale ratio to scale the output image; `scale = 1` will return the
 #'   largest possible image. defaults to 0.5
-#' @param scaling_factor The scaling factor of the tiles; either \code{"1x"}
+#' @param scaling_factor The scaling factor of the tiles; either `"1x"``
 #'   (the default) or `"2x"`
 #' @param attribution Controls whether there is attribution on the image.
-#'   Defaults to `TRUE`. If `FALSE`, the watermarked attribution
-#'   is removed from the image. You still have a legal responsibility to
-#'   attribute maps that use OpenStreetMap data, which includes most maps from
-#'   Mapbox. If you specify `attribution = FALSE`, you are legally required to
-#'   include proper attribution elsewhere on the webpage or document.
+#'   Defaults to `TRUE`. If `FALSE`, the watermarked attribution is removed from
+#'   the image. You still have a legal responsibility to attribute maps that use
+#'   OpenStreetMap data, which includes most maps from Mapbox. If you specify
+#'   `attribution = FALSE`, you are legally required to include proper
+#'   attribution elsewhere on the webpage or document.
 #' @param logo Controls whether there is a Mapbox logo on the image. Defaults to
 #'   `TRUE`.
 #' @param before_layer A character string that specifies where in the hierarchy
@@ -578,9 +582,9 @@ get_vector_tiles <- function(tileset_id,
 #' @param image If `FALSE`, return the a [httr::response] object from
 #'   [httr::GET] using the static image URL; defaults to TRUE
 #'
-#' @return A pointer to an image of class `"magick-image"` if `image =
-#'   TRUE`. The resulting image can be manipulated further with functions from
-#'   the {magick} package.
+#' @return A pointer to an image of class `"magick-image"` if `image = TRUE`.
+#'   The resulting image can be manipulated further with functions from the
+#'   {magick} package.
 #'
 #' @examples \dontrun{
 #'
@@ -854,19 +858,20 @@ set_static_map_dims <- function(base = NULL, bbox = NULL, width = NULL, height =
 
 #' Make a ggplot2 layer with static_mapbox and ggspatial
 #'
-#' This function wraps [static_mapbox()] and [ggspatial::layer_spatial()] to support
-#' the use of images from the [Mapbox Static Maps
-#' API](https://www.mapbox.com/static-maps) as [{ggplot2}](https://ggplot2.tidyverse.org/) basemaps.
+#' This function wraps [static_mapbox()] and [ggspatial::layer_spatial()] to
+#' support the use of images from the [Mapbox Static Maps
+#' API](https://www.mapbox.com/static-maps) as
+#' [{ggplot2}](https://ggplot2.tidyverse.org/) basemaps.
 #'
-#' This function uses a different approach than a layer created using
-#' [get_static_tiles()]. Instead, [layer_static_mapbox()] is based largely on
-#' [snapbox::layer_mapbox()] (available under a [MIT
+#' This function uses a different approach [get_static_tiles()]. Instead,
+#' [layer_static_mapbox()] is based largely on [snapbox::layer_mapbox()]
+#' (available under a [MIT
 #' license](https://github.com/anthonynorth/snapbox/blob/master/LICENSE). There
-#' are a few key differences between layer_static_mapbox and
+#' are a few key differences between [layer_static_mapbox()] and
 #' [snapbox::layer_mapbox()]. The "scale" parameter is equivalent to the
-#' "scale_ratio" parameter for {snapbox}. Setting `scale_factor = "2x"` is equivalent to
-#' setting `retina = TRUE.` Both functions return basemaps that are no larger than
-#' a single tile (a maximum of 1280 by 1280 pixels).
+#' "scale_ratio" parameter for {snapbox}. Setting `scale_factor = "2x"` is
+#' equivalent to setting `retina = TRUE.` Both functions return basemaps that
+#' are no larger than a single tile (a maximum of 1280 by 1280 pixels).
 #'
 #' @inheritParams static_mapbox
 #' @rdname layer_static_mapbox
@@ -1114,7 +1119,9 @@ format_marker <- function(n, coords_df = NULL, url = NULL) {
 
 #' Use a Mapbox style in a Leaflet map
 #'
-#' See the [Mapbox Static Tiles API documentation](https://docs.mapbox.com/api/maps/static-tiles/) for more information.
+#' See the [Mapbox Static Tiles API
+#' documentation](https://docs.mapbox.com/api/maps/static-tiles/) for more
+#' information.
 #'
 #' @param map A map widget object created by [leaflet::leaflet()]
 #' @param style_url A Mapbox style URL
