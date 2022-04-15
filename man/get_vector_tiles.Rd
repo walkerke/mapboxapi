@@ -7,16 +7,24 @@
 get_vector_tiles(tileset_id, location, zoom, access_token = NULL)
 }
 \arguments{
-\item{tileset_id}{The name of the tileset ID; names can be retrieved from your Mapbox account}
+\item{tileset_id}{The name of the tileset ID; names can be retrieved from
+your Mapbox account}
 
-\item{location}{The location for which you'd like to retrieve tiles.  If the input is an sf object, the function will return data for all tiles that intersect the object's bounding box.  If the input is a coordinate pair or an address, data will be returned for the specific tile that contains the input.}
+\item{location}{The location for which you'd like to retrieve tiles. If the
+input is an \code{sf} object, the function will return data for all tiles that
+intersect the object's bounding box. If the input is a coordinate pair or
+an address, data will be returned for the specific tile that contains the
+input.}
 
-\item{zoom}{The zoom level of the request; larger zoom levels will return more detail but will take longer to process.}
+\item{zoom}{The zoom level of the request; larger zoom levels will return
+more detail but will take longer to process.}
 
-\item{access_token}{A Mapbox access token; can be set with \code{mb_access_token()}.}
+\item{access_token}{A Mapbox access token; which can be set with
+\code{\link[=mb_access_token]{mb_access_token()}}.}
 }
 \value{
-A list of sf objects representing the different layer types found in the requested vector tiles.
+A list of \code{sf} objects representing the different layer types found
+in the requested vector tiles.
 }
 \description{
 Retrieve vector tiles from a given Mapbox tileset

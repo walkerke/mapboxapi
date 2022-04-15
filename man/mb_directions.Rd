@@ -36,67 +36,101 @@ mb_directions(
 )
 }
 \arguments{
-\item{input_data}{An input dataset of class \code{"sf"}, or a list of coordinate pairs for format \code{c(longitude, latitude)}. Cannot be used with an origin/destination pair.}
+\item{input_data}{An input dataset of class \code{"sf"}, or a list of coordinate
+pairs for format \code{c(longitude, latitude)}. Cannot be used with an
+origin/destination pair.}
 
-\item{origin}{An address or coordinate pair that represents the origin of your requested route. Cannot be used with \code{input_data}.}
+\item{origin}{An address or coordinate pair that represents the origin of
+your requested route. Cannot be used with \code{input_data}.}
 
-\item{destination}{An address or coordinate pair that represents the destination of your requested route.}
+\item{destination}{An address or coordinate pair that represents the
+destination of your requested route.}
 
-\item{profile}{One of "driving" (the default), "driving-traffic", "walking", or "cycling".}
+\item{profile}{One of "driving" (the default), "driving-traffic", "walking",
+or "cycling".}
 
-\item{output}{One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.}
+\item{output}{One of "sf" (the default), which returns an sf LINESTRING
+representing the route geometry, or "full", which returns the full request
+from the Directions API as a list.}
 
-\item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns.  If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.}
+\item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles,
+the departure date and time to reflect historical traffic patterns. If
+"driving-traffic" is used, live traffic will be mixed in with historical
+traffic for dates/times near to the current time. Should be specified as an
+ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.}
 
-\item{alternatives}{Whether or not to return alternative routes with your request. If TRUE, a list of up to 3 possible routes will be returned.}
+\item{alternatives}{Whether or not to return alternative routes with your
+request. If TRUE, a list of up to 3 possible routes will be returned.}
 
-\item{annotations}{A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".}
+\item{annotations}{A comma-separated string of additional route metadata,
+which may include duration, distance, speed, and congestion. Must be used
+with overview = "full".}
 
 \item{bearings}{A semicolon-delimited character string of bearings}
 
 \item{continue_straight}{continue_straight}
 
-\item{exclude}{Road types to exclude from your route; possible choices are \code{'toll'}, \code{'motorway'}, or \code{'ferry'}.  Defaults to NULL.}
+\item{exclude}{Road types to exclude from your route; possible choices are
+\code{'toll'}, \code{'motorway'}, or \code{'ferry'}. Defaults to \code{NULL}.}
 
-\item{geometries}{The route geometry format.  If \code{output = 'sf'}, you will get back an sf object and you should leave this blank.  If \code{output = 'full'}, the embedded route geometries will be \code{polyline} with five decimal place precision.  \code{'polyline6'} may also be specified.}
+\item{geometries}{The route geometry format. If \code{output = 'sf'}, you will get
+back an \code{sf} object and you should leave this blank. If \code{output = 'full'},
+the embedded route geometries will be \code{polyline} with five decimal place
+precision. \code{'polyline6'} may also be specified.}
 
-\item{overview}{If left blank, defaults to \code{'simplified'} for simplified geometry; the other option is \code{'full'} which provides the most detailed geometry available.}
+\item{overview}{If left blank, defaults to \code{'simplified'} for simplified
+geometry; the other option is \code{'full'} which provides the most detailed
+geometry available.}
 
-\item{radiuses}{A character string with semicolon-separated radii that specify the distance (in meters) to snap each input coordinate to the road network.  Defaults to NULL.}
+\item{radiuses}{A character string with semicolon-separated radii that
+specify the distance (in meters) to snap each input coordinate to the road
+network. Defaults to \code{NULL}.}
 
-\item{approaches}{A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.}
+\item{approaches}{A character string with semicolon-separated specifications
+for how to approach waypoints. Options include \code{unrestricted} and \code{curb}.
+Defaults to \code{NULL} which uses \code{unrestricted} for all waypoints.}
 
-\item{steps}{If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.}
+\item{steps}{If \code{TRUE}, returns the route object split up into route legs
+with step-by-step instructions included. If \code{FALSE} or \code{NULL} (the
+default), a single line geometry representing the full route will be
+returned.}
 
-\item{banner_instructions}{Whether or not to return banner objects; only available when \code{output = 'full'} and \code{steps = TRUE}.}
+\item{banner_instructions}{Whether or not to return banner objects; only
+available when\code{output = 'full'} and \code{steps = TRUE}.}
 
-\item{language}{The language of the returned instructions (defaults to English). Available language codes are found at \url{https://docs.mapbox.com/api/navigation/#instructions-languages}.  Only available when \code{steps = TRUE}.}
+\item{language}{The language of the returned instructions (defaults to
+English). Available language codes are found at
+\url{https://docs.mapbox.com/api/navigation/#instructions-languages}. Only
+available when \code{steps = TRUE}.}
 
-\item{roundabout_exits}{If TRUE, adds instructions for roundabout entrance and exit.  Only available when \code{steps = TRUE}.}
+\item{roundabout_exits}{If TRUE, adds instructions for roundabout entrance
+and exit. Only available when \code{steps = TRUE}.}
 
-\item{voice_instructions}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
+\item{voice_instructions, voice_units}{Only available when \code{steps = TRUE} and
+\code{output = 'full'}.}
 
-\item{voice_units}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
+\item{waypoint_names, waypoint_targets, waypoints}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
 
-\item{waypoint_names}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
+\item{walking_speed}{The walking speed in meters/second; available when
+\code{profile = 'walking'}.}
 
-\item{waypoint_targets}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
+\item{walkway_bias}{Can take values between -1 and 1, where negative numbers
+avoid walkways and positive numbers prefer walkways. Available when
+\code{profile = 'walking'}.}
 
-\item{waypoints}{Only available when \code{steps = TRUE} and \code{output = 'full'}.}
+\item{alley_bias}{Can take values between -1 and 1, where negative numbers
+avoid alleys and positive numbers prefer alleys. Available when \code{profile = 'walking'}.}
 
-\item{walking_speed}{The walking speed in meters/second; available when \code{profile = 'walking'}.}
-
-\item{walkway_bias}{Can take values between -1 and 1, where negative numbers avoid walkways and positive numbers prefer walkways.  Available when \code{profile = 'walking'}.}
-
-\item{alley_bias}{Can take values between -1 and 1, where negative numbers avoid alleys and positive numbers prefer alleys.  Available when \code{profile = 'walking'}.}
-
-\item{access_token}{Your Mapbox access token; set with \code{mb_access_token()}}
+\item{access_token}{A Mapbox access token; which can be set with
+\code{\link[=mb_access_token]{mb_access_token()}}}
 }
 \value{
-An sf object (or list of sf objects), or full R list representing the API response.
+An \code{sf} object (or list of \code{sf} objects), or full R list representing
+the API response.
 }
 \description{
-Make a request to the Mapbox Directions API
+See the \href{https://docs.mapbox.com/api/navigation/directions/}{Mapbox Directions API documentation} for more
+information.
 }
 \examples{
 \dontrun{

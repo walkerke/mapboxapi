@@ -29,34 +29,39 @@ secret (starting with 'sk') scope, which the function will interpret for
 you.}
 
 \item{overwrite}{Whether or not to overwrite an existing Mapbox access token.
-Defaults to FALSE.}
+Defaults to \code{FALSE}.}
 
-\item{install}{if TRUE, will install the key in your \code{.Renviron} file
-for use in future sessions.  Defaults to FALSE.}
+\item{install}{if \code{TRUE}, will install the key in your \code{.Renviron} file for use
+in future sessions. Defaults to \code{FALSE}.}
 
-\item{default}{If TRUE, will only include the default token for an account. If FALSE, will include all other tokens except for the default.  Defaults to NULL.}
+\item{default}{If \code{TRUE}, will only include the default token for an account.
+If \code{FALSE}, will include all other tokens except for the default. Defaults
+to \code{NULL}.}
 
-\item{secret_required}{If TRUE, a secret token is required. If FALSE, the
+\item{secret_required}{If \code{TRUE}, a secret token is required. If \code{FALSE}, the
 default token is provided first and the other token provided second if the
 first is unavailable.}
 
-\item{username}{The Mapbox username for which you'd like to list access tokens.}
+\item{username}{The Mapbox username for which you'd like to list access
+tokens.}
 
-\item{limit}{The maximum number of tokens to return. Defaults to NULL.}
+\item{limit}{The maximum number of tokens to return. Defaults to \code{NULL}.}
 
-\item{sortby}{How to sort the returned tokens; one of \code{"created"} or \code{"modified"}.}
+\item{sortby}{How to sort the returned tokens; one of \code{"created"} or
+\code{"modified"}.}
 
-\item{usage}{If \code{"pk"}, returns only public tokens; if \code{"sk"}, returns only secret tokens.  Defaults to \code{NULL}, which returns all tokens in the scope of the supplied access token.}
+\item{usage}{If \code{"pk"}, returns only public tokens; if \code{"sk"}, returns only
+secret tokens. Defaults to \code{NULL}, which returns all tokens in the scope of
+the supplied access token.}
 
-\item{access_token}{A Mapbox access token.  If left blank, will first check to see if you have a secret token stored in .Renviron, then a public token.}
+\item{access_token}{Your Mapbox access token. If left \code{NULL}, will first check
+to see if you have a secret token stored in .Renviron, then a public token.}
 }
 \value{
 A tibble of information about tokens in your Mapbox account.
 }
 \description{
-Install or retrieve a Mapbox access token in your .Renviron for repeated use
-
-List tokens from a Mapbox account
+See the Mapbox API documentation for \href{https://docs.mapbox.com/api/overview/#access-tokens-and-token-scopes}{more information on access tokens and token scopes}.
 }
 \examples{
 \dontrun{

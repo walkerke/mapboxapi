@@ -19,7 +19,7 @@ addMapboxTiles(
 )
 }
 \arguments{
-\item{map}{A map widget object created by \code{leaflet::leaflet()}}
+\item{map}{A map widget object created by \code{\link[leaflet:leaflet]{leaflet::leaflet()}}}
 
 \item{style_id}{The style ID of a Mapbox style}
 
@@ -27,13 +27,13 @@ addMapboxTiles(
 
 \item{style_url}{A Mapbox style URL}
 
-\item{scaling_factor}{The scaling factor to use when rendering the tiles.  A
-scaling factor of 1 (the default) returns 512px by 512px tiles.  A factor
-of \code{0.5} returns 256x256 tiles, and a factor of \code{2} returns
+\item{scaling_factor}{The scaling factor to use when rendering the tiles. A
+scaling factor of \code{"1x"} (the default) returns 512px by 512px tiles. A
+factor of \code{"1x"} returns 256x256 tiles, and a factor of \code{"2x"} returns
 1024x1024 tiles.}
 
-\item{access_token}{Your Mapbox access token; can be set with
-\code{mb_access_token()}.}
+\item{access_token}{Your Mapbox access token; which can be set with
+\code{\link[=mb_access_token]{mb_access_token()}}.}
 
 \item{layerId}{the layer ID}
 
@@ -43,18 +43,19 @@ of \code{0.5} returns 256x256 tiles, and a factor of \code{2} returns
 \item{options}{A list of extra options (optional)}
 
 \item{data}{The data object used to derive argument values; can be provided
-to the initial call to \code{leaflet::leaflet()}}
+to the initial call to \code{\link[leaflet:leaflet]{leaflet::leaflet()}}}
 
-\item{attribution}{If `TRUE`, pass a standard attribution to
-[leaflet::addTiles]. If `FALSE`, attribution is `NULL`. attribution can also be
-a character string including HTML.}
+\item{attribution}{If \code{TRUE}, pass a standard attribution to
+\code{\link[leaflet:map-layers]{leaflet::addTiles()}}. If \code{FALSE}, attribution is \code{NULL}. attribution can
+also be a character string including HTML.}
 }
 \value{
 A pointer to the Mapbox Static Tiles API which will be translated
-  appropriately by the leaflet R package.
+appropriately by the leaflet R package.
 }
 \description{
-Use a Mapbox style in a Leaflet map
+See the \href{https://docs.mapbox.com/api/maps/static-tiles/}{Mapbox Static Tiles API documentation} for more
+information.
 }
 \examples{
 \dontrun{

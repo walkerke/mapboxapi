@@ -16,24 +16,36 @@ query_tiles(
 )
 }
 \arguments{
-\item{location}{The location for which you'd like to query tiles, expressed as either a length-2 vector of longitude and latitude or an address you'd like to geocode.}
+\item{location}{The location for which you'd like to query tiles, expressed
+as either a length-2 vector of longitude and latitude or an address you'd
+like to geocode.}
 
 \item{tileset_id}{The tileset ID to query.}
 
-\item{radius}{The radius around the point (in meters) for which you'd like to query features.  For point-in-polygon queries (e.g. "what county is my point located in?") the default of 0 should be used.}
+\item{radius}{The radius around the point (in meters) for which you'd like to
+query features. For point-in-polygon queries (e.g. "what county is my point
+located in?") the default of 0 should be used.}
 
-\item{limit}{How many features to return (defaults to 5). Can be an integer between 1 and 50.}
+\item{limit}{How many features to return (defaults to 5). Can be an integer
+between 1 and 50.}
 
-\item{dedupe}{Whether or not to return duplicate features as identified by their IDs.  The default, TRUE, will de-duplicate your dataset.}
+\item{dedupe}{Whether or not to return duplicate features as identified by
+their IDs. The default, TRUE, will de-duplicate your dataset.}
 
-\item{geometry}{The feature geometry type to query - can be \code{"point"}, \code{"linestring"}, or \code{"polygon"}. If left blank, all geometry types will be queried.}
+\item{geometry}{The feature geometry type to query - can be \code{"point"},
+\code{"linestring"}, or \code{"polygon"}. If left blank, all geometry types
+will be queried.}
 
-\item{layers}{A vector of layer IDs you'd like to query (recommended); if left blank will query all layers, with the limitation that at most 50 features can be returned.}
+\item{layers}{A vector of layer IDs you'd like to query (recommended); if
+left blank will query all layers, with the limitation that at most 50
+features can be returned.}
 
-\item{access_token}{A Mapbox access token, which can be set with \code{mb_access_token()}.}
+\item{access_token}{A Mapbox access token, which can be set with
+\code{\link[=mb_access_token]{mb_access_token()}}.}
 }
 \value{
-An R list containing the API response, which includes information about the requested features.  Parse the list to extract desired elements.
+An R list containing the API response, which includes information
+about the requested features. Parse the list to extract desired elements.
 }
 \description{
 Get information about features in a tileset using the Tilequery API

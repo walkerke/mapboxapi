@@ -95,7 +95,7 @@
 
     
     
-<p><strong>mapboxapi</strong> includes a series of tools to help R users generate vector tiles from their data to be used in Mapbox Studio visualization projects. The function <code><a href="../reference/upload_tiles.html">upload_tiles()</a></code> allows you to upload an sf object or a spatial file on disk to your Mapbox account using the Mapbox Uploads API. This will convert your spatial data into vector tiles that can be added to a style in Mapbox Studio.</p>
+<p><strong>mapboxapi</strong> includes a series of tools to help R users generate vector tiles from their data to be used in Mapbox Studio visualization projects. The function <code><a href="../reference/upload_tiles.html">upload_tiles()</a></code> allows you to upload an `sf` object or a spatial file on disk to your Mapbox account using the Mapbox Uploads API. This will convert your spatial data into vector tiles that can be added to a style in Mapbox Studio.</p>
 <p>Visualization of massive datasets, however, may require specialized tools. Mapbox recommends the <a href="https://github.com/mapbox/tippecanoe">tippecanoe</a> tile-generation utility for these tasks. tippecanoe generates a scale-sensitive <code>.mbtiles</code> file that adds or removes complexity in a large dataset at different zoom levels.</p>
 <p><strong>mapboxapi</strong> allows R users to call tippecanoe from R with the <code><a href="../reference/tippecanoe.html">tippecanoe()</a></code> function. This requires that tippecanoe is installed on your system; <a href="https://github.com/mapbox/tippecanoe">see the tippecanoe documentation for installation instructions</a>. Once installed, tippecanoe can be used in large visualization workflows in concert with Mapbox Studio, such as the example below with Microsoft building footprints data for Texas.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -110,7 +110,7 @@
 <span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span><span class="op">(</span><span class="st">"Texas.zip"</span><span class="op">)</span>
 
 <span class="co"># Use tippecanoe to make a dynamic .mbtiles file that visualizes large data appropriately</span>
-<span class="co"># at any zoom level.  sf objects can also be used as input!</span>
+<span class="co"># at any zoom level. `sf` objects can also be used as input!</span>
 <span class="co"># (requires installing tippecanoe on your machine separately first)</span>
 <span class="fu"><a href="../reference/tippecanoe.html">tippecanoe</a></span><span class="op">(</span>input <span class="op">=</span> <span class="st">"Texas.geojson"</span>,
            output <span class="op">=</span> <span class="st">"Texas.mbtiles"</span>,
@@ -124,7 +124,7 @@
 
 
 <span class="co"># Head over to Mapbox Studio when the upload is done (check the status with</span>
-<span class="co"># `check_upload_status()`) and add it to a style.  When you've styled it, bring it back</span>
+<span class="co"># `check_upload_status()`) and add it to a style. When you've styled it, bring it back</span>
 <span class="co"># into R with mapdeck by referencing the style ID:</span>
 <span class="fu"><a href="https://rdrr.io/pkg/mapdeck/man/mapdeck.html">mapdeck</a></span><span class="op">(</span>token <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span><span class="op">(</span><span class="st">"MAPBOX_PUBLIC_TOKEN"</span><span class="op">)</span>,
         style <span class="op">=</span> <span class="st">"mapbox://styles/kwalkertcu/ckaf9qxim1pyk1io7r2e8exj2/draft"</span>,

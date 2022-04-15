@@ -23,38 +23,67 @@ mb_optimized_route(
 )
 }
 \arguments{
-\item{input_data}{An input dataset of class \code{"sf"}, or a list of coordinate pairs of format \code{c(longitude, latitude)}.  Must be between 2 and 12 coordinate pairs.}
+\item{input_data}{An input dataset of class \code{"sf"}, or a list of coordinate
+pairs of format \code{c(longitude, latitude)}. Must be between 2 and 12
+coordinate pairs.}
 
-\item{profile}{One of "driving" (the default), "driving-traffic", "walking", or "cycling".}
+\item{profile}{One of "driving" (the default), "driving-traffic", "walking",
+or "cycling".}
 
-\item{output}{One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.}
+\item{output}{One of "sf" (the default), which returns an \code{sf} LINESTRING
+representing the route geometry, or "full", which returns the full request
+from the Directions API as a list.}
 
-\item{source}{One of \code{"any"} (the default) or \code{"first"}.  If "any" is specified, any of the input coordinates may be used as the starting point.  If "first" is specified, the first coordinate will be used.}
+\item{source}{One of \code{"any"} (the default) or \code{"first"}. If "any" is
+specified, any of the input coordinates may be used as the starting point.
+If "first" is specified, the first coordinate will be used.}
 
-\item{destination}{One of \code{"any"} (the default) or \code{"last"}.  If "any" is specified, any of the input coordinates may be used as the ending point.  If "last" is specified, the last coordinate will be used.}
+\item{destination}{One of \code{"any"} (the default) or \code{"last"}. If "any" is
+specified, any of the input coordinates may be used as the ending point. If
+"last" is specified, the last coordinate will be used.}
 
-\item{roundtrip}{If \code{TRUE} (the default), the route will start and end at the same point. \code{roundtrip = FALSE} only works when \code{source} is \code{"first"} and \code{destination} is \code{"last"}.  If \code{FALSE} is supplied here, the route will start at the first point in \code{input_data} and end at the last point.}
+\item{roundtrip}{If \code{TRUE} (the default), the route will start and end at the
+same point. \code{roundtrip = FALSE} only works when \code{source} is \code{"first"} and
+\code{destination} is \code{"last"}. If \code{FALSE} is supplied here, the route will
+start at the first point in \code{input_data} and end at the last point.}
 
-\item{annotations}{A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".}
+\item{annotations}{A comma-separated string of additional route metadata,
+which may include duration, distance, speed, and congestion. Must be used
+with \code{overview = "full"}.}
 
-\item{approaches}{A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.}
+\item{approaches}{A character string with semicolon-separated specifications
+for how to approach waypoints. Options include \code{unrestricted} and \code{curb}.
+Defaults to NULL which uses \code{unrestricted} for all waypoints.}
 
 \item{bearings}{A semicolon-delimited character string of bearings.}
 
-\item{distributions}{A semicolon-delimited character string of number pairs that specifies pick-up and drop-off locations.  The first number indicates the index of the pick-up location, and the second number represents the index of the drop-off location.}
+\item{distributions}{A semicolon-delimited character string of number pairs
+that specifies pick-up and drop-off locations. The first number indicates
+the index of the pick-up location, and the second number represents the
+index of the drop-off location.}
 
-\item{language}{The language of the returned instructions (defaults to English). Available language codes are found at \url{https://docs.mapbox.com/api/navigation/#instructions-languages}.  Only available when \code{steps = TRUE}.}
+\item{language}{The language of the returned instructions (defaults to
+English). Available language codes are found at
+\url{https://docs.mapbox.com/api/navigation/#instructions-languages}. Only
+available when \code{steps = TRUE}.}
 
-\item{overview}{If left blank, defaults to \code{'simplified'} for simplified geometry; the other option is \code{'full'} which provides the most detailed geometry available.}
+\item{overview}{If left blank, defaults to \code{'simplified'} for simplified
+geometry; the other option is \code{'full'} which provides the most detailed
+geometry available.}
 
-\item{radiuses}{A character string with semicolon-separated radii that specify the distance (in meters) to snap each input coordinate to the road network.  Defaults to NULL.}
+\item{radiuses}{A character string with semicolon-separated radii that
+specify the distance (in meters) to snap each input coordinate to the road
+network. Defaults to \code{NULL}.}
 
-\item{steps}{If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.}
+\item{steps}{If \code{TRUE}, returns the route object split up into route legs
+with step-by-step instructions included. If \code{FALSE} or \code{NULL} (the default), a
+single line geometry representing the full route will be returned.}
 
-\item{access_token}{Your Mapbox access token; set with \code{mb_access_token()}}
+\item{access_token}{Your Mapbox access token; which can be set with
+\code{\link[=mb_access_token]{mb_access_token()}}}
 }
 \value{
-Either a list of two sf objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
+Either a list of two \code{sf} objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
 }
 \description{
 Return an optimized route for a series of input coordinates

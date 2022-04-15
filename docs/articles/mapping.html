@@ -141,7 +141,7 @@
 <span class="va">map</span></code></pre></div>
 <p><img src="mapping_files/figure-html/unnamed-chunk-2-1.png" width="600"></p>
 <p>The output is an object from the <a href="https://github.com/ropensci/magick">magick</a> R package that can be further customized with <strong>magick</strong> functions.</p>
-<p>Alternatively, users might be interested in retrieving static tiles for use as a basemap in tmap or ggplot2 maps. For an input sf object, the <code><a href="../reference/get_static_tiles.html">get_static_tiles()</a></code> function will retrieve static tiles as a raster object around the input. The example below fetches the standard Light Mapbox basemap and uses it as a basemap for demographic data obtained with tidycensus.</p>
+<p>Alternatively, users might be interested in retrieving static tiles for use as a basemap in tmap or ggplot2 maps. For an input `sf` object, the <code><a href="../reference/get_static_tiles.html">get_static_tiles()</a></code> function will retrieve static tiles as a raster object around the input. The example below fetches the standard Light Mapbox basemap and uses it as a basemap for demographic data obtained with tidycensus.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://walker-data.com/tidycensus/">tidycensus</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mtennekes/tmap">tmap</a></span><span class="op">)</span>
@@ -175,8 +175,8 @@
 <div id="reading-vector-tile-data-into-r" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reading-vector-tile-data-into-r" class="anchor"></a>Reading vector tile data into R</h2>
-<p>Mapbox styles on interactive maps are generally delivered as vector tiles, and can be visualized in this way in R with the <a href="https://symbolixau.github.io/mapdeck/articles/mapdeck.html">mapdeck R package</a> by providing style information obtained from Mapbox Studio. <strong>mapboxapi</strong> also allows you to read data from vector tilesets directly into R as sf objects.</p>
-<p>For example, let’s say I want to grab data from a vector tileset nearby to one of the points of interest I just mapped. This can be accomplished with the <code><a href="../reference/get_vector_tiles.html">get_vector_tiles()</a></code> function and an appropriate tileset ID, which can be obtained from your Mapbox account. The location to query can be a coordinate pair, an address, or an sf object.</p>
+<p>Mapbox styles on interactive maps are generally delivered as vector tiles, and can be visualized in this way in R with the <a href="https://symbolixau.github.io/mapdeck/articles/mapdeck.html">mapdeck R package</a> by providing style information obtained from Mapbox Studio. <strong>mapboxapi</strong> also allows you to read data from vector tilesets directly into R as `sf` objects.</p>
+<p>For example, let’s say I want to grab data from a vector tileset nearby to one of the points of interest I just mapped. This can be accomplished with the <code><a href="../reference/get_vector_tiles.html">get_vector_tiles()</a></code> function and an appropriate tileset ID, which can be obtained from your Mapbox account. The location to query can be a coordinate pair, an address, or an `sf` object.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vector_extract</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_vector_tiles.html">get_vector_tiles</a></span><span class="op">(</span>
   tileset_id <span class="op">=</span> <span class="st">"mapbox.mapbox-streets-v8"</span>,
@@ -188,7 +188,7 @@
 <pre><code>## [1] "building"           "landuse"            "place_label"       
 ## [4] "poi_label"          "road"               "structure"         
 ## [7] "transit_stop_label" "water"</code></pre>
-<p>I get back a number of layers, including roads, labels, and buildings, from the vector tile at zoom 15 that intersects my input coordinates. All of these elements are processed as sf objects that can be mapped with R tools:</p>
+<p>I get back a number of layers, including roads, labels, and buildings, from the vector tile at zoom 15 that intersects my input coordinates. All of these elements are processed as `sf` objects that can be mapped with R tools:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 

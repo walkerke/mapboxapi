@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9000</span>
       </span>
     </div>
 
@@ -85,15 +85,15 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>origins</dt>
-<dd><p>The input coordinates of your request.  Acceptable inputs include a list of
-coordinate pair vectors in <code>c(x, y)</code> format or an sf object.
+<dd><p>The input coordinates of your request. Acceptable inputs include a list of
+coordinate pair vectors in <code>c(x, y)</code> format or an <code>sf</code> object.
 For sf linestrings or polygons, the distance between centroids will be taken.</p></dd>
 <dt>destinations</dt>
-<dd><p>The destination coordinates of your request.  If <code>NULL</code> (the default), a many-to-many matrix using <code>origins</code> will be returned.</p></dd>
+<dd><p>The destination coordinates of your request. If <code>NULL</code> (the default), a many-to-many matrix using <code>origins</code> will be returned.</p></dd>
 <dt>profile</dt>
 <dd><p>One of "driving" (the default), "driving-traffic", "walking", or "cycling".</p></dd>
 <dt>fallback_speed</dt>
-<dd><p>A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations.  The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.</p></dd>
+<dd><p>A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations. The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.</p></dd>
 <dt>access_token</dt>
 <dd><p>A Mapbox access token (required)</p></dd>
 <dt>duration_output</dt>
@@ -119,8 +119,8 @@ For sf linestrings or polygons, the distance between centroids will be taken.</p
 <span class="r-in"></span>
 <span class="r-in"><span class="va">philly_tracts</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="va">time_to_downtown</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu">mapdeck</span><span class="op">(</span>style <span class="op">=</span> <span class="fu">mapdeck_style</span><span class="op">(</span><span class="st">"light"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/tigris/man/tigris-exports.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">add_polygon</span><span class="op">(</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/mapdeck/man/mapdeck.html" class="external-link">mapdeck</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/mapdeck/man/mapdeck_style.html" class="external-link">mapdeck_style</a></span><span class="op">(</span><span class="st">"light"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/tigris/man/tigris-exports.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/mapdeck/man/add_polygon.html" class="external-link">add_polygon</a></span><span class="op">(</span></span>
 <span class="r-in">    data <span class="op">=</span> <span class="va">philly_tracts</span>,</span>
 <span class="r-in">    fill_colour <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span class="r-in">    fill_opacity <span class="op">=</span> <span class="fl">0.6</span>,</span>
@@ -142,7 +142,8 @@ For sf linestrings or polygons, the distance between centroids will be taken.</p
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer></div>
