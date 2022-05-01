@@ -1,19 +1,19 @@
 ## mapboxapi
 
-__mapboxapi__ is an R package that interfaces with [Mapbox web services APIs](https://docs.mapbox.com/api/).  Its purpose is to help R users incorporate the suite of Mapbox tools into their spatial data science projects.  Install from CRAN with the following command: 
+__mapboxapi__ is an R package that interfaces with [Mapbox web services APIs](https://docs.mapbox.com/api/). Its purpose is to help R users incorporate the suite of Mapbox tools into their spatial data science projects. Install from CRAN with the following command: 
 
 ```r
 install.packages("mapboxapi")
 ```
 
-To get started, [sign up for a Mapbox account](https://account.mapbox.com/) and generate an access token.  Set your public or secret token for use in the package with `mb_access_token()`: 
+To get started, [sign up for a Mapbox account](https://account.mapbox.com/) and generate an access token. Set your public or secret token for use in the package with `mb_access_token()`: 
 
 ```r
 library(mapboxapi)
 mb_access_token("pk.eyas...", install = TRUE)
 ```
 
-Once you've set your token, you are ready to get started using the package.  The following example integrates Mapbox maps, navigation, and search services to plot a five-minute walking isochrone over an interactive Leaflet map using a Mapbox style:  
+Once you've set your token, you are ready to get started using the package. The following example integrates Mapbox maps, navigation, and search services to plot a five-minute walking isochrone over an interactive Leaflet map using a Mapbox style:  
 
 ```r
 library(leaflet)
@@ -37,7 +37,7 @@ Read through the following articles to see what you can do with the package:
 * [Using navigation services with __mapboxapi__](articles/navigation.html)
 * [Creating and uploading Mapbox vector tilesets](articles/creating-tiles.html)
 
-If you find this project useful, [consider supporting package development via PayPal](https://www.paypal.me/walkerdata), hiring me to give a workshop on __mapboxapi__ or hiring me to consult on your project.  Send me a note at <kyle@walker-data.com> if this interests you!  You can also get updates on package development by signing up for my newsletter: 
+If you find this project useful, [consider supporting package development via PayPal](https://www.paypal.me/walkerdata), hiring me to give a workshop on __mapboxapi__ or hiring me to consult on your project. Send me a note at <kyle@walker-data.com> if this interests you!  You can also get updates on package development by signing up for my newsletter: 
 
 <!-- Begin MailChimp Signup Form -->
 <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
@@ -61,4 +61,4 @@ We recommend moving this block and the preceding CSS link to the HEAD of your HT
 <!--End mc_embed_signup-->
 
 
-Please note: Use of Mapbox services through __mapboxapi__ is governed by [Mapbox's Terms of Service](https://www.mapbox.com/legal/tos/) and any account restrictions.  
+Please note: Use of Mapbox services through __mapboxapi__ is governed by [Mapbox's Terms of Service](https://www.mapbox.com/legal/tos/) and any account restrictions. 

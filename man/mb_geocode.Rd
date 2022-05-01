@@ -27,31 +27,46 @@ mb_reverse_geocode(
 )
 }
 \arguments{
-\item{search_text}{The text to search, formatted as a character string. Can be an address, a location, or a description of a point of interest.}
+\item{search_text}{The text to search, formatted as a character string. Can
+be an address, a location, or a description of a point of interest.}
 
-\item{endpoint}{One of \code{'mapbox.places'} (the default) or \code{mapbox.places-permanent}. Per Mapbox's terms of service, you are only allowed to save results and perform batch geocoding with the places-permanent endpoint.}
+\item{endpoint}{One of \code{'mapbox.places'} (the default) or
+\code{mapbox.places-permanent}. Per Mapbox's terms of service, you are only
+allowed to save results and perform batch geocoding with the
+places-permanent endpoint.}
 
 \item{limit}{How many results to return; defaults to 1 (maximum 10).}
 
-\item{types}{A vector of feature types to limit to which the search should be limited. Available options include \code{'country'}, \code{'region'}, \code{'postcode'}, \code{'district'}, \code{'place'}, \code{'locality'}, \code{'neighborhood'}, \code{'address'}, and \code{'poi'}. If left blank, all types will be searched.}
+\item{types}{A vector of feature types to limit to which the search should be
+limited. Available options include \code{'country'}, \code{'region'}, \code{'postcode'},
+\code{'district'}, \code{'place'}, \code{'locality'}, \code{'neighborhood'}, \code{'address'}, and
+\code{'poi'}. If left blank, all types will be searched.}
 
-\item{search_within}{An sf object, or vector representing a bounding box of format \code{c(min_longitude, min_latitude, max_longitude, max_latitude)} used to limit search results.  Defaults to NULL.}
+\item{search_within}{An \code{sf} object, or vector representing a bounding box of
+format \code{c(min_longitude, min_latitude, max_longitude, max_latitude)} used
+to limit search results. Defaults to NULL.}
 
-\item{language}{The user's language, which can help with interpretation of queries.  Available languages are found at \url{https://docs.mapbox.com/api/search/#language-coverage}.}
+\item{language}{The user's language, which can help with interpretation of
+queries. Available languages are found at
+\url{https://docs.mapbox.com/api/search/#language-coverage}.}
 
-\item{output}{one of \code{"text"} (the default), which will return a character string or list of character strings representing the returned results; \code{output = "sf"}, returning an sf object; or \code{"full"}, which will return a list with the full API response.}
+\item{output}{one of \code{"text"} (the default), which will return a character
+string or list of character strings representing the returned results;
+\code{output = "sf"}, returning an \code{sf} object; or \code{"full"}, which will return a
+list with the full API response.}
 
-\item{access_token}{The Mapbox access token (required); can be set with \code{mb_access_token}.}
+\item{access_token}{The Mapbox access token (required); can be set with
+\code{\link[=mb_access_token]{mb_access_token()}}}
 
 \item{coordinates}{The coordinates of a location in format \code{c(longitude, latitude)} for which you'd like to return information.}
 }
 \value{
-A character vector, list, or sf object representing the query results.
+A character vector, list, or \code{sf} object representing the query
+results.
 }
 \description{
-Geocode an address or place description using the Mapbox Geocoding API
-
-Perform reverse geocoding for a coordinate pair
+See the \href{https://docs.mapbox.com/api/search/geocoding/}{Mapbox Geocoding API documentation} for more
+information.
 }
 \examples{
 \dontrun{

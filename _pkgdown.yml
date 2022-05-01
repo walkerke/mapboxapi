@@ -5,6 +5,34 @@ template:
 home:
   title: Use Mapbox Web Services in R
 
+reference:
+- title: API token, style, and data management
+  contents:
+  - '`mapboxapi`'
+  - '`mb_access_token`'
+  - '`get_style`'
+  - '`upload_tiles`'
+  - '`check_upload_status`'
+- title: Navigation Services
+  contents:
+  - '`mb_geocode`'
+  - '`mb_directions`'
+  - '`mb_matrix`'
+  - '`mb_isochrone`'
+  - '`mb_optimized_route`'
+- title: Tilequery API and tippecanoe
+  contents:
+  - '`get_vector_tiles`'
+  - '`query_tiles`'
+  - '`tippecanoe`'
+- title: Static Tiles and Static Maps APIs
+  contents:
+  - '`addMapboxTiles`'
+  - '`get_static_tiles`'
+  - '`static_mapbox`'
+  - '`layer_static_mapbox`'
+  - '`prep_overlay_markers`'
+
 navbar:
   structure:
     left:

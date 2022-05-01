@@ -9,7 +9,7 @@ Authors@R:
     person(given = "Eli", family = "Pousson", email = "eli.pousson@gmail.com",
     role = "ctb"),
     person(given = "Anthony", family = "North", role = c("ctb", "cph"), email = "anthony.jl.north@gmail.com"),
-    person(given = "Miles", family = "McBain", role = c("ctb", "cph"), email = "miles.mcbain@gmail.com"))
+    person(given = "Miles", family = "McBain", role = "ctb", email = "miles.mcbain@gmail.com"))
 Maintainer: Kyle Walker <kyle@walker-data.com>
 Description: Includes support for 'Mapbox' Navigation APIs, including directions, 
   isochrones, and route optimization; the Search API for forward and reverse geocoding; 
@@ -45,5 +45,8 @@ Suggests:
     mapdeck,
     tigris,
     tidycensus,
-    tmap
+    tmap,
+    testthat (>= 3.0.0)
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Config/testthat/edition: 3

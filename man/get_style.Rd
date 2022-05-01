@@ -2,22 +2,29 @@
 % Please edit documentation in R/styles.R
 \name{get_style}
 \alias{get_style}
-\title{Get information about a style from your Mapbox account}
+\alias{list_styles}
+\title{Get information about a style or list styles from a Mapbox account}
 \usage{
 get_style(style_id, username, style_url = NULL, access_token = NULL)
+
+list_styles(username, access_token = NULL)
 }
 \arguments{
 \item{style_id}{A style ID}
 
 \item{username}{A Mapbox username}
 
-\item{style_url}{Mapbox style URL}
+\item{style_url}{A Mapbox style URL}
 
-\item{access_token}{A Mapbox public or secret access token; set with \code{mb_access_token()}}
+\item{access_token}{A Mapbox public or secret access token; set with
+\code{\link[=mb_access_token]{mb_access_token()}}}
 }
 \value{
-A list of information about your selected style.
+\link{get_style} returns a list of information about your selected style.
+\link{list_styles} returns a data frame of information about styles from a
+Mapbox account
 }
 \description{
-Get information about a style from your Mapbox account
+See the \href{https://docs.mapbox.com/api/maps/styles/}{Mapbox Styles API}
+documentation for more information.
 }

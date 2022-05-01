@@ -1,14 +1,37 @@
 #' Generate an .mbtiles file with tippecanoe
 #'
-#' @param input The dataset from which to generate vector tiles.  Can be an sf object or GeoJSON file on disk.
-#' @param output The name of the output .mbtiles file (with .mbtiles extension).  Will be saved in the current working directory.
-#' @param layer_name The name of the layer in the output .mbtiles file. If NULL, will either be a random string (if input is an sf object) or the name of the input GeoJSON file (if input is a file path).
-#' @param min_zoom The minimum zoom level for which to compute tiles.
-#' @param max_zoom The maximum zoom level for which to compute tiles.  If both min_zoom and max_zoom are blank, tippecanoe will guess the best zoom levels for your data.
-#' @param drop_rate The rate at which tippecanoe will drop features as you zoom out. If NULL, tippecanoe will drop features as needed in the densest tiles to stay within Mapbox's limits.
-#' @param overwrite If TRUE, an existing .mbtiles file with the same name will be overwritten.
-#' @param other_options A character string of other options to be passed to the tippecanoe program.
-#' @param keep_geojson Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.
+#' [Tippecanoe](https://github.com/mapbox/tippecanoe) is tile-generation utility
+#' for building vector tilesets from large (or small) collections of GeoJSON,
+#' Geobuf, or CSV features. The [tippecanoe] function requires that the
+#' tippecanoe utility is installed on your system; see the tippecanoe
+#' documentation for [installation
+#' instructions](https://github.com/mapbox/tippecanoe#installation). Once
+#' installed, tippecanoe can be used in large visualization workflows in concert
+#' with Mapbox Studio.
+#'
+#' Mapbox also offers the [Mapbox Tiling
+#' Service](https://docs.mapbox.com/mapbox-tiling-service/guides/) as an
+#' alternate way to transform datasets into vector tiles.
+#'
+#' @param input The dataset from which to generate vector tiles. Can be an sf
+#'   object or GeoJSON file on disk.
+#' @param output The name of the output .mbtiles file (with .mbtiles extension).
+#'   Will be saved in the current working directory.
+#' @param layer_name The name of the layer in the output .mbtiles file. If NULL,
+#'   will either be a random string (if input is an `sf` object) or the name of
+#'   the input GeoJSON file (if input is a file path).
+#' @param min_zoom,max_zoom The minimum and maximum zoom levels for which to
+#'   compute tiles. If both min_zoom and max_zoom are blank, tippecanoe will
+#'   guess the best zoom levels for your data.
+#' @param drop_rate The rate at which tippecanoe will drop features as you zoom
+#'   out. If NULL, tippecanoe will drop features as needed in the densest tiles
+#'   to stay within Mapbox's limits.
+#' @param overwrite If `TRUE`, an existing .mbtiles file with the same name will
+#'   be overwritten.
+#' @param other_options A character string of other options to be passed to the
+#'   tippecanoe program.
+#' @param keep_geojson Whether nor not to keep the temporary CSV or GeoJSON file
+#'   used to generate the tiles. Defaults to `FALSE`.
 #'
 #' @examples \dontrun{
 #'
@@ -65,7 +88,7 @@ tippecanoe <- function(input,
   check_install <- system("tippecanoe -v") == 0
 
   if (!check_install) {
-    stop("tippecanoe is not installed.  Please visit https://github.com/mapbox/tippecanoe for installation instructions.",
+    stop("tippecanoe is not installed. Please visit https://github.com/mapbox/tippecanoe for installation instructions.",
       call. = FALSE
     )
   }
@@ -104,7 +127,7 @@ tippecanoe <- function(input,
 
   dir <- getwd()
 
-  # If input is an sf object, it should be first converted to GeoJSON
+  # If input is an `sf` object, it should be first converted to GeoJSON
   if (any(grepl("^sf", class(input)))) {
     input <- sf::st_transform(input, 4326)
 

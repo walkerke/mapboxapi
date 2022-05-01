@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9000</span>
       </span>
     </div>
 
@@ -66,38 +66,10 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="all-functions">All functions <a href="#all-functions" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="api-token-style-and-data-management">API token, style, and data management <a href="#api-token-style-and-data-management" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="addMapboxTiles.html">addMapboxTiles()</a></code> </p>
-        </td>
-        <td><p>Use a Mapbox style in a Leaflet map</p></td>
-      </tr><tr><td>
-          <p><code><a href="check_upload_status.html">check_upload_status()</a></code> </p>
-        </td>
-        <td><p>Check the status of a Mapbox upload</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_static_tiles.html">get_static_tiles()</a></code> </p>
-        </td>
-        <td><p>Get static tiles from a Mapbox style for use as a basemap</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_style.html">get_style()</a></code> </p>
-        </td>
-        <td><p>Get information about a style from your Mapbox account</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_vector_tiles.html">get_vector_tiles()</a></code> </p>
-        </td>
-        <td><p>Retrieve vector tiles from a given Mapbox tileset</p></td>
-      </tr><tr><td>
-          <p><code><a href="layer_static_mapbox.html">layer_static_mapbox()</a></code> </p>
-        </td>
-        <td><p>Make a ggplot2 layer with static_mapbox and ggspatial</p></td>
-      </tr><tr><td>
-          <p><code><a href="list_styles.html">list_styles()</a></code> </p>
-        </td>
-        <td><p>List styles in your Mapbox account</p></td>
-      </tr><tr><td>
           <p><code><a href="mapboxapi.html">mapboxapi</a></code> </p>
         </td>
         <td><p>An R interface to Mapbox web services</p></td>
@@ -106,41 +78,81 @@
         </td>
         <td><p>Install or retrieve a Mapbox access token in your .Renviron for repeated use</p></td>
       </tr><tr><td>
-          <p><code><a href="mb_directions.html">mb_directions()</a></code> </p>
+          <p><code><a href="get_style.html">get_style()</a></code> <code><a href="get_style.html">list_styles()</a></code> </p>
         </td>
-        <td><p>Make a request to the Mapbox Directions API</p></td>
+        <td><p>Get information about a style or list styles from a Mapbox account</p></td>
       </tr><tr><td>
+          <p><code><a href="upload_tiles.html">upload_tiles()</a></code> </p>
+        </td>
+        <td><p>Upload dataset to your Mapbox account</p></td>
+      </tr><tr><td>
+          <p><code><a href="check_upload_status.html">check_upload_status()</a></code> </p>
+        </td>
+        <td><p>Check the status of a Mapbox upload</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="navigation-services">Navigation Services <a href="#navigation-services" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="mb_geocode.html">mb_geocode()</a></code> <code><a href="mb_geocode.html">mb_reverse_geocode()</a></code> </p>
         </td>
         <td><p>Geocode an address or place description using the Mapbox Geocoding API</p></td>
       </tr><tr><td>
-          <p><code><a href="mb_isochrone.html">mb_isochrone()</a></code> </p>
+          <p><code><a href="mb_directions.html">mb_directions()</a></code> </p>
         </td>
-        <td><p>Generate isochrones using the Mapbox Navigation API</p></td>
+        <td><p>Make a request to the Mapbox Directions API</p></td>
       </tr><tr><td>
           <p><code><a href="mb_matrix.html">mb_matrix()</a></code> </p>
         </td>
         <td><p>Retrieve a matrix of travel times from the Mapbox Directions API</p></td>
       </tr><tr><td>
+          <p><code><a href="mb_isochrone.html">mb_isochrone()</a></code> </p>
+        </td>
+        <td><p>Generate isochrones using the Mapbox Navigation Service Isochrone API</p></td>
+      </tr><tr><td>
           <p><code><a href="mb_optimized_route.html">mb_optimized_route()</a></code> </p>
         </td>
         <td><p>Return an optimized route for a series of input coordinates</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="tilequery-api-and-tippecanoe">Tilequery API and tippecanoe <a href="#tilequery-api-and-tippecanoe" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="get_vector_tiles.html">get_vector_tiles()</a></code> </p>
+        </td>
+        <td><p>Retrieve vector tiles from a given Mapbox tileset</p></td>
       </tr><tr><td>
           <p><code><a href="query_tiles.html">query_tiles()</a></code> </p>
         </td>
         <td><p>Get information about features in a tileset using the Tilequery API</p></td>
       </tr><tr><td>
-          <p><code><a href="static_mapbox.html">static_mapbox()</a></code> <code><a href="static_mapbox.html">prep_overlay_markers()</a></code> </p>
-        </td>
-        <td><p>Return a static Mapbox map from a specified style</p></td>
-      </tr><tr><td>
           <p><code><a href="tippecanoe.html">tippecanoe()</a></code> </p>
         </td>
         <td><p>Generate an .mbtiles file with tippecanoe</p></td>
-      </tr><tr><td>
-          <p><code><a href="upload_tiles.html">upload_tiles()</a></code> </p>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="static-tiles-and-static-maps-apis">Static Tiles and Static Maps APIs <a href="#static-tiles-and-static-maps-apis" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="addMapboxTiles.html">addMapboxTiles()</a></code> </p>
         </td>
-        <td><p>Upload dataset to your Mapbox account</p></td>
+        <td><p>Use a Mapbox style in a Leaflet map</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_static_tiles.html">get_static_tiles()</a></code> </p>
+        </td>
+        <td><p>Get static tiles from a Mapbox style for use as a basemap</p></td>
+      </tr><tr><td>
+          <p><code><a href="static_mapbox.html">static_mapbox()</a></code> </p>
+        </td>
+        <td><p>Return a static Mapbox map from a specified style</p></td>
+      </tr><tr><td>
+          <p><code><a href="layer_static_mapbox.html">layer_static_mapbox()</a></code> </p>
+        </td>
+        <td><p>Make a ggplot2 layer with static_mapbox and ggspatial</p></td>
+      </tr><tr><td>
+          <p><code><a href="prep_overlay_markers.html">prep_overlay_markers()</a></code> </p>
+        </td>
+        <td><p>Prepare overlay markers for use in a Mapbox static map</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -154,7 +166,8 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer></div>

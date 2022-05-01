@@ -17,26 +17,45 @@ tippecanoe(
 )
 }
 \arguments{
-\item{input}{The dataset from which to generate vector tiles.  Can be an sf object or GeoJSON file on disk.}
+\item{input}{The dataset from which to generate vector tiles. Can be an sf
+object or GeoJSON file on disk.}
 
-\item{output}{The name of the output .mbtiles file (with .mbtiles extension).  Will be saved in the current working directory.}
+\item{output}{The name of the output .mbtiles file (with .mbtiles extension).
+Will be saved in the current working directory.}
 
-\item{layer_name}{The name of the layer in the output .mbtiles file. If NULL, will either be a random string (if input is an sf object) or the name of the input GeoJSON file (if input is a file path).}
+\item{layer_name}{The name of the layer in the output .mbtiles file. If NULL,
+will either be a random string (if input is an \code{sf} object) or the name of
+the input GeoJSON file (if input is a file path).}
 
-\item{min_zoom}{The minimum zoom level for which to compute tiles.}
+\item{min_zoom, max_zoom}{The minimum and maximum zoom levels for which to
+compute tiles. If both min_zoom and max_zoom are blank, tippecanoe will
+guess the best zoom levels for your data.}
 
-\item{max_zoom}{The maximum zoom level for which to compute tiles.  If both min_zoom and max_zoom are blank, tippecanoe will guess the best zoom levels for your data.}
+\item{drop_rate}{The rate at which tippecanoe will drop features as you zoom
+out. If NULL, tippecanoe will drop features as needed in the densest tiles
+to stay within Mapbox's limits.}
 
-\item{drop_rate}{The rate at which tippecanoe will drop features as you zoom out. If NULL, tippecanoe will drop features as needed in the densest tiles to stay within Mapbox's limits.}
+\item{overwrite}{If \code{TRUE}, an existing .mbtiles file with the same name will
+be overwritten.}
 
-\item{overwrite}{If TRUE, an existing .mbtiles file with the same name will be overwritten.}
+\item{other_options}{A character string of other options to be passed to the
+tippecanoe program.}
 
-\item{other_options}{A character string of other options to be passed to the tippecanoe program.}
-
-\item{keep_geojson}{Whether nor not to keep the temporary CSV or GeoJSON file used to generate the tiles.  Defaults to \code{FALSE}.}
+\item{keep_geojson}{Whether nor not to keep the temporary CSV or GeoJSON file
+used to generate the tiles. Defaults to \code{FALSE}.}
 }
 \description{
-Generate an .mbtiles file with tippecanoe
+\href{https://github.com/mapbox/tippecanoe}{Tippecanoe} is tile-generation utility
+for building vector tilesets from large (or small) collections of GeoJSON,
+Geobuf, or CSV features. The \link[=Tippecanoe]{tippecanoe} function requires that the
+tippecanoe utility is installed on your system; see the tippecanoe
+documentation for \href{https://github.com/mapbox/tippecanoe#installation}{installation instructions}. Once
+installed, tippecanoe can be used in large visualization workflows in concert
+with Mapbox Studio.
+}
+\details{
+Mapbox also offers the \href{https://docs.mapbox.com/mapbox-tiling-service/guides/}{Mapbox Tiling Service} as an
+alternate way to transform datasets into vector tiles.
 }
 \examples{
 \dontrun{

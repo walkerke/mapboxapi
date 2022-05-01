@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9000</span>
       </span>
     </div>
 
@@ -78,17 +78,25 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>tileset_id</dt>
-<dd><p>The name of the tileset ID; names can be retrieved from your Mapbox account</p></dd>
+<dd><p>The name of the tileset ID; names can be retrieved from
+your Mapbox account</p></dd>
 <dt>location</dt>
-<dd><p>The location for which you'd like to retrieve tiles.  If the input is an sf object, the function will return data for all tiles that intersect the object's bounding box.  If the input is a coordinate pair or an address, data will be returned for the specific tile that contains the input.</p></dd>
+<dd><p>The location for which you'd like to retrieve tiles. If the
+input is an <code>sf</code> object, the function will return data for all tiles that
+intersect the object's bounding box. If the input is a coordinate pair or
+an address, data will be returned for the specific tile that contains the
+input.</p></dd>
 <dt>zoom</dt>
-<dd><p>The zoom level of the request; larger zoom levels will return more detail but will take longer to process.</p></dd>
+<dd><p>The zoom level of the request; larger zoom levels will return
+more detail but will take longer to process.</p></dd>
 <dt>access_token</dt>
-<dd><p>A Mapbox access token; can be set with <code><a href="mb_access_token.html">mb_access_token()</a></code>.</p></dd>
+<dd><p>A Mapbox access token; which can be set with
+<code><a href="mb_access_token.html">mb_access_token()</a></code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of sf objects representing the different layer types found in the requested vector tiles.</p>
+    <p>A list of <code>sf</code> objects representing the different layer types found
+in the requested vector tiles.</p>
     </div>
 
     <div id="ref-examples">
@@ -123,7 +131,8 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
       </footer></div>

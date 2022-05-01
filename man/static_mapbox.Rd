@@ -2,7 +2,6 @@
 % Please edit documentation in R/maps.R
 \name{static_mapbox}
 \alias{static_mapbox}
-\alias{prep_overlay_markers}
 \title{Return a static Mapbox map from a specified style}
 \usage{
 static_mapbox(
@@ -29,113 +28,87 @@ static_mapbox(
   access_token = NULL,
   image = TRUE
 )
-
-prep_overlay_markers(
-  data = NULL,
-  marker_type = c("pin-s", "pin-l", "url"),
-  label = NA,
-  color = NA,
-  longitude = NULL,
-  latitude = NULL,
-  url = NA
-)
 }
 \arguments{
 \item{location}{An input location for which you would like to request tiles.
-Can be a length-4 vector representing a bounding box, or an sf object.
-If an input sf object is supplied, use the \code{buffer_dist} argument to
+Can be a length-4 vector representing a bounding box, or an \code{sf} object.
+If an input \code{sf} object is supplied, use the \code{buffer_dist} argument to
 control how much area you want to capture around the layer.
-While the input sf object can be in an arbitrary coordinate reference system,
+While the input \code{sf} object can be in an arbitrary coordinate reference system,
 if a length-4 bounding box vector is supplied instead it must represent
 WGS84 longitude/latitude coordinates and be in the order
 \code{c(xmin, ymin, xmax, ymax)}.}
 
-\item{buffer_dist}{The distance to buffer around an input sf object for
-determining static map, specified in meters.  Defaults to 1000.}
+\item{buffer_dist}{The distance to buffer around an input \code{sf} object for
+determining static map, specified in meters. Defaults to 1000.}
 
 \item{style_id}{A style ID (required if style_url is NULL).}
 
-\item{username}{A Mapbox username (required if style_url is NULL).}
+\item{username}{A Mapbox username (required if \code{style_url = NULL}).}
 
 \item{style_url}{A Mapbox style url; defaults to NULL.}
 
-\item{overlay_sf}{The overlay sf object (optional).  The function will
-convert the sf object to GeoJSON then plot over the basemap style.  Spatial
-data that are too large will trigger an error, and should be added to the
-style in Mapbox Studio instead.}
+\item{overlay_sf}{The overlay \code{sf} object (optional). The function will
+convert the \code{sf} object to GeoJSON then plot over the basemap style.
+Spatial data that are too large will trigger an error, and should be added
+to the style in Mapbox Studio instead.}
 
 \item{overlay_style}{A named list of vectors specifying how to style the sf
-overlay.  Possible names are "stroke", "stroke-width", "stroke-opacity",
-"fill", and "fill-opacity".  The fill and stroke color values should be
+overlay. Possible names are "stroke", "stroke-width", "stroke-opacity",
+"fill", and "fill-opacity". The fill and stroke color values should be
 specified as six-digit hex codes, and the opacity and width values should
 be supplied as floating-point numbers.}
 
-\item{overlay_markers}{The prepared overlay markers (optional).  See the
-function \code{\link{prep_overlay_markers}} for more information on how to
-specify a marker overlay.}
+\item{overlay_markers}{The prepared overlay markers (optional). See the
+function \link{prep_overlay_markers} for more information on how to specify a
+marker overlay.}
 
-\item{longitude}{A vector of longitudes; inferred from the input dataset if \code{data} is provided.}
+\item{longitude, latitude}{The longitude and latitude of the map center. If an
+overlay is supplied, the map will default to the extent of the overlay
+unless longitude, latitude, and zoom are all specified.}
 
-\item{latitude}{A vector of latitudes; inferred from the input dataset if \code{data} is provided.}
-
-\item{zoom}{The map zoom.  The map will infer this from the overlay unless
+\item{zoom}{The map zoom. The map will infer this from the overlay unless
 longitude, latitude, and zoom are all specified.}
 
-\item{width}{The map width; defaults to NULL}
+\item{width, height}{The map width and height; defaults to \code{NULL}}
 
-\item{height}{The map height; defaults to NULL}
+\item{pitch, bearing}{The map pitch and bearing; defaults to \code{NULL}. pitch can
+range from 0 to 60, and bearing from 0 to 360.}
 
-\item{bearing}{The map bearing; defaults to NULL}
-
-\item{pitch}{The map pitch; defaults to NULL}
-
-\item{scale}{ratio to scale the output image; `scale = 1` will return the
+\item{scale}{ratio to scale the output image; \code{scale = 1} will return the
 largest possible image. defaults to 0.5}
 
-\item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"}
-(the default) or \code{"2x"}}
+\item{scaling_factor}{The scaling factor of the tiles; either \verb{"1x"`` (the default) or }"2x"`}
 
 \item{attribution}{Controls whether there is attribution on the image.
-Defaults to `TRUE`. Note: If attribution=false, the watermarked attribution
-is removed from the image. You still have a legal responsibility to
-attribute maps that use OpenStreetMap data, which includes most maps from
-Mapbox. If you specify attribution=false, you are legally required to
-include proper attribution elsewhere on the webpage or document.}
+Defaults to \code{TRUE}. If \code{FALSE}, the watermarked attribution is removed from
+the image. You still have a legal responsibility to attribute maps that use
+OpenStreetMap data, which includes most maps from Mapbox. If you specify
+\code{attribution = FALSE}, you are legally required to include proper
+attribution elsewhere on the webpage or document.}
 
 \item{logo}{Controls whether there is a Mapbox logo on the image. Defaults to
-`TRUE`.}
+\code{TRUE}.}
 
 \item{before_layer}{A character string that specifies where in the hierarchy
-of layer elements the overlay should be inserted.  The overlay will be
+of layer elements the overlay should be inserted. The overlay will be
 placed just above the specified layer in the given Mapbox styles.}
 
-\item{access_token}{A Mapbox access token; can be set with
-\code{mb_access_token()}.}
+\item{access_token}{A Mapbox access token; which can be set with
+\link{mb_access_token}.}
 
-\item{image}{If FALSE, return the a \code{response()} object from
-\code{httr::GET()} using the static image URL; defaults to TRUE}
-
-\item{data}{An input data frame with longitude and latitude columns (X and Y or lon and lat as names are also acceptable) or an sf object with geometry type POINT.}
-
-\item{marker_type}{The marker type; one of \code{"pin-s"}, for a small pin; \code{"pin-l"}, for a large pin; and \code{"url"}, for an image path.}
-
-\item{label}{The marker label (optional).  Can be a letter, number (0 through 99), or a valid Maki icon (see \url{https://labs.mapbox.com/maki-icons/}) for options).}
-
-\item{color}{The marker color (optional).  Color should be specified as a three or six-digit hexadecimal code without the number sign.}
-
-\item{url}{The URL of the image to be used for the icon if \code{marker_type = "url"}.}
+\item{image}{If \code{FALSE}, return the a \link[httr:response]{httr::response} object from
+\link[httr:GET]{httr::GET} using the static image URL; defaults to TRUE}
 }
 \value{
-A pointer to an image of class \code{"magick-image"} if `image =
-  TRUE`. The resulting image can be manipulated further with functions from
-  the magick package.
-
-A formatted list of marker specifications that can be passed to the \code{\link{static_mapbox}} function.
+A pointer to an image of class \code{"magick-image"} if \code{image = TRUE}.
+The resulting image can be manipulated further with functions from the
+{magick} package.
 }
 \description{
-Return a static Mapbox map from a specified style
-
-Prepare overlay markers for use in a Mapbox static map
+This function uses the \href{https://www.mapbox.com/static-maps}{Mapbox Static Maps API} to return a pointer to an
+\code{"magick-image"} class image or a \link[httr:response]{httr::response} object from the static map
+image URL.
 }
 \examples{
 \dontrun{

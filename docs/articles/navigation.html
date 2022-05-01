@@ -104,7 +104,7 @@
 <div id="routing-with-mapboxapi" class="section level2">
 <h2 class="hasAnchor">
 <a href="#routing-with-mapboxapi" class="anchor"></a>Routing with mapboxapi</h2>
-<p>The <code><a href="../reference/mb_directions.html">mb_directions()</a></code> function computes a route between an origin and destination, or optionally along multiple points in an sf object. Output options include the route or the route split by route legs as an sf linestring, or the full routing output as an R list for additional applications.</p>
+<p>The <code><a href="../reference/mb_directions.html">mb_directions()</a></code> function computes a route between an origin and destination, or optionally along multiple points in an `sf` object. Output options include the route or the route split by route legs as an sf linestring, or the full routing output as an R list for additional applications.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mapboxapi</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span>
@@ -169,7 +169,7 @@
 <div id="isochrones-and-travel-time-matrices" class="section level2">
 <h2 class="hasAnchor">
 <a href="#isochrones-and-travel-time-matrices" class="anchor"></a>Isochrones and travel-time matrices</h2>
-<p>The Mapbox Isochrone API returns polygons representing <em>isochrones</em>, or areas reachable within a given travel time, around a given location. <strong>mapboxapi</strong> returns Mapbox isochrones as sf objects for visualization and analysis. Input locations can be coordinate pairs, addresses, or sf objects themselves. The example below returns three walking isochrones around The Kremlin in Moscow; users can also optionally get street network-aware distances by using the <code>distance</code> argument instead of <code>time</code> and supplying a vector of distances in meters.</p>
+<p>The Mapbox Isochrone API returns polygons representing <em>isochrones</em>, or areas reachable within a given travel time, around a given location. <strong>mapboxapi</strong> returns Mapbox isochrones as `sf` objects for visualization and analysis. Input locations can be coordinate pairs, addresses, or `sf` objects themselves. The example below returns three walking isochrones around The Kremlin in Moscow; users can also optionally get street network-aware distances by using the <code>distance</code> argument instead of <code>time</code> and supplying a vector of distances in meters.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://symbolixau.github.io/mapdeck/articles/mapdeck.html">mapdeck</a></span><span class="op">)</span>
 

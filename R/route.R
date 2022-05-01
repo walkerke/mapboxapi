@@ -1,35 +1,77 @@
 #' Make a request to the Mapbox Directions API
 #'
-#' @param input_data An input dataset of class \code{"sf"}, or a list of coordinate pairs for format \code{c(longitude, latitude)}. Cannot be used with an origin/destination pair.
-#' @param origin An address or coordinate pair that represents the origin of your requested route. Cannot be used with \code{input_data}.
-#' @param destination An address or coordinate pair that represents the destination of your requested route.
-#' @param profile One of "driving" (the default), "driving-traffic", "walking", or "cycling".
-#' @param output One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.
-#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns.  If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.
-#' @param alternatives Whether or not to return alternative routes with your request. If TRUE, a list of up to 3 possible routes will be returned.
-#' @param annotations A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".
+#' See the [Mapbox Directions API
+#' documentation](https://docs.mapbox.com/api/navigation/directions/) for more
+#' information.
+#'
+#' @param input_data An input dataset of class `"sf"`, or a list of coordinate
+#'   pairs for format `c(longitude, latitude)`. Cannot be used with an
+#'   origin/destination pair.
+#' @param origin An address or coordinate pair that represents the origin of
+#'   your requested route. Cannot be used with `input_data`.
+#' @param destination An address or coordinate pair that represents the
+#'   destination of your requested route.
+#' @param profile One of "driving" (the default), "driving-traffic", "walking",
+#'   or "cycling".
+#' @param output One of "sf" (the default), which returns an sf LINESTRING
+#'   representing the route geometry, or "full", which returns the full request
+#'   from the Directions API as a list.
+#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles,
+#'   the departure date and time to reflect historical traffic patterns. If
+#'   "driving-traffic" is used, live traffic will be mixed in with historical
+#'   traffic for dates/times near to the current time. Should be specified as an
+#'   ISO 8601 date/time, e.g. `"2022-03-31T09:00"`.
+#' @param alternatives Whether or not to return alternative routes with your
+#'   request. If TRUE, a list of up to 3 possible routes will be returned.
+#' @param annotations A comma-separated string of additional route metadata,
+#'   which may include duration, distance, speed, and congestion. Must be used
+#'   with overview = "full".
 #' @param bearings A semicolon-delimited character string of bearings
 #' @param continue_straight continue_straight
-#' @param exclude Road types to exclude from your route; possible choices are \code{'toll'}, \code{'motorway'}, or \code{'ferry'}.  Defaults to NULL.
-#' @param geometries The route geometry format.  If \code{output = 'sf'}, you will get back an sf object and you should leave this blank.  If \code{output = 'full'}, the embedded route geometries will be \code{polyline} with five decimal place precision.  \code{'polyline6'} may also be specified.
-#' @param overview If left blank, defaults to \code{'simplified'} for simplified geometry; the other option is \code{'full'} which provides the most detailed geometry available.
-#' @param radiuses A character string with semicolon-separated radii that specify the distance (in meters) to snap each input coordinate to the road network.  Defaults to NULL.
-#' @param approaches A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.
-#' @param steps If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.
-#' @param banner_instructions Whether or not to return banner objects; only available when \code{output = 'full'} and \code{steps = TRUE}.
-#' @param language The language of the returned instructions (defaults to English). Available language codes are found at \url{https://docs.mapbox.com/api/navigation/#instructions-languages}.  Only available when \code{steps = TRUE}.
-#' @param roundabout_exits If TRUE, adds instructions for roundabout entrance and exit.  Only available when \code{steps = TRUE}.
-#' @param voice_instructions Only available when \code{steps = TRUE} and \code{output = 'full'}.
-#' @param voice_units Only available when \code{steps = TRUE} and \code{output = 'full'}.
-#' @param waypoint_names Only available when \code{steps = TRUE} and \code{output = 'full'}.
-#' @param waypoint_targets Only available when \code{steps = TRUE} and \code{output = 'full'}.
-#' @param waypoints Only available when \code{steps = TRUE} and \code{output = 'full'}.
-#' @param walking_speed The walking speed in meters/second; available when \code{profile = 'walking'}.
-#' @param walkway_bias Can take values between -1 and 1, where negative numbers avoid walkways and positive numbers prefer walkways.  Available when \code{profile = 'walking'}.
-#' @param alley_bias Can take values between -1 and 1, where negative numbers avoid alleys and positive numbers prefer alleys.  Available when \code{profile = 'walking'}.
-#' @param access_token Your Mapbox access token; set with \code{mb_access_token()}
+#' @param exclude Road types to exclude from your route; possible choices are
+#'   `'toll'`, `'motorway'`, or `'ferry'`. Defaults to `NULL`.
+#' @param geometries The route geometry format. If `output = 'sf'`, you will get
+#'   back an `sf` object and you should leave this blank. If `output = 'full'`,
+#'   the embedded route geometries will be `polyline` with five decimal place
+#'   precision. `'polyline6'` may also be specified.
+#' @param overview If left blank, defaults to `'simplified'` for simplified
+#'   geometry; the other option is `'full'` which provides the most detailed
+#'   geometry available.
+#' @param radiuses A character string with semicolon-separated radii that
+#'   specify the distance (in meters) to snap each input coordinate to the road
+#'   network. Defaults to `NULL`.
+#' @param approaches A character string with semicolon-separated specifications
+#'   for how to approach waypoints. Options include `unrestricted` and `curb`.
+#'   Defaults to `NULL` which uses `unrestricted` for all waypoints.
+#' @param steps If `TRUE`, returns the route object split up into route legs
+#'   with step-by-step instructions included. If `FALSE` or `NULL` (the
+#'   default), a single line geometry representing the full route will be
+#'   returned.
+#' @param banner_instructions Whether or not to return banner objects; only
+#'   available when`output = 'full'` and `steps = TRUE`.
+#' @param language The language of the returned instructions (defaults to
+#'   English). Available language codes are found at
+#'   <https://docs.mapbox.com/api/navigation/#instructions-languages>. Only
+#'   available when `steps = TRUE`.
+#' @param roundabout_exits If TRUE, adds instructions for roundabout entrance
+#'   and exit. Only available when `steps = TRUE`.
+#' @param voice_instructions,voice_units Only available when `steps = TRUE` and
+#'   `output = 'full'`.
+#' @param waypoint_names,waypoint_targets,waypoints Only available when `steps =
+#'   TRUE` and `output = 'full'`.
+#' @param walking_speed The walking speed in meters/second; available when
+#'   `profile = 'walking'`.
+#' @param walkway_bias Can take values between -1 and 1, where negative numbers
+#'   avoid walkways and positive numbers prefer walkways. Available when
+#'   `profile = 'walking'`.
+#' @param alley_bias Can take values between -1 and 1, where negative numbers
+#'   avoid alleys and positive numbers prefer alleys. Available when `profile =
+#'   'walking'`.
+#' @param access_token A Mapbox access token; which can be set with
+#'   [mb_access_token()]
 #'
-#' @return An sf object (or list of sf objects), or full R list representing the API response.
+#' @return An `sf` object (or list of `sf` objects), or full R list representing
+#'   the API response.
 #'
 #' @examples \dontrun{
 #' library(mapboxapi)
@@ -108,7 +150,7 @@ mb_directions <- function(input_data = NULL,
 
   # Check size of request and process limits accordingly
   if (!profile %in% c("driving", "driving-traffic", "walking", "cycling")) {
-    stop("The following travel profiles are supported: 'driving', 'driving-traffic', 'walking', and 'cycling'.  Please modify your request accordingly", call. = FALSE)
+    stop("The following travel profiles are supported: 'driving', 'driving-traffic', 'walking', and 'cycling'. Please modify your request accordingly", call. = FALSE)
   }
 
   if (!is.null(input_data)) {
@@ -131,7 +173,7 @@ mb_directions <- function(input_data = NULL,
     }
   }
 
-  # If input_data is an sf object, process it accordingly
+  # If input_data is an `sf` object, process it accordingly
   if (!is.null(input_data)) {
     if (any(grepl("^sf", class(input_data)))) {
       if (unique(sf::st_geometry_type(input_data)) != "POINT") {
@@ -165,7 +207,7 @@ mb_directions <- function(input_data = NULL,
   }
 
   # If origin/destination are specified, check to see if they represent coordinate pairs
-  # or addresses.  If they are addresses, geocode them then process.
+  # or addresses. If they are addresses, geocode them then process.
   # We've already done error handling to make sure origin and destination are both supplied.
   if (!is.null(origin)) {
     if (inherits(origin, "character")) {
@@ -336,23 +378,52 @@ mb_directions <- function(input_data = NULL,
 
 #' Return an optimized route for a series of input coordinates
 #'
-#' @param input_data An input dataset of class \code{"sf"}, or a list of coordinate pairs of format \code{c(longitude, latitude)}.  Must be between 2 and 12 coordinate pairs.
-#' @param profile One of "driving" (the default), "driving-traffic", "walking", or "cycling".
-#' @param output One of "sf" (the default), which returns an sf LINESTRING representing the route geometry, or "full", which returns the full request from the Directions API as a list.
-#' @param source One of \code{"any"} (the default) or \code{"first"}.  If "any" is specified, any of the input coordinates may be used as the starting point.  If "first" is specified, the first coordinate will be used.
-#' @param destination One of \code{"any"} (the default) or \code{"last"}.  If "any" is specified, any of the input coordinates may be used as the ending point.  If "last" is specified, the last coordinate will be used.
-#' @param roundtrip If \code{TRUE} (the default), the route will start and end at the same point. \code{roundtrip = FALSE} only works when \code{source} is \code{"first"} and \code{destination} is \code{"last"}.  If \code{FALSE} is supplied here, the route will start at the first point in \code{input_data} and end at the last point.
-#' @param annotations A comma-separated string of additional route metadata, which may include duration, distance, speed, and congestion. Must be used with overview = "full".
-#' @param approaches A character string with semicolon-separated specifications for how to approach waypoints.  Options include \code{unrestricted} and \code{curb}.  Defaults to NULL which uses \code{unrestricted} for all waypoints.
+#' @param input_data An input dataset of class `"sf"`, or a list of coordinate
+#'   pairs of format `c(longitude, latitude)`. Must be between 2 and 12
+#'   coordinate pairs.
+#' @param profile One of "driving" (the default), "driving-traffic", "walking",
+#'   or "cycling".
+#' @param output One of "sf" (the default), which returns an `sf` LINESTRING
+#'   representing the route geometry, or "full", which returns the full request
+#'   from the Directions API as a list.
+#' @param source One of `"any"` (the default) or `"first"`. If "any" is
+#'   specified, any of the input coordinates may be used as the starting point.
+#'   If "first" is specified, the first coordinate will be used.
+#' @param destination One of `"any"` (the default) or `"last"`. If "any" is
+#'   specified, any of the input coordinates may be used as the ending point. If
+#'   "last" is specified, the last coordinate will be used.
+#' @param roundtrip If `TRUE` (the default), the route will start and end at the
+#'   same point. `roundtrip = FALSE` only works when `source` is `"first"` and
+#'   `destination` is `"last"`. If `FALSE` is supplied here, the route will
+#'   start at the first point in `input_data` and end at the last point.
+#' @param annotations A comma-separated string of additional route metadata,
+#'   which may include duration, distance, speed, and congestion. Must be used
+#'   with `overview = "full"`.
+#' @param approaches A character string with semicolon-separated specifications
+#'   for how to approach waypoints. Options include `unrestricted` and `curb`.
+#'   Defaults to NULL which uses `unrestricted` for all waypoints.
 #' @param bearings A semicolon-delimited character string of bearings.
-#' @param distributions A semicolon-delimited character string of number pairs that specifies pick-up and drop-off locations.  The first number indicates the index of the pick-up location, and the second number represents the index of the drop-off location.
-#' @param language The language of the returned instructions (defaults to English). Available language codes are found at \url{https://docs.mapbox.com/api/navigation/#instructions-languages}.  Only available when \code{steps = TRUE}.
-#' @param overview If left blank, defaults to \code{'simplified'} for simplified geometry; the other option is \code{'full'} which provides the most detailed geometry available.
-#' @param radiuses A character string with semicolon-separated radii that specify the distance (in meters) to snap each input coordinate to the road network.  Defaults to NULL.
-#' @param steps If TRUE, returns the route object split up into route legs with step-by-step instructions included.  If FALSE or NULL (the default), a single line geometry representing the full route will be returned.
-#' @param access_token Your Mapbox access token; set with \code{mb_access_token()}
+#' @param distributions A semicolon-delimited character string of number pairs
+#'   that specifies pick-up and drop-off locations. The first number indicates
+#'   the index of the pick-up location, and the second number represents the
+#'   index of the drop-off location.
+#' @param language The language of the returned instructions (defaults to
+#'   English). Available language codes are found at
+#'   <https://docs.mapbox.com/api/navigation/#instructions-languages>. Only
+#'   available when `steps = TRUE`.
+#' @param overview If left blank, defaults to `'simplified'` for simplified
+#'   geometry; the other option is `'full'` which provides the most detailed
+#'   geometry available.
+#' @param radiuses A character string with semicolon-separated radii that
+#'   specify the distance (in meters) to snap each input coordinate to the road
+#'   network. Defaults to `NULL`.
+#' @param steps If `TRUE`, returns the route object split up into route legs
+#'   with step-by-step instructions included. If `FALSE` or `NULL` (the default), a
+#'   single line geometry representing the full route will be returned.
+#' @param access_token Your Mapbox access token; which can be set with
+#'   [mb_access_token()]
 #'
-#' @return Either a list of two sf objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
+#' @return Either a list of two `sf` objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
 #'
 #' @examples \dontrun{
 #'
@@ -395,7 +466,7 @@ mb_optimized_route <- function(input_data,
 
   access_token <- get_mb_access_token(access_token)
 
-  # If input_data is an sf object, process it accordingly
+  # If input_data is an `sf` object, process it accordingly
   if (!is.null(input_data)) {
     if (any(grepl("^sf", class(input_data)))) {
       if (unique(sf::st_geometry_type(input_data)) != "POINT") {
