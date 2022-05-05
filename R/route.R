@@ -32,8 +32,8 @@
 #'   `'toll'`, `'motorway'`, or `'ferry'`. Defaults to `NULL`.
 #' @param geometries The route geometry format. If `output = 'sf'`, you will get
 #'   back an `sf` object and you should leave this blank. If `output = 'full'`,
-#'   the embedded route geometries will be `polyline` with five decimal place
-#'   precision. `'polyline6'` may also be specified.
+#'   the embedded route geometries will be one of `'geojson'` (the default),
+#'    `'polyline'` with five decimal place precision, or `'polyline6'`.
 #' @param overview If left blank, defaults to `'simplified'` for simplified
 #'   geometry; the other option is `'full'` which provides the most detailed
 #'   geometry available.
@@ -104,7 +104,7 @@ mb_directions <- function(input_data = NULL,
                           bearings = NULL,
                           continue_straight = NULL,
                           exclude = NULL,
-                          geometries = NULL,
+                          geometries = "geojson",
                           overview = "simplified",
                           radiuses = NULL,
                           approaches = NULL,
@@ -299,8 +299,8 @@ mb_directions <- function(input_data = NULL,
       bearings = bearings,
       continue_straight = continue_straight,
       exclude = exclude,
-      geometries = "geojson",
-      overview = "simplified",
+      geometries = geometries,
+      overview = overview,
       radiuses = radiuses,
       approaches = approaches,
       steps = steps,
