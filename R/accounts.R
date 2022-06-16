@@ -108,11 +108,23 @@ get_mb_access_token <- function(token = NULL,
         stop("A Mapbox access token is required. Please locate yours from your Mapbox account.", call. = FALSE)
       }
     }
-  } else if (!(grepl("^pk", token) && !grepl("^sk", token))) {
-    stop("Your supplied token appears to be invalid. Check your Mapbox account for details.", call. = FALSE)
-  }
 
-  return(token)
+    return(token)
+  } else {
+    if (secret_required) {
+      if (!grepl("^sk", token)) {
+        stop("A Mapbox access token with secret scope is required; this token will start with 'sk.ey'. Retrieve one or create one from your Mapbox account.", call. = FALSE)
+      } else {
+        return(token)
+      }
+    } else {
+      if (!grepl("^pk", token)) {
+        stop("Your supplied token appears to be invalid. Token strings will begin with 'pk.ey'. Retrieve one or create one from your Mapbox account.", call. = FALSE)
+      } else {
+        return(token)
+      }
+    }
+  }
 }
 
 

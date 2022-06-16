@@ -16,7 +16,7 @@ mb_directions(
   bearings = NULL,
   continue_straight = NULL,
   exclude = NULL,
-  geometries = NULL,
+  geometries = "geojson",
   overview = "simplified",
   radiuses = NULL,
   approaches = NULL,
@@ -75,8 +75,8 @@ with overview = "full".}
 
 \item{geometries}{The route geometry format. If \code{output = 'sf'}, you will get
 back an \code{sf} object and you should leave this blank. If \code{output = 'full'},
-the embedded route geometries will be \code{polyline} with five decimal place
-precision. \code{'polyline6'} may also be specified.}
+the embedded route geometries will be one of \code{'geojson'} (the default),
+\code{'polyline'} with five decimal place precision, or \code{'polyline6'}.}
 
 \item{overview}{If left blank, defaults to \code{'simplified'} for simplified
 geometry; the other option is \code{'full'} which provides the most detailed
