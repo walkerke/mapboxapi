@@ -53,7 +53,14 @@ location_to_bbox <- function(location, buffer_dist, crs = 4326, null.ok = TRUE) 
     if (geom_type %in% c("POINT", "MULTIPOINT")) {
       # If it is one or two points, buffer it
       if (nrow(location) %in% 1:2) {
-        sf_proj <- sf::st_buffer(sf_proj, units::as_units(1000, "m"))
+
+        if (is.null(buffer_dist) | (buffer_dist == 0)) {
+          sf_poly <- sf::st_buffer(location, units::as_units(1000, "m"))
+        } else {
+          sf_poly <- sf::st_buffer(location, units::as_units(buffer_dist, "m"))
+          buffer_dist <- 0
+        }
+
       }
 
       sf_poly <- location %>%
