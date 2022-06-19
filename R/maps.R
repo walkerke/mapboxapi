@@ -685,7 +685,13 @@ static_mapbox <- function(location = NULL,
       latitude <- center[2]
     }
 
-    zoom <- match.arg(as.character(zoom), c(11, 0:22))
+    if (is.null(zoom)) {
+      zoom <- 11
+    }
+
+    stopifnot(
+      "zoom must be between 0 and 22" = (zoom >= 0) && (zoom <= 22)
+    )
 
     focus_args <- c(longitude, latitude, zoom)
 
@@ -693,8 +699,21 @@ static_mapbox <- function(location = NULL,
       all(!is.null(focus_args))
     )
 
-    bearing <- match.arg(as.character(bearing), c(0:360))
-    pitch <- match.arg(as.character(pitch), c(0:60))
+    if (is.null(bearing)) {
+      bearing <- 0
+    } else if ((bearing < 0) && (bearing >= -360)) {
+      bearing <- 360 + bearing
+    }
+
+    if (is.null(pitch)) {
+      pitch <- 0
+    }
+
+    stopifnot(
+      "`bearing` must be between 0 and 360" = (bearing >= 0) && (bearing <= 360),
+      "`pitch` must be between 0 and 60" = (pitch >= 0) && (pitch <= 60)
+    )
+
     focus_args <- c(focus_args, bearing, pitch)
 
     focus <- paste0(focus_args, collapse = ",")
@@ -810,6 +829,10 @@ set_static_map_overlay <- function(base = NULL, overlay_sf = NULL, overlay_style
           reserved = TRUE
         )
       }
+    }
+
+    if (sf::st_crs(overlay_sf)["input"] != "EPSG:4326") {
+      overlay_sf <- sf::st_transform(overlay_sf, 4326)
     }
 
     overlay_json <- geojsonsf::sf_geojson(overlay_sf)

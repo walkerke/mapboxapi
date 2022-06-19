@@ -58,9 +58,7 @@ be supplied as floating-point numbers.}
 function \link{prep_overlay_markers} for more information on how to specify a
 marker overlay.}
 
-\item{width}{The map width and height; defaults to \code{NULL}}
-
-\item{height}{The map width and height; defaults to \code{NULL}}
+\item{width, height}{The map width and height; defaults to \code{NULL}}
 
 \item{scale}{ratio to scale the output image; \code{scale = 1} will return the
 largest possible image. defaults to 0.5}
