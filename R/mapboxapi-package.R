@@ -12,7 +12,7 @@
 #' @import dplyr
 #' @importFrom curl curl_escape
 #' @import aws.s3
-#' @importFrom rlang flatten_if
+#' @importFrom rlang flatten_if arg_match
 #' @importFrom stringi stri_rand_strings
 #' @import slippymath
 #' @import protolite

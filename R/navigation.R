@@ -6,8 +6,9 @@
 #' @param destinations The destination coordinates of your request. If \code{NULL} (the default), a many-to-many matrix using \code{origins} will be returned.
 #' @param profile One of "driving" (the default), "driving-traffic", "walking", or "cycling".
 #' @param fallback_speed A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations. The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.
-#' @param access_token A Mapbox access token (required)
+#' @param output one of \code{"duration"} (the default), which will be measured in either minutes or seconds (depending on the value of \code{duration_output}), or \code{"distance"}, which will be returned in meters.
 #' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
+#' @param access_token A Mapbox access token (required)
 #'
 #' @return An R matrix of source-destination travel times.
 #'
@@ -38,9 +39,15 @@ mb_matrix <- function(origins,
                       destinations = NULL,
                       profile = "driving",
                       fallback_speed = NULL,
-                      access_token = NULL,
-                      duration_output = "minutes") {
+                      output = c("duration", "distance"),
+                      duration_output = c("minutes", "seconds"),
+                      access_token = NULL)
+                      {
+
   access_token <- get_mb_access_token(access_token)
+
+  output <- rlang::arg_match(output)
+  duration_output <- rlang::arg_match(duration_output)
 
   if (!profile %in% c("driving", "driving-traffic", "walking", "cycling")) {
     stop("The following travel profiles are supported: 'driving', 'driving-traffic', 'walking', and 'cycling'. Please modify your request accordingly", call. = FALSE)
@@ -116,6 +123,7 @@ mb_matrix <- function(origins,
                 profile = profile,
                 fallback_speed = fallback_speed,
                 access_token = access_token,
+                output = output,
                 duration_output = duration_output
               )
             )
@@ -133,6 +141,7 @@ mb_matrix <- function(origins,
               profile = profile,
               fallback_speed = fallback_speed,
               access_token = access_token,
+              output = output,
               duration_output = duration_output
             )
           }) %>%
@@ -159,6 +168,7 @@ mb_matrix <- function(origins,
                 profile = profile,
                 fallback_speed = fallback_speed,
                 access_token = access_token,
+                output = output,
                 duration_output = duration_output
               )
             )
@@ -176,6 +186,7 @@ mb_matrix <- function(origins,
               profile = profile,
               fallback_speed = fallback_speed,
               access_token = access_token,
+              output = output,
               duration_output = duration_output
             )
           }) %>%
@@ -250,6 +261,9 @@ mb_matrix <- function(origins,
       origin_ix <- "all"
       destination_ix <- "all"
     }
+
+    formatted_coords <- formatted_origins
+
   }
 
   if ("list" %in% class(origins)) {
@@ -335,6 +349,7 @@ mb_matrix <- function(origins,
       access_token = access_token,
       sources = origin_ix,
       destinations = destination_ix,
+      annotations = output,
       fallback_speed = fallback_speed
     )
   )
@@ -346,17 +361,25 @@ mb_matrix <- function(origins,
     stop(print(content$message), call. = FALSE)
   }
 
+  if (output == "distance") {
+    distance_matrix <- content$distances
 
+    return(distance_matrix)
+  } else if (output == "duration") {
 
-  duration_matrix <- content$durations
+    duration_matrix <- content$durations
 
-  if (duration_output == "seconds") {
-    return(duration_matrix)
-  } else if (duration_output == "minutes") {
-    return(duration_matrix / 60)
-  } else {
-    stop("`duration_output` must be one of 'minutes' or 'seconds'", call. = FALSE)
+    if (duration_output == "seconds") {
+      return(duration_matrix)
+    } else if (duration_output == "minutes") {
+      return(duration_matrix / 60)
+    }
+
   }
+
+
+
+
 }
 
 
