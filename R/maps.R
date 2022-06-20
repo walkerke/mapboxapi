@@ -561,10 +561,10 @@ get_vector_tiles <- function(tileset_id,
 #'   longitude, latitude, and zoom are all specified.
 #' @param width,height The map width and height; defaults to `NULL`
 #' @param pitch,bearing The map pitch and bearing; defaults to `NULL`. pitch can
-#'   range from 0 to 60, and bearing from 0 to 360.
+#'   range from 0 to 60, and bearing from -360 to 360.
 #' @param scale ratio to scale the output image; `scale = 1` will return the
 #'   largest possible image. defaults to 0.5
-#' @param scaling_factor The scaling factor of the tiles; either `"1x"``
+#' @param scaling_factor The scaling factor of the tiles; either `"1x"`
 #'   (the default) or `"2x"`
 #' @param attribution Controls whether there is attribution on the image.
 #'   Defaults to `TRUE`. If `FALSE`, the watermarked attribution is removed from
@@ -576,7 +576,10 @@ get_vector_tiles <- function(tileset_id,
 #'   `TRUE`.
 #' @param before_layer A character string that specifies where in the hierarchy
 #'   of layer elements the overlay should be inserted. The overlay will be
-#'   placed just above the specified layer in the given Mapbox styles.
+#'   placed just above the specified layer in the given Mapbox styles. List
+#'   layer ids for a map style with get_style(style_id = style_id, username =
+#'   username, style_url = style_url, access_token =
+#'   access_token)[["layers"]][["id"]]
 #' @param access_token A Mapbox access token; which can be set with
 #'   [mb_access_token].
 #' @param image If `FALSE`, return the a [httr::response] object from
@@ -690,7 +693,7 @@ static_mapbox <- function(location = NULL,
     }
 
     stopifnot(
-      "zoom must be between 0 and 22" = (zoom >= 0) && (zoom <= 22)
+      "`zoom` must be between 0 and 22" = (zoom >= 0) && (zoom <= 22)
     )
 
     focus_args <- c(longitude, latitude, zoom)
@@ -710,7 +713,7 @@ static_mapbox <- function(location = NULL,
     }
 
     stopifnot(
-      "`bearing` must be between 0 and 360" = (bearing >= 0) && (bearing <= 360),
+      "`bearing` must be between -360 and 360" = (bearing >= 0) && (bearing <= 360),
       "`pitch` must be between 0 and 60" = (pitch >= 0) && (pitch <= 60)
     )
 
@@ -738,6 +741,10 @@ static_mapbox <- function(location = NULL,
 
   if (nchar(base1) > 8192) {
     stop("Your request is too large likely due to the size of your overlay geometry. Consider simplifying your overlay geometry or adding your data to a style in Mapbox Studio to resolve this.", call. = FALSE)
+  }
+
+  if (!is.null(before_layer)) {
+    before_layer <- match.arg(before_layer, get_style(style_id = style_id, username = username, style_url = style_url, access_token = access_token)[["layers"]][["id"]])
   }
 
   request <-

@@ -63,7 +63,8 @@ marker overlay.}
 \item{scale}{ratio to scale the output image; \code{scale = 1} will return the
 largest possible image. defaults to 0.5}
 
-\item{scaling_factor}{The scaling factor of the tiles; either \verb{"1x"`` (the default) or }"2x"`}
+\item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"}
+(the default) or \code{"2x"}}
 
 \item{attribution}{Controls whether there is attribution on the image.
 Defaults to \code{TRUE}. If \code{FALSE}, the watermarked attribution is removed from
@@ -77,7 +78,10 @@ attribution elsewhere on the webpage or document.}
 
 \item{before_layer}{A character string that specifies where in the hierarchy
 of layer elements the overlay should be inserted. The overlay will be
-placed just above the specified layer in the given Mapbox styles.}
+placed just above the specified layer in the given Mapbox styles. List
+layer ids for a map style with get_style(style_id = style_id, username =
+username, style_url = style_url, access_token =
+access_token)[\link{"layers"}][\link{"id"}]}
 
 \item{access_token}{A Mapbox access token; which can be set with
 \link{mb_access_token}.}
