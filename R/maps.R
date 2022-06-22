@@ -1010,7 +1010,7 @@ layer_static_mapbox <- function(location = NULL,
       image = FALSE
     )
 
-  ras <- request2raster(request, location, buffer_dist, units)
+  ras <- request_to_raster(request, location, buffer_dist, units)
 
   ggspatial::layer_spatial(data = ras, ...)
 }
@@ -1063,7 +1063,7 @@ tm_static_mapbox <- function(location = NULL,
       image = FALSE
     )
 
-  ras <- request2raster(request, location, buffer_dist, units)
+  ras <- request_to_raster(request, location, buffer_dist, units)
 
   tmap::tm_shape(shp = ras, projection = 3857) +
     tmap::tm_rgb(max.value = 1, ...)
@@ -1075,10 +1075,10 @@ tm_static_mapbox <- function(location = NULL,
 #' @importFrom sf st_crs
 #' @importFrom raster brick extent projection
 #' @importFrom httr content
-request2raster <- function(request,
-                           location = NULL,
-                           buffer_dist = NULL,
-                           units = "m") {
+request_to_raster <- function(request,
+                              location = NULL,
+                              buffer_dist = NULL,
+                              units = "m") {
   ras <- raster::brick(httr::content(request))
 
   merc_bbox <- location_to_bbox(location, buffer_dist, units, crs = 3857)
