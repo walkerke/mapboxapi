@@ -42,6 +42,7 @@ Imports:
     jpeg
 Suggests:
     ggspatial,
+    grDevices,
     mapdeck,
     tigris,
     tidycensus,
