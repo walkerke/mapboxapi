@@ -467,10 +467,10 @@ mb_isochrone <- function(location,
       if (!is.null(id_column)) {
         iso_ids <- as.list(location[[id_column]])
       } else {
-        iso_ids <- as.list(1:nrow(location))
+        iso_ids <- as.list(seq(nrow(location)))
       }
     } else {
-      iso_ids <- 1:length(location)
+      iso_ids <- seq_len(location)
     }
 
     purrr::map2(coords, iso_ids, ~ {
