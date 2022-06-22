@@ -17,7 +17,7 @@ coords_to_tiles <- function(lon, lat, zoom) {
 #' @importFrom sf st_bbox st_as_sfc st_as_sf st_sf st_geometry_type st_buffer st_union st_convex_hull st_cast st_transform
 #' @importFrom units as_units
 #' @noRd
-location_to_bbox <- function(location, buffer_dist, units = "m", crs = 4326, null.ok = TRUE) {
+location_to_bbox <- function(location, buffer_dist = 1000, units = "m", crs = 4326, null.ok = TRUE) {
   if (is.null(location) && null.ok) {
     return(location)
   }
