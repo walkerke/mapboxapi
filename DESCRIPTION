@@ -1,8 +1,8 @@
 Package: mapboxapi
 Type: Package
 Title: R Interface to 'Mapbox' Web Services
-Date: 2022-06-20
-Version: 0.3.3.9000
+Date: 2022-06-26
+Version: 0.3.9.9000
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
     role = c("aut", "cre")), 
