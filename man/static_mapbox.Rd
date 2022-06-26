@@ -7,6 +7,7 @@
 static_mapbox(
   location = NULL,
   buffer_dist = 1000,
+  units = "m",
   style_id,
   username,
   style_url = NULL,
@@ -26,7 +27,8 @@ static_mapbox(
   logo = TRUE,
   before_layer = NULL,
   access_token = NULL,
-  image = TRUE
+  image = TRUE,
+  strip = TRUE
 )
 }
 \arguments{
@@ -40,13 +42,19 @@ WGS84 longitude/latitude coordinates and be in the order
 \code{c(xmin, ymin, xmax, ymax)}.}
 
 \item{buffer_dist}{The distance to buffer around an input \code{sf} object for
-determining static map, specified in meters. Defaults to 1000.}
+determining static map, specified in units. If location is a POINT object
+of 2 rows or less and \code{buffer_dist} is 0 or \code{NULL}, a 1 unit buffer is
+applied to try to ensure the creation of a valid bounding box for the map
+area.}
 
-\item{style_id}{A style ID (required if style_url is NULL).}
+\item{units}{Units of \code{buffer_dist}; defaults to "m" (meters). If buffer_dist
+is a units class object, the units argument is ignored.}
+
+\item{style_id}{A style ID (required if style_url is \code{NULL}).}
 
 \item{username}{A Mapbox username (required if \code{style_url = NULL}).}
 
-\item{style_url}{A Mapbox style url; defaults to NULL.}
+\item{style_url}{A Mapbox style url; defaults to \code{NULL}.}
 
 \item{overlay_sf}{The overlay \code{sf} object (optional). The function will
 convert the \code{sf} object to GeoJSON then plot over the basemap style.
@@ -54,10 +62,13 @@ Spatial data that are too large will trigger an error, and should be added
 to the style in Mapbox Studio instead.}
 
 \item{overlay_style}{A named list of vectors specifying how to style the sf
-overlay. Possible names are "stroke", "stroke-width", "stroke-opacity",
-"fill", and "fill-opacity". The fill and stroke color values should be
-specified as six-digit hex codes, and the opacity and width values should
-be supplied as floating-point numbers.}
+overlay. Possible names are "stroke", "stroke-width" (or "stroke_width"),
+"stroke-opacity" (or "stroke_opacity"), "fill", and "fill-opacity" (or
+"fill_opacity"). The fill and stroke color values can be specified as
+six-digit hex codes or color names, and the opacity and width values should
+be supplied as floating-point numbers. If overlay_style is \code{NULL}, the
+style values can be pulled from columns with the same names in
+\code{overlay_sf}.}
 
 \item{overlay_markers}{The prepared overlay markers (optional). See the
 function \link{prep_overlay_markers} for more information on how to specify a
@@ -73,12 +84,13 @@ longitude, latitude, and zoom are all specified.}
 \item{width, height}{The map width and height; defaults to \code{NULL}}
 
 \item{pitch, bearing}{The map pitch and bearing; defaults to \code{NULL}. pitch can
-range from 0 to 60, and bearing from 0 to 360.}
+range from 0 to 60, and bearing from -360 to 360.}
 
 \item{scale}{ratio to scale the output image; \code{scale = 1} will return the
 largest possible image. defaults to 0.5}
 
-\item{scaling_factor}{The scaling factor of the tiles; either \verb{"1x"`` (the default) or }"2x"`}
+\item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"}
+(the default) or \code{"2x"}}
 
 \item{attribution}{Controls whether there is attribution on the image.
 Defaults to \code{TRUE}. If \code{FALSE}, the watermarked attribution is removed from
@@ -92,13 +104,16 @@ attribution elsewhere on the webpage or document.}
 
 \item{before_layer}{A character string that specifies where in the hierarchy
 of layer elements the overlay should be inserted. The overlay will be
-placed just above the specified layer in the given Mapbox styles.}
+placed just above the specified layer in the given Mapbox styles. List
+layer ids for a map style with \code{get_style(style_id = style_id, username = username, style_url = style_url, access_token = access_token)[["layers"]][["id"]]}}
 
 \item{access_token}{A Mapbox access token; which can be set with
 \link{mb_access_token}.}
 
 \item{image}{If \code{FALSE}, return the a \link[httr:response]{httr::response} object from
-\link[httr:GET]{httr::GET} using the static image URL; defaults to TRUE}
+\link[httr:GET]{httr::GET} using the static image URL; defaults to \code{TRUE}.}
+
+\item{strip}{If \code{TRUE}, drop image comments and metadata when \code{image = TRUE}; defaults to \code{TRUE}.}
 }
 \value{
 A pointer to an image of class \code{"magick-image"} if \code{image = TRUE}.

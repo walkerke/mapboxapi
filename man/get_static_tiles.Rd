@@ -12,6 +12,7 @@ get_static_tiles(
   style_url = NULL,
   scaling_factor = c("1x", "2x"),
   buffer_dist = 5000,
+  units = "m",
   crop = TRUE,
   access_token = NULL
 )
@@ -36,7 +37,10 @@ WGS84 longitude/latitude coordinates and be in the order
 
 \item{scaling_factor}{The scaling factor to use; one of \code{"1x"} or \code{"2x"}.}
 
-\item{buffer_dist}{The distance to buffer around an input \code{sf} object for determining tile extent, specified in meters. Defaults to 5000.}
+\item{buffer_dist}{The distance to buffer around an input \code{sf} object for determining tile extent, specified in units. Defaults to 5000.}
+
+\item{units}{Units of \code{buffer_dist}; defaults to "m" (meters). If buffer_dist
+is a units class object, the units argument is ignored.}
 
 \item{crop}{Whether or not to crop the result to the specified bounding box or buffer area.
 Defaults to \code{TRUE}; \code{FALSE} will return the extent of the overlapping

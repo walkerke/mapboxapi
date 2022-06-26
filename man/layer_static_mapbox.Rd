@@ -2,11 +2,34 @@
 % Please edit documentation in R/maps.R
 \name{layer_static_mapbox}
 \alias{layer_static_mapbox}
-\title{Make a ggplot2 layer with static_mapbox and ggspatial}
+\alias{tm_static_mapbox}
+\title{Make a static Mapbox ggplot2 layer or tmap basemap}
 \usage{
 layer_static_mapbox(
   location = NULL,
   buffer_dist = 1000,
+  units = "m",
+  style_id,
+  username,
+  style_url = NULL,
+  overlay_sf = NULL,
+  overlay_style = NULL,
+  overlay_markers = NULL,
+  width = NULL,
+  height = NULL,
+  scale = 0.5,
+  scaling_factor = c("1x", "2x"),
+  attribution = TRUE,
+  logo = TRUE,
+  before_layer = NULL,
+  access_token = NULL,
+  ...
+)
+
+tm_static_mapbox(
+  location = NULL,
+  buffer_dist = 1000,
+  units = "m",
   style_id,
   username,
   style_url = NULL,
@@ -35,13 +58,19 @@ WGS84 longitude/latitude coordinates and be in the order
 \code{c(xmin, ymin, xmax, ymax)}.}
 
 \item{buffer_dist}{The distance to buffer around an input \code{sf} object for
-determining static map, specified in meters. Defaults to 1000.}
+determining static map, specified in units. If location is a POINT object
+of 2 rows or less and \code{buffer_dist} is 0 or \code{NULL}, a 1 unit buffer is
+applied to try to ensure the creation of a valid bounding box for the map
+area.}
 
-\item{style_id}{A style ID (required if style_url is NULL).}
+\item{units}{Units of \code{buffer_dist}; defaults to "m" (meters). If buffer_dist
+is a units class object, the units argument is ignored.}
+
+\item{style_id}{A style ID (required if style_url is \code{NULL}).}
 
 \item{username}{A Mapbox username (required if \code{style_url = NULL}).}
 
-\item{style_url}{A Mapbox style url; defaults to NULL.}
+\item{style_url}{A Mapbox style url; defaults to \code{NULL}.}
 
 \item{overlay_sf}{The overlay \code{sf} object (optional). The function will
 convert the \code{sf} object to GeoJSON then plot over the basemap style.
@@ -49,10 +78,13 @@ Spatial data that are too large will trigger an error, and should be added
 to the style in Mapbox Studio instead.}
 
 \item{overlay_style}{A named list of vectors specifying how to style the sf
-overlay. Possible names are "stroke", "stroke-width", "stroke-opacity",
-"fill", and "fill-opacity". The fill and stroke color values should be
-specified as six-digit hex codes, and the opacity and width values should
-be supplied as floating-point numbers.}
+overlay. Possible names are "stroke", "stroke-width" (or "stroke_width"),
+"stroke-opacity" (or "stroke_opacity"), "fill", and "fill-opacity" (or
+"fill_opacity"). The fill and stroke color values can be specified as
+six-digit hex codes or color names, and the opacity and width values should
+be supplied as floating-point numbers. If overlay_style is \code{NULL}, the
+style values can be pulled from columns with the same names in
+\code{overlay_sf}.}
 
 \item{overlay_markers}{The prepared overlay markers (optional). See the
 function \link{prep_overlay_markers} for more information on how to specify a
@@ -63,7 +95,8 @@ marker overlay.}
 \item{scale}{ratio to scale the output image; \code{scale = 1} will return the
 largest possible image. defaults to 0.5}
 
-\item{scaling_factor}{The scaling factor of the tiles; either \verb{"1x"`` (the default) or }"2x"`}
+\item{scaling_factor}{The scaling factor of the tiles; either \code{"1x"}
+(the default) or \code{"2x"}}
 
 \item{attribution}{Controls whether there is attribution on the image.
 Defaults to \code{TRUE}. If \code{FALSE}, the watermarked attribution is removed from
@@ -77,17 +110,19 @@ attribution elsewhere on the webpage or document.}
 
 \item{before_layer}{A character string that specifies where in the hierarchy
 of layer elements the overlay should be inserted. The overlay will be
-placed just above the specified layer in the given Mapbox styles.}
+placed just above the specified layer in the given Mapbox styles. List
+layer ids for a map style with \code{get_style(style_id = style_id, username = username, style_url = style_url, access_token = access_token)[["layers"]][["id"]]}}
 
 \item{access_token}{A Mapbox access token; which can be set with
 \link{mb_access_token}.}
 
-\item{...}{additional parameters passed to \code{\link[ggspatial]{layer_spatial}}}
+\item{...}{additional parameters passed to \link[ggspatial:layer_spatial]{ggspatial::layer_spatial} or \link[tmap:tm_raster]{tmap::tm_rgb}}
 }
 \description{
-This function wraps \code{\link[=static_mapbox]{static_mapbox()}} and \code{\link[ggspatial:layer_spatial]{ggspatial::layer_spatial()}} to
-support the use of images from the \href{https://www.mapbox.com/static-maps}{Mapbox Static Maps API} as
-\href{https://ggplot2.tidyverse.org/}{{ggplot2}} basemaps.
+These functions wrap \code{\link[=static_mapbox]{static_mapbox()}} and \code{\link[ggspatial:layer_spatial]{ggspatial::layer_spatial()}} or
+\code{\link[tmap:tm_raster]{tmap::tm_rgb()}} to support the use of images from the \href{https://www.mapbox.com/static-maps}{Mapbox Static Maps API} as
+\href{https://ggplot2.tidyverse.org/}{{ggplot2}} or
+\href{https://r-tmap.github.io/tmap/}{{tmap}} basemaps.
 }
 \details{
 This function uses a different approach \code{\link[=get_static_tiles]{get_static_tiles()}}. Instead,
@@ -98,6 +133,9 @@ are a few key differences between \code{\link[=layer_static_mapbox]{layer_static
 "scale_ratio" parameter for {snapbox}. Setting \code{scale_factor = "2x"} is
 equivalent to setting \code{retina = TRUE.} Both functions return basemaps that
 are no larger than a single tile (a maximum of 1280 by 1280 pixels).
+
+For \code{\link[=tm_static_mapbox]{tm_static_mapbox()}}, \link[tmap:tm_shape]{tmap::tm_shape} is called with \code{projection = 3857} and
+\link[tmap:tm_raster]{tmap::tm_rgb} is called with \code{max.value = 1}.
 }
 \author{
 Eli Pousson, \email{eli.pousson@gmail.com}

@@ -8,3 +8,4 @@
 ^index\.md$
 ^vignettes$
 ^.github$
+^data-raw$

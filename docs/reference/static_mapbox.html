@@ -34,7 +34,7 @@ image URL.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -79,6 +79,7 @@ image URL.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">static_mapbox</span><span class="op">(</span>
   location <span class="op">=</span> <span class="cn">NULL</span>,
   buffer_dist <span class="op">=</span> <span class="fl">1000</span>,
+  units <span class="op">=</span> <span class="st">"m"</span>,
   <span class="va">style_id</span>,
   <span class="va">username</span>,
   style_url <span class="op">=</span> <span class="cn">NULL</span>,
@@ -98,7 +99,8 @@ image URL.</p>
   logo <span class="op">=</span> <span class="cn">TRUE</span>,
   before_layer <span class="op">=</span> <span class="cn">NULL</span>,
   access_token <span class="op">=</span> <span class="cn">NULL</span>,
-  image <span class="op">=</span> <span class="cn">TRUE</span>
+  image <span class="op">=</span> <span class="cn">TRUE</span>,
+  strip <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -115,13 +117,19 @@ WGS84 longitude/latitude coordinates and be in the order
 <code>c(xmin, ymin, xmax, ymax)</code>.</p></dd>
 <dt>buffer_dist</dt>
 <dd><p>The distance to buffer around an input <code>sf</code> object for
-determining static map, specified in meters. Defaults to 1000.</p></dd>
+determining static map, specified in units. If location is a POINT object
+of 2 rows or less and <code>buffer_dist</code> is 0 or <code>NULL</code>, a 1 unit buffer is
+applied to try to ensure the creation of a valid bounding box for the map
+area.</p></dd>
+<dt>units</dt>
+<dd><p>Units of <code>buffer_dist</code>; defaults to "m" (meters). If buffer_dist
+is a units class object, the units argument is ignored.</p></dd>
 <dt>style_id</dt>
-<dd><p>A style ID (required if style_url is NULL).</p></dd>
+<dd><p>A style ID (required if style_url is <code>NULL</code>).</p></dd>
 <dt>username</dt>
 <dd><p>A Mapbox username (required if <code>style_url = NULL</code>).</p></dd>
 <dt>style_url</dt>
-<dd><p>A Mapbox style url; defaults to NULL.</p></dd>
+<dd><p>A Mapbox style url; defaults to <code>NULL</code>.</p></dd>
 <dt>overlay_sf</dt>
 <dd><p>The overlay <code>sf</code> object (optional). The function will
 convert the <code>sf</code> object to GeoJSON then plot over the basemap style.
@@ -129,10 +137,13 @@ Spatial data that are too large will trigger an error, and should be added
 to the style in Mapbox Studio instead.</p></dd>
 <dt>overlay_style</dt>
 <dd><p>A named list of vectors specifying how to style the sf
-overlay. Possible names are "stroke", "stroke-width", "stroke-opacity",
-"fill", and "fill-opacity". The fill and stroke color values should be
-specified as six-digit hex codes, and the opacity and width values should
-be supplied as floating-point numbers.</p></dd>
+overlay. Possible names are "stroke", "stroke-width" (or "stroke_width"),
+"stroke-opacity" (or "stroke_opacity"), "fill", and "fill-opacity" (or
+"fill_opacity"). The fill and stroke color values can be specified as
+six-digit hex codes or color names, and the opacity and width values should
+be supplied as floating-point numbers. If overlay_style is <code>NULL</code>, the
+style values can be pulled from columns with the same names in
+<code>overlay_sf</code>.</p></dd>
 <dt>overlay_markers</dt>
 <dd><p>The prepared overlay markers (optional). See the
 function <a href="prep_overlay_markers.html">prep_overlay_markers</a> for more information on how to specify a
@@ -148,12 +159,13 @@ longitude, latitude, and zoom are all specified.</p></dd>
 <dd><p>The map width and height; defaults to <code>NULL</code></p></dd>
 <dt>pitch, bearing</dt>
 <dd><p>The map pitch and bearing; defaults to <code>NULL</code>. pitch can
-range from 0 to 60, and bearing from 0 to 360.</p></dd>
+range from 0 to 60, and bearing from -360 to 360.</p></dd>
 <dt>scale</dt>
 <dd><p>ratio to scale the output image; <code>scale = 1</code> will return the
 largest possible image. defaults to 0.5</p></dd>
 <dt>scaling_factor</dt>
-<dd><p>The scaling factor of the tiles; either <code>"1x"`` (the default) or </code>"2x"`</p></dd>
+<dd><p>The scaling factor of the tiles; either <code>"1x"</code>
+(the default) or <code>"2x"</code></p></dd>
 <dt>attribution</dt>
 <dd><p>Controls whether there is attribution on the image.
 Defaults to <code>TRUE</code>. If <code>FALSE</code>, the watermarked attribution is removed from
@@ -167,13 +179,16 @@ attribution elsewhere on the webpage or document.</p></dd>
 <dt>before_layer</dt>
 <dd><p>A character string that specifies where in the hierarchy
 of layer elements the overlay should be inserted. The overlay will be
-placed just above the specified layer in the given Mapbox styles.</p></dd>
+placed just above the specified layer in the given Mapbox styles. List
+layer ids for a map style with <code>get_style(style_id = style_id, username = username, style_url = style_url, access_token = access_token)[["layers"]][["id"]]</code></p></dd>
 <dt>access_token</dt>
 <dd><p>A Mapbox access token; which can be set with
 <a href="mb_access_token.html">mb_access_token</a>.</p></dd>
 <dt>image</dt>
 <dd><p>If <code>FALSE</code>, return the a <a href="https://httr.r-lib.org/reference/response.html" class="external-link">httr::response</a> object from
-<a href="https://httr.r-lib.org/reference/GET.html" class="external-link">httr::GET</a> using the static image URL; defaults to TRUE</p></dd>
+<a href="https://httr.r-lib.org/reference/GET.html" class="external-link">httr::GET</a> using the static image URL; defaults to <code>TRUE</code>.</p></dd>
+<dt>strip</dt>
+<dd><p>If <code>TRUE</code>, drop image comments and metadata when <code>image = TRUE</code>; defaults to <code>TRUE</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -225,8 +240,7 @@ magick package.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

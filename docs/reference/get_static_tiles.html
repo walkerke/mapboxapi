@@ -38,7 +38,7 @@ around an input shape."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -92,6 +92,7 @@ around an input shape.</p>
   style_url <span class="op">=</span> <span class="cn">NULL</span>,
   scaling_factor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1x"</span>, <span class="st">"2x"</span><span class="op">)</span>,
   buffer_dist <span class="op">=</span> <span class="fl">5000</span>,
+  units <span class="op">=</span> <span class="st">"m"</span>,
   crop <span class="op">=</span> <span class="cn">TRUE</span>,
   access_token <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
@@ -119,7 +120,10 @@ WGS84 longitude/latitude coordinates and be in the order
 <dt>scaling_factor</dt>
 <dd><p>The scaling factor to use; one of <code>"1x"</code> or <code>"2x"</code>.</p></dd>
 <dt>buffer_dist</dt>
-<dd><p>The distance to buffer around an input <code>sf</code> object for determining tile extent, specified in meters. Defaults to 5000.</p></dd>
+<dd><p>The distance to buffer around an input <code>sf</code> object for determining tile extent, specified in units. Defaults to 5000.</p></dd>
+<dt>units</dt>
+<dd><p>Units of <code>buffer_dist</code>; defaults to "m" (meters). If buffer_dist
+is a units class object, the units argument is ignored.</p></dd>
 <dt>crop</dt>
 <dd><p>Whether or not to crop the result to the specified bounding box or buffer area.
 Defaults to <code>TRUE</code>; <code>FALSE</code> will return the extent of the overlapping
@@ -138,7 +142,7 @@ tiles.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mapboxapi</span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/walkerke/tigris" class="external-link">tigris</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mtennekes/tmap" class="external-link">tmap</a></span><span class="op">)</span></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/ggspatial/" class="external-link">ggspatial</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -182,8 +186,7 @@ tiles.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
-2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>
