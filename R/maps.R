@@ -1019,6 +1019,7 @@ layer_static_mapbox <- function(location = NULL,
 #' @rdname layer_static_mapbox
 #' @inheritParams static_mapbox
 #' @importFrom rlang is_installed is_interactive check_installed
+#' @export
 tm_static_mapbox <- function(location = NULL,
                              buffer_dist = 1000,
                              units = "m",

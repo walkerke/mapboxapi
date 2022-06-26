@@ -143,7 +143,7 @@ is_sf <- function(x) {
 
 #' Convert numeric vector to distance units objects or convert units for distance
 #'
-#' Adapted from [overedge::convert_dist_units()]
+#' Adapted from \code{convert_dist_units()} in the overedge R package
 #'
 #' @param x Numeric or units object
 #' @param from Existing unit for dist, Default: `m`.
