@@ -1,6 +1,6 @@
 #' Generate an .mbtiles file with tippecanoe
 #'
-#' [Tippecanoe](https://github.com/mapbox/tippecanoe) is tile-generation utility
+#' Tippecanoe is a tile-generation utility
 #' for building vector tilesets from large (or small) collections of GeoJSON,
 #' Geobuf, or CSV features. The [tippecanoe] function requires that the
 #' tippecanoe utility is installed on your system; see the tippecanoe
@@ -85,11 +85,15 @@ tippecanoe <- function(input,
                        overwrite = TRUE,
                        other_options = NULL,
                        keep_geojson = FALSE) {
+
   check_install <- system("tippecanoe -v") == 0
 
   if (!check_install) {
-    stop("tippecanoe is not installed. Please visit https://github.com/mapbox/tippecanoe for installation instructions.",
-      call. = FALSE
+
+    rlang::abort(
+      c("tippecanoe is not installed or cannot be found by the application you are using to run mapboxapi.",
+        "If you haven't installed tippecanoe, please visit https://github.com/mapbox/tippecanoe for installation instructions.",
+        "If you have installed tippecanoe, run `Sys.getenv('PATH')` and make sure your application can find tippecanoe. If it cannot, adjust your PATH accordingly.")
     )
   }
 

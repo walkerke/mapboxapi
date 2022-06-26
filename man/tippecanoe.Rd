@@ -45,9 +45,9 @@ tippecanoe program.}
 used to generate the tiles. Defaults to \code{FALSE}.}
 }
 \description{
-\href{https://github.com/mapbox/tippecanoe}{Tippecanoe} is tile-generation utility
+Tippecanoe is a tile-generation utility
 for building vector tilesets from large (or small) collections of GeoJSON,
-Geobuf, or CSV features. The \link[=Tippecanoe]{tippecanoe} function requires that the
+Geobuf, or CSV features. The \link{tippecanoe} function requires that the
 tippecanoe utility is installed on your system; see the tippecanoe
 documentation for \href{https://github.com/mapbox/tippecanoe#installation}{installation instructions}. Once
 installed, tippecanoe can be used in large visualization workflows in concert
