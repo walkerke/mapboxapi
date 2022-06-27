@@ -946,12 +946,12 @@ set_static_map_dims <- function(base = NULL, bbox = NULL, width = NULL, height =
 #' [{tmap}](https://r-tmap.github.io/tmap/) basemaps.
 #'
 #' This function uses a different approach [get_static_tiles()]. Instead,
-#' [layer_static_mapbox()] is based largely on [snapbox::layer_mapbox()]
+#' [layer_static_mapbox()] is based largely on \code{layer_mapbox()} in the snapbox package
 #' (available under a [MIT
 #' license](https://github.com/anthonynorth/snapbox/blob/master/LICENSE). There
 #' are a few key differences between [layer_static_mapbox()] and
-#' [snapbox::layer_mapbox()]. The "scale" parameter is equivalent to the
-#' "scale_ratio" parameter for {snapbox}. Setting `scale_factor = "2x"` is
+#' \code{layer_mapbox()}. The "scale" parameter is equivalent to the
+#' "scale_ratio" parameter for snapbox. Setting `scale_factor = "2x"` is
 #' equivalent to setting `retina = TRUE.` Both functions return basemaps that
 #' are no larger than a single tile (a maximum of 1280 by 1280 pixels).
 #'
