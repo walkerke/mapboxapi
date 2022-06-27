@@ -1,5 +1,5 @@
 test_that("get_style and list_styles work", {
-  skip_if_no_token()
+  skip_on_cran()
 
   expect_type(
     get_style(
