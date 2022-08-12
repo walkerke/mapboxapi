@@ -5,19 +5,19 @@
 \title{Create a tileset with the Mapbox Tiling Service API}
 \usage{
 mts_create_tileset(
-  recipe,
   tileset_name,
   username,
+  recipe,
   request_name = tileset_name,
   access_token = NULL
 )
 }
 \arguments{
-\item{recipe}{An MTS recipe, created with \code{mts_make_recipe()}}
-
 \item{tileset_name}{The name of the MTS tileset you intend to create}
 
 \item{username}{Your Mapbox username}
+
+\item{recipe}{An MTS recipe, created with \code{mts_make_recipe()}}
 
 \item{request_name}{The name of the request; defaults to the tileset name}
 

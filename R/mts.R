@@ -35,6 +35,8 @@ mts_create_source <- function(data, tileset_id, username,
 
   out_file <- file.path(tmp, output_name)
 
+  rlang::inform("Processing data, please wait...")
+
   make_newline_geojson(data, out_file)
 
   # Once the object is created, send it to the MTS API
@@ -159,17 +161,17 @@ mts_validate_recipe <- function(recipe,
 
 #' Create a tileset with the Mapbox Tiling Service API
 #'
-#' @param recipe An MTS recipe, created with \code{mts_make_recipe()}
 #' @param tileset_name The name of the MTS tileset you intend to create
 #' @param username Your Mapbox username
+#' @param recipe An MTS recipe, created with \code{mts_make_recipe()}
 #' @param request_name The name of the request; defaults to the tileset name
 #' @param access_token Your Mapbox access token
 #'
 #' @return The API response
 #' @export
-mts_create_tileset <- function(recipe,
-                               tileset_name,
+mts_create_tileset <- function(tileset_name,
                                username,
+                               recipe,
                                request_name = tileset_name,
                                access_token = NULL) {
 
@@ -243,6 +245,90 @@ mts_publish_tileset <- function(tileset_name,
   }
 
   return(response)
+
+}
+
+
+#' Retrieve the recipe for an MTS tileset in your Mapbox account
+#'
+#' @param tileset_name The tileset name
+#' @param username Your Mapbox username
+#' @param access_token Your Mapbox access token with secret scope
+#'
+#' @return The recipe for your tileset as an R list
+#' @export
+mts_get_recipe <- function(tileset_name,
+                           username,
+                           access_token = NULL) {
+
+  access_token <- get_mb_access_token(access_token, secret_required = TRUE)
+
+  tileset <- sprintf("%s.%s", username, tileset_name)
+
+  url <- sprintf("https://api.mapbox.com/tilesets/v1/%s/recipe",
+                 tileset)
+
+  request <- httr::GET(
+    url = url,
+    query = list(access_token = access_token)
+  )
+
+  response <- request %>%
+    httr::content(as = "text") %>%
+    jsonlite::fromJSON()
+
+  if (request$status_code != "200") {
+    stop(sprintf("Request failed: your error message is %s", response),
+         call. = FALSE
+    )
+  }
+
+  return(response$recipe)
+
+}
+
+
+#' Update a tileset's MTS recipe
+#'
+#' @param tileset_name The name of your Mapbox tileset
+#' @param username Your Mapbox username
+#' @param recipe The new recipe for your tileset, likely created with \code{mts_make_recipe()}.
+#' @param access_token Your Mapbox access token
+#'
+#' @return If the update is successful, the function will print a message informing you of its success.  Otherwise, a list of responses from the API will be returned letting you know why the request was invalid.
+#' @export
+mts_update_recipe <- function(tileset_name,
+                              username,
+                              recipe,
+                              access_token = NULL) {
+
+  access_token <- get_mb_access_token(access_token, secret_required = TRUE)
+
+  tileset <- sprintf("%s.%s", username, tileset_name)
+
+  url <- sprintf("https://api.mapbox.com/tilesets/v1/%s/recipe", tileset)
+
+  request <- httr::PATCH(
+    url = url,
+    body = recipe,
+    encode = "json",
+    query = list(access_token = access_token),
+    httr::content_type_json()
+  )
+
+  if (request$status_code != "204") {
+
+    response <- request %>%
+      httr::content(as = "text") %>%
+      jsonlite::fromJSON()
+
+
+    stop(sprintf("Tileset creation failed: your error message is %s", response),
+         call. = FALSE
+    )
+  } else {
+    rlang::inform(c("v" = sprintf("Recipe for tileset %s.%s successfully updated.", username, tileset_name)))
+  }
 
 }
 
