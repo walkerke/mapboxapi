@@ -101,6 +101,12 @@ mts_list_sources <- function(username,
 }
 
 
+#' Make a recipe list for use with the Mapbox Tiling Service
+#'
+#' @param ... One or more named lists that represent layers in the Mapbox Tiling Service recipe specification (\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#layer-example}).  If multiple layers are included, a multi-layer recipe will be prepared that can produce tilesets with multiple sources.
+#'
+#' @return An R list representing an MTS recipe to be used to create a tileset.
+#' @export
 mts_make_recipe <- function(...) {
 
   # Create recipe skeleton
@@ -116,6 +122,13 @@ mts_make_recipe <- function(...) {
 
 }
 
+#' Validate a Mapbox Tiling Service recipe
+#'
+#' @param recipe A recipe list, created with \code{mts_make_recipe()}
+#' @param access_token Your Mapbox access token.
+#'
+#' @return A response from the API indicating whether the MTS recipe is valid or not. If the recipe is invalid, the API response will tell you the reason why.
+#' @export
 mts_validate_recipe <- function(recipe,
                                 access_token = NULL) {
 
@@ -144,6 +157,16 @@ mts_validate_recipe <- function(recipe,
 }
 
 
+#' Create a tileset with the Mapbox Tiling Service API
+#'
+#' @param recipe An MTS recipe, created with \code{mts_make_recipe()}
+#' @param tileset_name The name of the MTS tileset you intend to create
+#' @param username Your Mapbox username
+#' @param request_name The name of the request; defaults to the tileset name
+#' @param access_token Your Mapbox access token
+#'
+#' @return The API response
+#' @export
 mts_create_tileset <- function(recipe,
                                tileset_name,
                                username,
@@ -185,6 +208,14 @@ mts_create_tileset <- function(recipe,
 }
 
 
+#' Publish a tileset with Mapbox Tiling Service
+#'
+#' @param tileset_name The name of the tileset (as supplied to \code{mts_create_tileset()})
+#' @param username Your Mapbox username
+#' @param access_token Your Mapbox access token
+#'
+#' @return The API response
+#' @export
 mts_publish_tileset <- function(tileset_name,
                                 username,
                                 access_token = NULL) {
