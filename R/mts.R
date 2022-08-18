@@ -46,7 +46,8 @@ mts_create_source <- function(data, tileset_id, username,
   request <- httr::POST(url = url,
                         body = list(file = httr::upload_file(out_file)),
                         query = list(access_token = access_token),
-                        httr::add_headers("Content-Type: multipart/form-data"))
+                        httr::add_headers("Content-Type: multipart/form-data"),
+                        httr::progress(type = "up"))
 
   # Capture the response from req and give back
   response <- request %>%
@@ -105,24 +106,149 @@ mts_list_sources <- function(username,
 
 #' Make a recipe list for use with the Mapbox Tiling Service
 #'
-#' @param ... One or more named lists that represent layers in the Mapbox Tiling Service recipe specification (\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#layer-example}).  If multiple layers are included, a multi-layer recipe will be prepared that can produce tilesets with multiple sources.
+#' @param ... One or more named lists that represent layers in the Mapbox Tiling Service recipe specification (\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#layer-example}).  These lists can be prepared with the helper function \code{recipe_layer()}, or prepared by hand if the user prefers. If multiple layers are included, a multi-layer recipe will be prepared that can produce tilesets with multiple sources.
 #'
 #' @return An R list representing an MTS recipe to be used to create a tileset.
 #' @export
 mts_make_recipe <- function(...) {
 
-  # Create recipe skeleton
-  # Make this easier in the future
   recipe <- list(
       version = 1,
       layers = list(...)
     )
-  # Convert the recipe to JSON
-  # recipe_json <- jsonlite::toJSON(recipe, auto_unbox = TRUE)
 
   return(recipe)
 
 }
+
+
+#' Build a recipe layer for use in an MTS recipe
+#'
+#' @param source The tileset source ID. This is returned by \code{mts_create_source()} or can be retrieved from your Mapbox account with \code{mts_list_sources()}.
+#' @param minzoom The minimum zoom level at which a layer can be viewed.
+#' @param maxzoom The maximum zoom level at which a layer is rendered; the layer will still be visible past the maximum zoom level due to overzooming.
+#' @param features A list of feature options, possibly generated with \code{feature_options()}.
+#' @param tiles A list of tile options, possibly generated with \code{tile_options()}
+#'
+#' @describeIn mts_make_recipe
+#' @return A recipe layer list to be used in \code{mts_make_recipe()}.
+#' @export
+recipe_layer <- function(
+    source,
+    minzoom,
+    maxzoom,
+    features = feature_options(),
+    tiles = tile_options()
+  ) {
+
+  output <- list(source = source,
+                 minzoom = minzoom,
+                 maxzoom = maxzoom,
+                 features = features,
+                 tiles = tiles)
+
+  if (length(features) == 0) {
+    features <- NULL
+  }
+
+  if (length(tiles) == 0) {
+    tiles <- NULL
+  }
+
+  return(output)
+
+}
+
+#' Specify feature options for an MTS recipe layer
+#'
+#' @param id A column representing the feature ID. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#id-expression}.
+#' @param bbox A bounding box within which rendered features will be clipped. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#bounding-box}.
+#' @param attributes A named list of attribute transformations. \code{zoom_element} specifies how an attribute should be made available at different zoom levels; \code{set} allows you to calculate new attributes from existing attributes when processing the tiles; and \code{allowed_output} specifies which columns should be carried through to the output tiles.  See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-attributes}.
+#' @param filter An expression that determines how features in the tileset should be filtered. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-filters} for information on how to specify the filter.
+#' @param simplification Rules for feature simplification.  See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-simplification} for more information on how to specify this.
+#'
+#' @return A list of feature options, likely to be used in \code{recipe_layer()}.
+#' @describeIn mts_make_recipe
+#' @export
+feature_options <- function(
+    id = NULL,
+    bbox = NULL,
+    attributes = list(
+      zoom_element = NULL,
+      set = NULL,
+      allowed_output = NULL
+    ),
+    filter = NULL,
+    simplification = NULL
+  ) {
+
+  output <- leaflet::filterNULL(list(
+    id = id,
+    bbox = bbox,
+    attributes = leaflet::filterNULL(attributes),
+    filter = filter,
+    simplification = simplification
+  ))
+
+  if (length(output$attributes) == 0) {
+    output$attributes <- NULL
+  }
+
+  return(output)
+
+}
+
+#' Specify tile options for an MTS recipe layer
+#'
+#' @param bbox,extent,buffer_size,limit,union,filter,attributes,order,remove_filled,id,layer_size Tile options in the MTS recipe. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#tile-configuration} for more information on the available options.
+#' @return A list of tile options, likely to be used in \code{recipe_layer}.
+#' @describeIn mts_make_recipe
+#' @export
+tile_options <- function(
+    bbox = NULL,
+    extent = NULL,
+    buffer_size = NULL,
+    limit = NULL,
+    union = list(
+      where = NULL,
+      group_by = NULL,
+      aggregate = NULL,
+      maintain_direction = NULL,
+      simplification = NULL
+    ),
+    filter = NULL,
+    attributes = NULL,
+    order = NULL,
+    remove_filled = NULL,
+    id = NULL,
+    layer_size = NULL
+  ) {
+
+  output <- leaflet::filterNULL(list(
+    bbox = bbox,
+    extent = extent,
+    buffer_size = buffer_size,
+    limit = limit,
+    union = leaflet::filterNULL(union),
+    filter = filter,
+    attributes = attributes,
+    order = order,
+    remove_filled = remove_filled,
+    id = id,
+    layer_size = layer_size
+  )
+  )
+
+  if (length(output$union) == 0) {
+    output$union <- NULL
+  } else {
+    output$union <- list(output$union)
+  }
+
+  return(output)
+}
+
+
 
 #' Validate a Mapbox Tiling Service recipe
 #'
@@ -149,12 +275,18 @@ mts_validate_recipe <- function(recipe,
     jsonlite::fromJSON()
 
   if (request$status_code != "200") {
-    stop(sprintf("Request failed: your error message is %s", response),
-         call. = FALSE
-    )
+    stop(sprintf("Request failed; the response from the API is %s", response))
+
+  } else {
+    if (!response$valid) {
+      rlang::inform(c("x" = "Your tileset recipe is invalid. Please view the returned object for error messages."))
+      return(response)
+    } else {
+      rlang::inform(c("v" = "Your tileset recipe is valid!"))
+      return(response$valid)
+    }
   }
 
-  return(response)
 
 }
 

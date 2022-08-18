@@ -7,7 +7,7 @@
 mts_make_recipe(...)
 }
 \arguments{
-\item{...}{One or more named lists that represent layers in the Mapbox Tiling Service recipe specification (\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#layer-example}).  If multiple layers are included, a multi-layer recipe will be prepared that can produce tilesets with multiple sources.}
+\item{...}{One or more named lists that represent layers in the Mapbox Tiling Service recipe specification (\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#layer-example}).  These lists can be prepared with the helper function \code{recipe_layer()}, or prepared by hand if the user prefers. If multiple layers are included, a multi-layer recipe will be prepared that can produce tilesets with multiple sources.}
 }
 \value{
 An R list representing an MTS recipe to be used to create a tileset.

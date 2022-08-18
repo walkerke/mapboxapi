@@ -1,7 +1,7 @@
 Package: mapboxapi
 Type: Package
 Title: R Interface to 'Mapbox' Web Services
-Date: 2022-08-11
+Date: 2022-08-18
 Version: 0.4.1.9000
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
@@ -14,7 +14,7 @@ Maintainer: Kyle Walker <kyle@walker-data.com>
 Description: Includes support for 'Mapbox' Navigation APIs, including directions, 
   isochrones, and route optimization; the Search API for forward and reverse geocoding; 
   the Maps API for interacting with 'Mapbox' vector tilesets and visualizing 
-  'Mapbox' maps in R; and the 'tippecanoe' tile-generation utility. 
+  'Mapbox' maps in R; and 'Mapbox Tiling Service' and 'tippecanoe' for generating map tiles.
   See <https://docs.mapbox.com/api/> for more information about the 'Mapbox' APIs.
 License: MIT + file LICENSE
 Encoding: UTF-8
