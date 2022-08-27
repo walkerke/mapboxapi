@@ -194,13 +194,26 @@ is_hex <- function(x) {
   all(grepl("^#", x))
 }
 
+#' Remove number or pound symbol from hex value
+#'
+#' @noRd
+rmv_hash <- function(x) {
+  gsub("#", "", x)
+}
+
 #' Convert color name to hex value
 #'
 #' @noRd
-col2hex <- function(color) {
+col2hex <- function(color, num = FALSE) {
   if (!rlang::is_installed("grDevices") && rlang::is_interactive()) {
     rlang::check_installed("grDevices")
   }
 
-  grDevices::rgb(t(grDevices::col2rgb(color)), maxColorValue = 255)
+  color <- grDevices::rgb(t(grDevices::col2rgb(color)), maxColorValue = 255)
+
+  if (!num) {
+    return(color)
+  }
+
+  rmv_hash(color)
 }

@@ -20,14 +20,17 @@ or lon and lat as names are also acceptable) or an \code{sf} object with
 geometry type POINT.}
 
 \item{marker_type}{The marker type; one of \code{"pin-s"}, for a small pin;
-\code{"pin-l"}, for a large pin; and \code{"url"}, for an image path.}
+\code{"pin-l"}, for a large pin; and \code{"url"}, for an image path. If
+marker_type is the same length as the rows in data, a mix of different
+marker types are allowed.}
 
 \item{label}{The marker label (optional). Can be a letter, number (0 through
 99), or a valid Maki icon (see \url{https://labs.mapbox.com/maki-icons/})
 for options).}
 
-\item{color}{The marker color (optional). Color should be specified as a
-three or six-digit hexadecimal code without the number sign.}
+\item{color}{The marker color (optional). \code{color} can be specified as a color
+name or as a three or six-digit hexadecimal code (with or without the
+number sign).}
 
 \item{longitude}{A vector of longitudes; inferred from the input dataset if
 \code{data} is provided.}
@@ -39,7 +42,8 @@ three or six-digit hexadecimal code without the number sign.}
 = "url"}.}
 }
 \value{
-A formatted list of marker specifications that can be passed to the \link{static_mapbox} function.
+A formatted list of marker specifications that can be passed to the
+\link{static_mapbox} function.
 }
 \description{
 Markers are prepared to match GeoJSON
