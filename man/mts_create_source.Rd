@@ -19,5 +19,5 @@ mts_create_source(data, tileset_id, username, access_token = NULL)
 A list of the MTS API's responses, including the name of the tileset source in your Mapbox account.  You'll use this name to build a MTS recipe.
 }
 \description{
-The \code{mts_create_source()} function can be used to create, append to, or replace an existing tileset source.
+The \code{mts_create_source()} function can be used to create a tileset source or append to an existing tileset source.  This function publishes a simple features object you've created in R to your Mapbox account, where it is stored as line-delimited GeoJSON. A tileset source is required to create a vector tileset, and the same source can be used across multiple tilesets.
 }

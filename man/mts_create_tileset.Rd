@@ -24,8 +24,8 @@ mts_create_tileset(
 \item{access_token}{Your Mapbox access token}
 }
 \value{
-The API response
+The response from the API, formatted as an R list.
 }
 \description{
-Create a tileset with the Mapbox Tiling Service API
+After you've uploaded your spatial data to your Mapbox account with \code{mts_create_source} and prepared a valid recipe with \code{mts_make_recipe()}, you can use your source and recipe to create a vector tileset.  This tileset will be hosted at your Mapbox account.  Once created successfully, you will need to publish the tileset using \code{mts_publish_tileset} to use it in Mapbox Studio, Mapbox GL JS, or an R package that can read Mapbox tilesets.
 }

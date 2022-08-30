@@ -11,7 +11,7 @@ make_newline_geojson <- function(data, file_loc) {
 
 #' Create a Mapbox tileset source from a sf object using the Mapbox Tiling Service API
 #'
-#' The \code{mts_create_source()} function can be used to create, append to, or replace an existing tileset source.
+#' The \code{mts_create_source()} function can be used to create a tileset source or append to an existing tileset source.  This function publishes a simple features object you've created in R to your Mapbox account, where it is stored as line-delimited GeoJSON. A tileset source is required to create a vector tileset, and the same source can be used across multiple tilesets.
 #'
 #' @param data An input simple features object
 #' @param tileset_id The tileset ID. If the tileset ID already exists in your Mapbox account, this function will overwrite the existing source with a new source.
@@ -73,20 +73,29 @@ mts_create_source <- function(data, tileset_id, username,
 #' List tileset sources in your Mapbox account
 #'
 #' @param username Your Mapbox username
+#' @param sortby One of \code{"created"} or \code{"modified"}; the returned data frame will be sorted by one of these two options.
+#' @param limit The number of tileset sources to return; defaults to 100.  The maximum number of tileset sources returned by this endpoint is 2000.
+#' @param start The source ID at which to start the list of sources; defaults to \code{NULL}.
 #' @param access_token Your Mapbox access token with secret scope.
 #'
 #' @return A data frame containing information on your tileset sources.
 #' @export
 mts_list_sources <- function(username,
+                             sortby = c("created", "modified"),
+                             limit = 100,
+                             start = NULL,
                              access_token = NULL) {
 
   access_token <- get_mb_access_token(access_token, secret_required = TRUE)
 
-
+  sortby <- rlang::arg_match(sortby)
 
   request <- httr::GET(
     url = sprintf("https://api.mapbox.com/tilesets/v1/sources/%s", username),
-    query = list(access_token = access_token)
+    query = list(access_token = access_token,
+                 sortby = sortby,
+                 limit = limit,
+                 start = start)
   )
 
   response <- request %>%
@@ -108,13 +117,23 @@ mts_list_sources <- function(username,
 #'
 #' @param ... One or more named lists that represent layers in the Mapbox Tiling Service recipe specification (\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#layer-example}).  These lists can be prepared with the helper function \code{recipe_layer()}, or prepared by hand if the user prefers. If multiple layers are included, a multi-layer recipe will be prepared that can produce tilesets with multiple sources.
 #'
+#' @rdname mts_recipes
 #' @return An R list representing an MTS recipe to be used to create a tileset.
 #' @export
 mts_make_recipe <- function(...) {
 
+  layers <- list(...)
+
+  # If unnamed, you'll need to name the layers
+  if (is.null(names(layers))) {
+    l <- length(layers)
+    nms <- paste0("layer", 1:l)
+    names(layers) <- nms
+  }
+
   recipe <- list(
       version = 1,
-      layers = list(...)
+      layers = layers
     )
 
   return(recipe)
@@ -130,7 +149,7 @@ mts_make_recipe <- function(...) {
 #' @param features A list of feature options, possibly generated with \code{feature_options()}.
 #' @param tiles A list of tile options, possibly generated with \code{tile_options()}
 #'
-#' @describeIn mts_make_recipe
+#' @rdname mts_recipes
 #' @return A recipe layer list to be used in \code{mts_make_recipe()}.
 #' @export
 recipe_layer <- function(
@@ -147,12 +166,12 @@ recipe_layer <- function(
                  features = features,
                  tiles = tiles)
 
-  if (length(features) == 0) {
-    features <- NULL
+  if (length(output$features) == 0) {
+    output$features <- NULL
   }
 
-  if (length(tiles) == 0) {
-    tiles <- NULL
+  if (length(output$tiles) == 0) {
+    output$tiles <- NULL
   }
 
   return(output)
@@ -168,7 +187,7 @@ recipe_layer <- function(
 #' @param simplification Rules for feature simplification.  See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-simplification} for more information on how to specify this.
 #'
 #' @return A list of feature options, likely to be used in \code{recipe_layer()}.
-#' @describeIn mts_make_recipe
+#' @rdname mts_recipes
 #' @export
 feature_options <- function(
     id = NULL,
@@ -202,7 +221,7 @@ feature_options <- function(
 #'
 #' @param bbox,extent,buffer_size,limit,union,filter,attributes,order,remove_filled,id,layer_size Tile options in the MTS recipe. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#tile-configuration} for more information on the available options.
 #' @return A list of tile options, likely to be used in \code{recipe_layer}.
-#' @describeIn mts_make_recipe
+#' @rdname mts_recipes
 #' @export
 tile_options <- function(
     bbox = NULL,
@@ -255,7 +274,7 @@ tile_options <- function(
 #' @param recipe A recipe list, created with \code{mts_make_recipe()}
 #' @param access_token Your Mapbox access token.
 #'
-#' @return A response from the API indicating whether the MTS recipe is valid or not. If the recipe is invalid, the API response will tell you the reason why.
+#' @return A response from the API indicating whether the MTS recipe is valid or not. If the recipe is valid, returns \code{TRUE}, allowing you to use the output of this function for error handling pipelines.  If the recipe is invalid, the function returns \code{FALSE} and prints the API response telling you why the recipe is invalid.
 #' @export
 mts_validate_recipe <- function(recipe,
                                 access_token = NULL) {
@@ -293,13 +312,15 @@ mts_validate_recipe <- function(recipe,
 
 #' Create a tileset with the Mapbox Tiling Service API
 #'
+#' After you've uploaded your spatial data to your Mapbox account with \code{mts_create_source} and prepared a valid recipe with \code{mts_make_recipe()}, you can use your source and recipe to create a vector tileset.  This tileset will be hosted at your Mapbox account.  Once created successfully, you will need to publish the tileset using \code{mts_publish_tileset} to use it in Mapbox Studio, Mapbox GL JS, or an R package that can read Mapbox tilesets.
+#'
 #' @param tileset_name The name of the MTS tileset you intend to create
 #' @param username Your Mapbox username
 #' @param recipe An MTS recipe, created with \code{mts_make_recipe()}
 #' @param request_name The name of the request; defaults to the tileset name
 #' @param access_token Your Mapbox access token
 #'
-#' @return The API response
+#' @return The response from the API, formatted as an R list.
 #' @export
 mts_create_tileset <- function(tileset_name,
                                username,
@@ -344,11 +365,15 @@ mts_create_tileset <- function(tileset_name,
 
 #' Publish a tileset with Mapbox Tiling Service
 #'
+#' \code{mts_publish_tileset()} publishes an existing vector tileset at your Mapbox account, allowing you to use the vector tiles in your projects.  The tileset name will be the same name you specified in \code{mts_create_tileset()}.
+#'
+#' The published tileset will conform to rules specified in its recipe.  If you want to change the recipe for a tileset, use \code{mts_update_recipe()} then re-publish the tileset with a call to \code{mts_publish_tileset()} once more.
+#'
 #' @param tileset_name The name of the tileset (as supplied to \code{mts_create_tileset()})
 #' @param username Your Mapbox username
 #' @param access_token Your Mapbox access token
 #'
-#' @return The API response
+#' @return The response from the Mapbox Tiling Service API, formatted as an R list.
 #' @export
 mts_publish_tileset <- function(tileset_name,
                                 username,
@@ -383,7 +408,7 @@ mts_publish_tileset <- function(tileset_name,
 
 #' Retrieve the recipe for an MTS tileset in your Mapbox account
 #'
-#' @param tileset_name The tileset name
+#' @param tileset_name The tileset name for which you'd like to retrieve a recipe
 #' @param username Your Mapbox username
 #' @param access_token Your Mapbox access token with secret scope
 #'

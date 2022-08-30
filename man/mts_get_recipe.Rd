@@ -7,7 +7,7 @@
 mts_get_recipe(tileset_name, username, access_token = NULL)
 }
 \arguments{
-\item{tileset_name}{The tileset name}
+\item{tileset_name}{The tileset name for which you'd like to retrieve a recipe}
 
 \item{username}{Your Mapbox username}
 

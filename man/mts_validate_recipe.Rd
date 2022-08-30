@@ -12,7 +12,7 @@ mts_validate_recipe(recipe, access_token = NULL)
 \item{access_token}{Your Mapbox access token.}
 }
 \value{
-A response from the API indicating whether the MTS recipe is valid or not. If the recipe is invalid, the API response will tell you the reason why.
+A response from the API indicating whether the MTS recipe is valid or not. If the recipe is valid, returns \code{TRUE}, allowing you to use the output of this function for error handling pipelines.  If the recipe is invalid, the function returns \code{FALSE} and prints the API response telling you why the recipe is invalid.
 }
 \description{
 Validate a Mapbox Tiling Service recipe
