@@ -29,3 +29,11 @@ A data frame containing information on your tileset sources.
 \description{
 List tileset sources in your Mapbox account
 }
+\examples{
+\dontrun{
+source_list <- mts_list_sources(username = "your_mapbox_username")
+}
+}
+\seealso{
+\url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#create-a-tileset-source}
+}

@@ -19,6 +19,8 @@ make_newline_geojson <- function(data, file_loc) {
 #' @param access_token Your Mapbox access token with secret scope. Install with \code{mb_access_token()} after you retrieve it from your Mapbox account.
 #'
 #' @return A list of the MTS API's responses, including the name of the tileset source in your Mapbox account.  You'll use this name to build a MTS recipe.
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#create-a-tileset-source}
 #' @export
 mts_create_source <- function(data, tileset_id, username,
                               access_token = NULL) {
@@ -79,6 +81,10 @@ mts_create_source <- function(data, tileset_id, username,
 #' @param access_token Your Mapbox access token with secret scope.
 #'
 #' @return A data frame containing information on your tileset sources.
+#' @examples \dontrun{
+#' source_list <- mts_list_sources(username = "your_mapbox_username")
+#' }
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#create-a-tileset-source}
 #' @export
 mts_list_sources <- function(username,
                              sortby = c("created", "modified"),
@@ -113,12 +119,13 @@ mts_list_sources <- function(username,
 }
 
 
-#' Make a recipe list for use with the Mapbox Tiling Service
+#' Prepare a recipe for use with the Mapbox Tiling Service
 #'
 #' @param ... One or more named lists that represent layers in the Mapbox Tiling Service recipe specification (\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#layer-example}).  These lists can be prepared with the helper function \code{recipe_layer()}, or prepared by hand if the user prefers. If multiple layers are included, a multi-layer recipe will be prepared that can produce tilesets with multiple sources.
 #'
-#' @rdname mts_recipes
 #' @return An R list representing an MTS recipe to be used to create a tileset.
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/mapbox-tiling-service/reference/}
 #' @export
 mts_make_recipe <- function(...) {
 
@@ -140,8 +147,7 @@ mts_make_recipe <- function(...) {
 
 }
 
-
-#' Build a recipe layer for use in an MTS recipe
+#' Prepare a formatted recipe layer for use in a Mapbox Tiling Service recipe
 #'
 #' @param source The tileset source ID. This is returned by \code{mts_create_source()} or can be retrieved from your Mapbox account with \code{mts_list_sources()}.
 #' @param minzoom The minimum zoom level at which a layer can be viewed.
@@ -149,8 +155,9 @@ mts_make_recipe <- function(...) {
 #' @param features A list of feature options, possibly generated with \code{feature_options()}.
 #' @param tiles A list of tile options, possibly generated with \code{tile_options()}
 #'
-#' @rdname mts_recipes
 #' @return A recipe layer list to be used in \code{mts_make_recipe()}.
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/mapbox-tiling-service/reference/}
 #' @export
 recipe_layer <- function(
     source,
@@ -187,7 +194,8 @@ recipe_layer <- function(
 #' @param simplification Rules for feature simplification.  See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-simplification} for more information on how to specify this.
 #'
 #' @return A list of feature options, likely to be used in \code{recipe_layer()}.
-#' @rdname mts_recipes
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/mapbox-tiling-service/reference/}
 #' @export
 feature_options <- function(
     id = NULL,
@@ -221,7 +229,8 @@ feature_options <- function(
 #'
 #' @param bbox,extent,buffer_size,limit,union,filter,attributes,order,remove_filled,id,layer_size Tile options in the MTS recipe. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#tile-configuration} for more information on the available options.
 #' @return A list of tile options, likely to be used in \code{recipe_layer}.
-#' @rdname mts_recipes
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/mapbox-tiling-service/reference/}
 #' @export
 tile_options <- function(
     bbox = NULL,
@@ -275,6 +284,8 @@ tile_options <- function(
 #' @param access_token Your Mapbox access token.
 #'
 #' @return A response from the API indicating whether the MTS recipe is valid or not. If the recipe is valid, returns \code{TRUE}, allowing you to use the output of this function for error handling pipelines.  If the recipe is invalid, the function returns \code{FALSE} and prints the API response telling you why the recipe is invalid.
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#validate-a-recipe}
 #' @export
 mts_validate_recipe <- function(recipe,
                                 access_token = NULL) {
@@ -321,6 +332,8 @@ mts_validate_recipe <- function(recipe,
 #' @param access_token Your Mapbox access token
 #'
 #' @return The response from the API, formatted as an R list.
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#create-a-tileset}
 #' @export
 mts_create_tileset <- function(tileset_name,
                                username,
@@ -374,6 +387,8 @@ mts_create_tileset <- function(tileset_name,
 #' @param access_token Your Mapbox access token
 #'
 #' @return The response from the Mapbox Tiling Service API, formatted as an R list.
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#publish-a-tileset}
 #' @export
 mts_publish_tileset <- function(tileset_name,
                                 username,
@@ -413,6 +428,8 @@ mts_publish_tileset <- function(tileset_name,
 #' @param access_token Your Mapbox access token with secret scope
 #'
 #' @return The recipe for your tileset as an R list
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#retrieve-a-tilesets-recipe}
 #' @export
 mts_get_recipe <- function(tileset_name,
                            username,
@@ -453,6 +470,8 @@ mts_get_recipe <- function(tileset_name,
 #' @param access_token Your Mapbox access token
 #'
 #' @return If the update is successful, the function will print a message informing you of its success.  Otherwise, a list of responses from the API will be returned letting you know why the request was invalid.
+#' @example examples/mts_demo.R
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#update-a-tilesets-recipe}
 #' @export
 mts_update_recipe <- function(tileset_name,
                               username,
