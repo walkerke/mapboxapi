@@ -9,3 +9,4 @@
 ^vignettes$
 ^.github$
 ^data-raw$
+^examples$
