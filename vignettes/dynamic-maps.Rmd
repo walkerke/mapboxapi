@@ -1,5 +1,5 @@
 ---
-title: "Dynamic web mapping apps with Mapbox Tiling Service and mapboxer"
+title: "Dynamic web maps with Mapbox Tiling Service and mapboxer"
 output: 
   html_document: 
     code_folding: show
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = FALSE, out.width="100
 options(tigris_use_cache = TRUE)
 ```
 
-__mapboxapi__ version 0.5 added support for the [Mapbox Tiling Service (MTS) API](https://docs.mapbox.com/api/maps/mapbox-tiling-service/), Mapbox's recommended tool for publishing and maintaining vector tile data pipelines.  A major benefit to using R and __mapboxapi__ to interact with MTS is that data pipelines for web maps can be handled directly from R.  This vignette covers an example walkthrough of how to build dynamic web mapping applications with vector tiles using Mapbox Tiling Service and the [mapboxer R package](https://crazycapivara.github.io/mapboxer/), a flexible R interface to Mapbox GL JS.  
+__mapboxapi__ version 0.5 added support for the [Mapbox Tiling Service (MTS) API](https://docs.mapbox.com/api/maps/mapbox-tiling-service/), Mapbox's recommended tool for publishing and maintaining vector tile data pipelines.  A major benefit to using R and __mapboxapi__ to interact with MTS is that data pipelines for web maps can be handled directly from R.  This vignette covers an example walkthrough of how to build dynamic web maps with vector tiles using Mapbox Tiling Service and the [mapboxer R package](https://crazycapivara.github.io/mapboxer/), a flexible R interface to Mapbox GL JS.  
 
 We'll be making a map of household access to a broadband internet subscription from the 2016-2020 American Community Survey that varies by zoom level.  The map should show county broadband internet access when zoomed out, and Census tract level information when zoomed in.  We will accomplish this by preparing a _multi-layer tileset_ that will store information for both aggregation levels.  
 
@@ -185,7 +185,7 @@ Mapbox GL JS has many, many more options available for users to customize stylin
 
 The example below modifies the map using the following options:
 
-- An Albers projection appropriate for the United States is used instead of the default Mercator projection.  (As of this writing (14 September 2022), this option is only available in a fork of the package, PR #104).  
+- An Albers projection appropriate for the United States is used instead of the default Mercator projection.  As of this writing (14 September 2022), this option is only available in a fork of the package, PR #104; the final implementation may change when the PR is merged.  
 - Counties and Census tracts are styled using linear interpolation inspired by the ColorBrewer YlGnBU palette. 
 - For Census tracts, the `"case"` option is used for `NA` values to make tracts missing data mostly transparent.  
 

@@ -1,6 +1,6 @@
 # mapboxapi 0.5
 
-* Support for the [Mapbox Tiling Service API](), allowing for the publication and maintenance of vector tileset pipelines from R.
+* Support for the [Mapbox Tiling Service API](https://docs.mapbox.com/api/maps/mapbox-tiling-service/), allowing for the publication and maintenance of vector tileset pipelines from R.
 
 
 # mapboxapi 0.4
