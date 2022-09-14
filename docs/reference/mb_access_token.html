@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -45,6 +45,9 @@
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -99,39 +102,60 @@
 <dd><p>A Mapbox access token; can be public (starting with 'pk') or
 secret (starting with 'sk') scope, which the function will interpret for
 you.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Whether or not to overwrite an existing Mapbox access token.
 Defaults to <code>FALSE</code>.</p></dd>
+
+
 <dt>install</dt>
 <dd><p>if <code>TRUE</code>, will install the key in your <code>.Renviron</code> file for use
 in future sessions. Defaults to <code>FALSE</code>.</p></dd>
+
+
 <dt>default</dt>
 <dd><p>If <code>TRUE</code>, will only include the default token for an account.
 If <code>FALSE</code>, will include all other tokens except for the default. Defaults
 to <code>NULL</code>.</p></dd>
+
+
 <dt>secret_required</dt>
 <dd><p>If <code>TRUE</code>, a secret token is required. If <code>FALSE</code>, the
 default token is provided first and the other token provided second if the
 first is unavailable.</p></dd>
+
+
 <dt>username</dt>
 <dd><p>The Mapbox username for which you'd like to list access
 tokens.</p></dd>
+
+
 <dt>limit</dt>
 <dd><p>The maximum number of tokens to return. Defaults to <code>NULL</code>.</p></dd>
+
+
 <dt>sortby</dt>
 <dd><p>How to sort the returned tokens; one of <code>"created"</code> or
 <code>"modified"</code>.</p></dd>
+
+
 <dt>usage</dt>
 <dd><p>If <code>"pk"</code>, returns only public tokens; if <code>"sk"</code>, returns only
 secret tokens. Defaults to <code>NULL</code>, which returns all tokens in the scope of
 the supplied access token.</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>Your Mapbox access token. If left <code>NULL</code>, will first check
 to see if you have a secret token stored in .Renviron, then a public token.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A tibble of information about tokens in your Mapbox account.</p>
+    
+
+<p>A tibble of information about tokens in your Mapbox account.</p>
     </div>
 
     <div id="ref-examples">
@@ -166,7 +190,7 @@ to see if you have a secret token stored in .Renviron, then a public token.</p><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

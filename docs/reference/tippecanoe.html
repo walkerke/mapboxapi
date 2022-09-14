@@ -23,7 +23,7 @@ with Mapbox Studio."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@ with Mapbox Studio."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -105,30 +108,45 @@ with Mapbox Studio.</p>
     <dl><dt>input</dt>
 <dd><p>The dataset from which to generate vector tiles. Can be an sf
 object or GeoJSON file on disk.</p></dd>
+
+
 <dt>output</dt>
 <dd><p>The name of the output .mbtiles file (with .mbtiles extension).
 Will be saved in the current working directory.</p></dd>
+
+
 <dt>layer_name</dt>
 <dd><p>The name of the layer in the output .mbtiles file. If NULL,
 will either be a random string (if input is an <code>sf</code> object) or the name of
 the input GeoJSON file (if input is a file path).</p></dd>
+
+
 <dt>min_zoom, max_zoom</dt>
 <dd><p>The minimum and maximum zoom levels for which to
 compute tiles. If both min_zoom and max_zoom are blank, tippecanoe will
 guess the best zoom levels for your data.</p></dd>
+
+
 <dt>drop_rate</dt>
 <dd><p>The rate at which tippecanoe will drop features as you zoom
 out. If NULL, tippecanoe will drop features as needed in the densest tiles
 to stay within Mapbox's limits.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>If <code>TRUE</code>, an existing .mbtiles file with the same name will
 be overwritten.</p></dd>
+
+
 <dt>other_options</dt>
 <dd><p>A character string of other options to be passed to the
 tippecanoe program.</p></dd>
+
+
 <dt>keep_geojson</dt>
 <dd><p>Whether nor not to keep the temporary CSV or GeoJSON file
 used to generate the tiles. Defaults to <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -194,7 +212,7 @@ alternate way to transform datasets into vector tiles.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

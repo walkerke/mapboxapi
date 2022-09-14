@@ -1,3 +1,8 @@
+# mapboxapi 0.5
+
+* Support for the [Mapbox Tiling Service API](), allowing for the publication and maintenance of vector tileset pipelines from R.
+
+
 # mapboxapi 0.4
 
 * Enhancements to `mb_matrix()` which now allow for distance-based matrices instead of the typical travel-time based matrices;

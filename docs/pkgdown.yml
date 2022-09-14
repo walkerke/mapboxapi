@@ -1,9 +1,10 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.3
+pandoc: '2.18'
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   creating-tiles: creating-tiles.html
+  dynamic-maps: dynamic-maps.html
   mapping: mapping.html
   navigation: navigation.html
-last_built: 2022-06-27T16:18Z
+last_built: 2022-09-14T13:50Z
 

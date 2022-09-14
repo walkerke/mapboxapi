@@ -10,6 +10,18 @@
     <loc>/articles/creating-tiles.html</loc>
   </url>
   <url>
+    <loc>/articles/dynamic-maps.html</loc>
+  </url>
+  <url>
+    <loc>/articles/img/dynamic_map.html</loc>
+  </url>
+  <url>
+    <loc>/articles/img/map_with_legend.html</loc>
+  </url>
+  <url>
+    <loc>/articles/img/styled_map.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -35,6 +47,9 @@
   </url>
   <url>
     <loc>/reference/check_upload_status.html</loc>
+  </url>
+  <url>
+    <loc>/reference/feature_options.html</loc>
   </url>
   <url>
     <loc>/reference/get_static_tiles.html</loc>
@@ -85,10 +100,40 @@
     <loc>/reference/mb_reverse_geocode.html</loc>
   </url>
   <url>
+    <loc>/reference/mts_create_source.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_create_tileset.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_get_recipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_list_sources.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_list_tilesets.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_make_recipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_publish_tileset.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_update_recipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mts_validate_recipe.html</loc>
+  </url>
+  <url>
     <loc>/reference/prep_overlay_markers.html</loc>
   </url>
   <url>
     <loc>/reference/query_tiles.html</loc>
+  </url>
+  <url>
+    <loc>/reference/recipe_layer.html</loc>
   </url>
   <url>
     <loc>/reference/rmapbox.html</loc>
@@ -98,6 +143,9 @@
   </url>
   <url>
     <loc>/reference/static_mapbox.html</loc>
+  </url>
+  <url>
+    <loc>/reference/tile_options.html</loc>
   </url>
   <url>
     <loc>/reference/tippecanoe.html</loc>

@@ -421,6 +421,69 @@ mts_publish_tileset <- function(tileset_name,
 }
 
 
+#' List tilesets in a Mapbox account
+#'
+#' @param username A Mapbox username
+#' @param type (optional) Return only \code{"vector"} or \code{"raster"} tilesets. If left blank, all tilesets will be returned.
+#' @param visibility Return only \code{"public"} or \code{"private"} tilesets. Public tilesets can be returned with any public access token; private tilesets require the user's access token with secret scope.
+#' @param sortby One of \code{"created"} or \code{"modified"}; the returned data frame will be sorted by one of these two options.
+#' @param limit The number of tilesets to return; defaults to 100.  The maximum number of tilesets returned by this endpoint is 500.
+#' @param start The tileset ID at which to start the list of sources; defaults to \code{NULL}.
+#' @param access_token Your Mapbox access token with secret scope.
+#'
+#' @return A data frame containing information on available tilesets in a given Mapbox account.
+#' @examples \dontrun{
+#' tileset_list <- mts_list_tilesets(username = "your_mapbox_username")
+#' }
+#' @seealso \url{https://docs.mapbox.com/api/maps/mapbox-tiling-service/#list-tilesets}
+#' @export
+mts_list_tilesets <- function(username,
+                             type = NULL,
+                             visibility = NULL,
+                             sortby = c("created", "modified"),
+                             limit = 100,
+                             start = NULL,
+                             access_token = NULL) {
+
+  if (!is.null(visibility)) {
+    if (visibility == "public") {
+      access_token <- get_mb_access_token(access_token, secret_required = FALSE)
+    } else {
+      access_token <- get_mb_access_token(access_token, secret_required = TRUE)
+    }
+  } else {
+    access_token <- get_mb_access_token(access_token, secret_required = TRUE)
+  }
+
+
+
+  sortby <- rlang::arg_match(sortby)
+
+  request <- httr::GET(
+    url = sprintf("https://api.mapbox.com/tilesets/v1/%s", username),
+    query = list(access_token = access_token,
+                 type = type,
+                 visibility = visibility,
+                 limit = limit,
+                 start = start)
+  )
+
+  response <- request %>%
+    httr::content(as = "text") %>%
+    jsonlite::fromJSON()
+
+  if (request$status_code != "200") {
+    stop(sprintf("Request failed: your error message is %s", response),
+         call. = FALSE
+    )
+  }
+
+  return(response)
+
+}
+
+
+
 #' Retrieve the recipe for an MTS tileset in your Mapbox account
 #'
 #' @param tileset_name The tileset name for which you'd like to retrieve a recipe

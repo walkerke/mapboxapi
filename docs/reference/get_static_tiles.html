@@ -23,7 +23,7 @@ around an input shape."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@ around an input shape."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -112,31 +115,52 @@ While the input <code>sf</code> object can be in an arbitrary coordinate referen
 if a length-4 bounding box vector is supplied instead it must represent
 WGS84 longitude/latitude coordinates and be in the order
 <code>c(xmin, ymin, xmax, ymax)</code>.</p></dd>
+
+
 <dt>zoom</dt>
 <dd><p>The zoom level for which you'd like to return tiles.</p></dd>
+
+
 <dt>style_id</dt>
 <dd><p>A Mapbox style ID; retrieve yours from your Mapbox account.</p></dd>
+
+
 <dt>username</dt>
 <dd><p>A Mapbox username.</p></dd>
+
+
 <dt>style_url</dt>
 <dd><p>A Mapbox style URL.</p></dd>
+
+
 <dt>scaling_factor</dt>
 <dd><p>The scaling factor to use; one of <code>"1x"</code> or <code>"2x"</code>.</p></dd>
+
+
 <dt>buffer_dist</dt>
 <dd><p>The distance to buffer around an input <code>sf</code> object for determining tile extent, specified in units. Defaults to 5000.</p></dd>
+
+
 <dt>units</dt>
 <dd><p>Units of <code>buffer_dist</code>; defaults to "m" (meters). If buffer_dist
 is a units class object, the units argument is ignored.</p></dd>
+
+
 <dt>crop</dt>
 <dd><p>Whether or not to crop the result to the specified bounding box or buffer area.
 Defaults to <code>TRUE</code>; <code>FALSE</code> will return the extent of the overlapping
 tiles.</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>A Mapbox access token. Supply yours here or set globally with the <code><a href="mb_access_token.html">mb_access_token()</a></code> function.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A raster layer of tiles from the requested Mapbox style representing the area around the input location. The raster layer is projected in the Web Mercator coordinate reference system.</p>
+    
+
+<p>A raster layer of tiles from the requested Mapbox style representing the area around the input location. The raster layer is projected in the Web Mercator coordinate reference system.</p>
     </div>
 
     <div id="ref-examples">
@@ -189,7 +213,7 @@ tiles.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

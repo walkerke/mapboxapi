@@ -21,7 +21,7 @@ simplestyle-spec
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -49,6 +49,9 @@ simplestyle-spec
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -100,29 +103,44 @@ which is a partial implementation of the GeoJSON
 <dd><p>An input data frame with longitude and latitude columns (X and Y
 or lon and lat as names are also acceptable) or an <code>sf</code> object with
 geometry type POINT.</p></dd>
+
+
 <dt>marker_type</dt>
 <dd><p>The marker type; one of <code>"pin-s"</code>, for a small pin;
 <code>"pin-l"</code>, for a large pin; and <code>"url"</code>, for an image path.</p></dd>
+
+
 <dt>label</dt>
 <dd><p>The marker label (optional). Can be a letter, number (0 through
 99), or a valid Maki icon (see <a href="https://labs.mapbox.com/maki-icons/" class="external-link">https://labs.mapbox.com/maki-icons/</a>)
 for options).</p></dd>
+
+
 <dt>color</dt>
 <dd><p>The marker color (optional). Color should be specified as a
 three or six-digit hexadecimal code without the number sign.</p></dd>
+
+
 <dt>longitude</dt>
 <dd><p>A vector of longitudes; inferred from the input dataset if
 <code>data</code> is provided.</p></dd>
+
+
 <dt>latitude</dt>
 <dd><p>A vector of latitudes; inferred from the input dataset if
 <code>data</code> is provided.</p></dd>
+
+
 <dt>url</dt>
 <dd><p>The URL of the image to be used for the icon if <code>marker_type
 = "url"</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A formatted list of marker specifications that can be passed to the <a href="static_mapbox.html">static_mapbox</a> function.</p>
+    
+
+<p>A formatted list of marker specifications that can be passed to the <a href="static_mapbox.html">static_mapbox</a> function.</p>
     </div>
 
   </div>
@@ -137,7 +155,7 @@ three or six-digit hexadecimal code without the number sign.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
