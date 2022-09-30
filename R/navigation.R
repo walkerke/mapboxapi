@@ -9,6 +9,7 @@
 #' @param output one of \code{"duration"} (the default), which will be measured in either minutes or seconds (depending on the value of \code{duration_output}), or \code{"distance"}, which will be returned in meters.
 #' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
 #' @param access_token A Mapbox access token (required)
+#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.
 #'
 #' @return An R matrix of source-destination travel times.
 #'
@@ -41,7 +42,8 @@ mb_matrix <- function(origins,
                       fallback_speed = NULL,
                       output = c("duration", "distance"),
                       duration_output = c("minutes", "seconds"),
-                      access_token = NULL)
+                      access_token = NULL,
+                      depart_at = NULL)
                       {
 
   access_token <- get_mb_access_token(access_token)
@@ -124,7 +126,8 @@ mb_matrix <- function(origins,
                 fallback_speed = fallback_speed,
                 access_token = access_token,
                 output = output,
-                duration_output = duration_output
+                duration_output = duration_output,
+                depart_at = depart_at
               )
             )
           }) %>%
@@ -142,7 +145,8 @@ mb_matrix <- function(origins,
               fallback_speed = fallback_speed,
               access_token = access_token,
               output = output,
-              duration_output = duration_output
+              duration_output = duration_output,
+              depart_at = depart_at
             )
           }) %>%
           purrr::reduce(rbind)
@@ -169,7 +173,8 @@ mb_matrix <- function(origins,
                 fallback_speed = fallback_speed,
                 access_token = access_token,
                 output = output,
-                duration_output = duration_output
+                duration_output = duration_output,
+                depart_at = depart_at
               )
             )
           }) %>%
@@ -187,7 +192,8 @@ mb_matrix <- function(origins,
               fallback_speed = fallback_speed,
               access_token = access_token,
               output = output,
-              duration_output = duration_output
+              duration_output = duration_output,
+              depart_at = depart_at
             )
           }) %>%
           purrr::reduce(cbind)
@@ -350,7 +356,8 @@ mb_matrix <- function(origins,
       sources = origin_ix,
       destinations = destination_ix,
       annotations = output,
-      fallback_speed = fallback_speed
+      fallback_speed = fallback_speed,
+      depart_at = depart_at
     )
   )
 

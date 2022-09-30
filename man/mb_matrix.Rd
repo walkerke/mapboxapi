@@ -11,7 +11,8 @@ mb_matrix(
   fallback_speed = NULL,
   output = c("duration", "distance"),
   duration_output = c("minutes", "seconds"),
-  access_token = NULL
+  access_token = NULL,
+  depart_at = NULL
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ For sf linestrings or polygons, the distance between centroids will be taken.}
 \item{duration_output}{one of \code{"minutes"} (the default) or \code{"seconds"}}
 
 \item{access_token}{A Mapbox access token (required)}
+
+\item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.}
 }
 \value{
 An R matrix of source-destination travel times.
