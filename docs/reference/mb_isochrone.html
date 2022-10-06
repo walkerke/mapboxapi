@@ -23,7 +23,7 @@ features objects in the WGS 1984 geographic coordinate system."><!-- mathjax -->
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@ features objects in the WGS 1984 geographic coordinate system."><!-- mathjax -->
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -108,37 +111,64 @@ features objects in the WGS 1984 geographic coordinate system.</p>
     <h2>Arguments</h2>
     <dl><dt>location</dt>
 <dd><p>A vector of form <code>c(longitude, latitude)</code>, an address that can be geocoded as a character string, or an <code>sf</code> object.</p></dd>
+
+
 <dt>profile</dt>
 <dd><p>One of "driving", "walking", "cycling", or "driving-traffic".
 "driving" is the default.</p></dd>
+
+
 <dt>time</dt>
 <dd><p>A vector of isochrone contours, specified in minutes. Defaults to <code>c(5, 10, 15)</code>. The maximum time supported is 60 minutes. Reflects traffic conditions for the date and time at which the function is called. If reproducibility of isochrones is required, supply an argument to the <code>depart_at</code> parameter.</p></dd>
+
+
 <dt>distance</dt>
 <dd><p>A vector of distance contours specified in meters. If supplied, will supercede
 any call to the <code>time</code> parameter as time and distance cannot be used
 simultaneously. Defaults to <code>NULL</code>.</p></dd>
+
+
 <dt>depart_at</dt>
 <dd><p>(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. <code>"2022-03-31T09:00"</code>. If <code>NULL</code> (the default), isochrones will reflect traffic conditions at the date and time when the function is called.</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>A valid Mapbox access token.</p></dd>
+
+
 <dt>denoise</dt>
 <dd><p>A floating-point value between 0 and 1 used to remove smaller contours. 1 is the default and returns only the largest contour for an input time.</p></dd>
+
+
 <dt>generalize</dt>
 <dd><p>A value expressed in meters of the tolerance for the Douglas-Peucker generalization algorithm used to simplify the isochrone shapes. If <code>NULL</code> (the default), the Mapbox API will choose an optimal value for you.</p></dd>
+
+
 <dt>geometry</dt>
 <dd><p>one of <code>"polygon"</code> (the default), which returns isochrones as polygons, or alternatively <code>"linestring"</code>, which returns isochrones as linestrings.</p></dd>
+
+
 <dt>output</dt>
 <dd><p>one of <code>"sf"</code> (the default), which returns an <code>sf</code> object representing the isochrone(s), or <code>"list"</code>, which returns the GeoJSON response from the API as an R list.</p></dd>
+
+
 <dt>rate_limit</dt>
 <dd><p>The rate limit for the API, expressed in maximum number of calls per minute. For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when <code>location</code> is <code>"sf"</code>.</p></dd>
+
+
 <dt>keep_color_cols</dt>
 <dd><p>Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an <code>sf</code> object). Defaults to <code>FALSE</code>.</p></dd>
+
+
 <dt>id_column</dt>
 <dd><p>If the input dataset is an <code>sf</code> object, the column in your dataset you want to use as the isochrone ID. Otherwise, isochrone IDs will be identified by row index or position.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>sf</code> object representing the isochrone(s) around the location(s).</p>
+    
+
+<p>An <code>sf</code> object representing the isochrone(s) around the location(s).</p>
     </div>
 
     <div id="ref-examples">
@@ -175,7 +205,7 @@ simultaneously. Defaults to <code>NULL</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

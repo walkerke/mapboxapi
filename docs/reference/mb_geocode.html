@@ -18,7 +18,7 @@ information."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -46,6 +46,9 @@ information."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -104,40 +107,59 @@ information.</p>
     <dl><dt>search_text</dt>
 <dd><p>The text to search, formatted as a character string. Can
 be an address, a location, or a description of a point of interest.</p></dd>
+
+
 <dt>endpoint</dt>
 <dd><p>One of <code>'mapbox.places'</code> (the default) or
 <code>mapbox.places-permanent</code>. Per Mapbox's terms of service, you are only
 allowed to save results and perform batch geocoding with the
 places-permanent endpoint.</p></dd>
+
+
 <dt>limit</dt>
 <dd><p>How many results to return; defaults to 1 (maximum 10).</p></dd>
+
+
 <dt>types</dt>
 <dd><p>A vector of feature types to limit to which the search should be
 limited. Available options include <code>'country'</code>, <code>'region'</code>, <code>'postcode'</code>,
 <code>'district'</code>, <code>'place'</code>, <code>'locality'</code>, <code>'neighborhood'</code>, <code>'address'</code>, and
 <code>'poi'</code>. If left blank, all types will be searched.</p></dd>
+
+
 <dt>search_within</dt>
 <dd><p>An <code>sf</code> object, or vector representing a bounding box of
 format <code>c(min_longitude, min_latitude, max_longitude, max_latitude)</code> used
 to limit search results. Defaults to NULL.</p></dd>
+
+
 <dt>language</dt>
 <dd><p>The user's language, which can help with interpretation of
 queries. Available languages are found at
 <a href="https://docs.mapbox.com/api/search/#language-coverage" class="external-link">https://docs.mapbox.com/api/search/#language-coverage</a>.</p></dd>
+
+
 <dt>output</dt>
 <dd><p>one of <code>"text"</code> (the default), which will return a character
 string or list of character strings representing the returned results;
 <code>output = "sf"</code>, returning an <code>sf</code> object; or <code>"full"</code>, which will return a
 list with the full API response.</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>The Mapbox access token (required); can be set with
 <code><a href="mb_access_token.html">mb_access_token()</a></code></p></dd>
+
+
 <dt>coordinates</dt>
 <dd><p>The coordinates of a location in format <code>c(longitude, latitude)</code> for which you'd like to return information.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character vector, list, or <code>sf</code> object representing the query
+    
+
+<p>A character vector, list, or <code>sf</code> object representing the query
 results.</p>
     </div>
 
@@ -167,7 +189,7 @@ results.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

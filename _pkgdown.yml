@@ -32,6 +32,20 @@ reference:
   - '`static_mapbox`'
   - '`layer_static_mapbox`'
   - '`prep_overlay_markers`'
+- title: Mapbox Tiling Service
+  contents:
+  - '`mts_create_source`'
+  - '`feature_options`'
+  - '`mts_create_tileset`'
+  - '`mts_get_recipe`'
+  - '`mts_list_sources`'
+  - '`mts_list_tilesets`'
+  - '`mts_make_recipe`'
+  - '`mts_publish_tileset`'
+  - '`mts_update_recipe`'
+  - '`mts_validate_recipe`'
+  - '`recipe_layer`'
+  - '`tile_options`'
 
 navbar:
   structure:
@@ -59,6 +73,8 @@ navbar:
         href: articles/navigation.html
       - text: Creating and uploading Mapbox vector tilesets
         href: articles/creating-tiles.html
+      - text: Dynamic maps with Mapbox Tiling Service and mapboxer
+        href: articles/dynamic-maps.html
     github:
       icon: fa-github fa-lg
       href: https://github.com/walkerke/mapboxapi

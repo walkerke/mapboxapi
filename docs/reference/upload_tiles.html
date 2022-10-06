@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -45,6 +45,9 @@
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -91,20 +94,33 @@
     <dl><dt>input</dt>
 <dd><p>An <code>sf</code> object, or the path to the dataset to upload as a
 character string.</p></dd>
+
+
 <dt>username</dt>
 <dd><p>Your Mapbox username</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>Your Mapbox access token; must have secret scope</p></dd>
+
+
 <dt>tileset_id</dt>
 <dd><p>The ID of the tileset in your Mapbox account</p></dd>
+
+
 <dt>tileset_name</dt>
 <dd><p>The name of the tileset in your Mapbox account</p></dd>
+
+
 <dt>keep_geojson</dt>
 <dd><p>Whether or not to keep the temporary GeoJSON used to
 generate the tiles (if the input is an <code>sf</code> object)</p></dd>
+
+
 <dt>multipart</dt>
 <dd><p>Whether or not to upload to the temporary AWS staging bucket
 as a multipart object; defaults to <code>FALSE</code>.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
@@ -147,7 +163,7 @@ as a multipart object; defaults to <code>FALSE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

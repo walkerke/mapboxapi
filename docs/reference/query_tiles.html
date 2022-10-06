@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -45,6 +45,9 @@
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -93,33 +96,50 @@
 <dd><p>The location for which you'd like to query tiles, expressed
 as either a length-2 vector of longitude and latitude or an address you'd
 like to geocode.</p></dd>
+
+
 <dt>tileset_id</dt>
 <dd><p>The tileset ID to query.</p></dd>
+
+
 <dt>radius</dt>
 <dd><p>The radius around the point (in meters) for which you'd like to
 query features. For point-in-polygon queries (e.g. "what county is my point
 located in?") the default of 0 should be used.</p></dd>
+
+
 <dt>limit</dt>
 <dd><p>How many features to return (defaults to 5). Can be an integer
 between 1 and 50.</p></dd>
+
+
 <dt>dedupe</dt>
 <dd><p>Whether or not to return duplicate features as identified by
 their IDs. The default, TRUE, will de-duplicate your dataset.</p></dd>
+
+
 <dt>geometry</dt>
 <dd><p>The feature geometry type to query - can be <code>"point"</code>,
 <code>"linestring"</code>, or <code>"polygon"</code>. If left blank, all geometry types
 will be queried.</p></dd>
+
+
 <dt>layers</dt>
 <dd><p>A vector of layer IDs you'd like to query (recommended); if
 left blank will query all layers, with the limitation that at most 50
 features can be returned.</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>A Mapbox access token, which can be set with
 <code><a href="mb_access_token.html">mb_access_token()</a></code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An R list containing the API response, which includes information
+    
+
+<p>An R list containing the API response, which includes information
 about the requested features. Parse the list to extract desired elements.</p>
     </div>
     <div id="see-also">
@@ -157,7 +177,7 @@ about the requested features. Parse the list to extract desired elements.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

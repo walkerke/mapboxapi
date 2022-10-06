@@ -18,7 +18,7 @@ information."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -46,6 +46,9 @@ information."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -96,38 +99,61 @@ information.</p>
     <h2>Arguments</h2>
     <dl><dt>map</dt>
 <dd><p>A map widget object created by <code><a href="https://rdrr.io/pkg/leaflet/man/leaflet.html" class="external-link">leaflet::leaflet()</a></code></p></dd>
+
+
 <dt>style_id</dt>
 <dd><p>The style ID of a Mapbox style</p></dd>
+
+
 <dt>username</dt>
 <dd><p>A Mapbox username</p></dd>
+
+
 <dt>style_url</dt>
 <dd><p>A Mapbox style URL</p></dd>
+
+
 <dt>scaling_factor</dt>
 <dd><p>The scaling factor to use when rendering the tiles. A
 scaling factor of <code>"1x"</code> (the default) returns 512px by 512px tiles. A
 factor of <code>"1x"</code> returns 256x256 tiles, and a factor of <code>"2x"</code> returns
 1024x1024 tiles.</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>Your Mapbox access token; which can be set with
 <code><a href="mb_access_token.html">mb_access_token()</a></code>.</p></dd>
+
+
 <dt>layerId</dt>
 <dd><p>the layer ID</p></dd>
+
+
 <dt>group</dt>
 <dd><p>The name of the group the Mapbox tile layer should belong to
 (for use in Shiny and to modify layers control in a Leaflet workflow)</p></dd>
+
+
 <dt>options</dt>
 <dd><p>A list of extra options (optional)</p></dd>
+
+
 <dt>data</dt>
 <dd><p>The data object used to derive argument values; can be provided
 to the initial call to <code><a href="https://rdrr.io/pkg/leaflet/man/leaflet.html" class="external-link">leaflet::leaflet()</a></code></p></dd>
+
+
 <dt>attribution</dt>
 <dd><p>If <code>TRUE</code>, pass a standard attribution to
 <code><a href="https://rdrr.io/pkg/leaflet/man/map-layers.html" class="external-link">leaflet::addTiles()</a></code>. If <code>FALSE</code>, attribution is <code>NULL</code>. attribution can
 also be a character string including HTML.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A pointer to the Mapbox Static Tiles API which will be translated
+    
+
+<p>A pointer to the Mapbox Static Tiles API which will be translated
 appropriately by the leaflet R package.</p>
     </div>
 
@@ -164,7 +190,7 @@ appropriately by the leaflet R package.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

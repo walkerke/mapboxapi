@@ -18,7 +18,7 @@ information."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
       </span>
     </div>
 
@@ -46,6 +46,9 @@ information."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
     </li>
     <li>
       <a href="../articles/creating-tiles.html">Creating and uploading Mapbox vector tilesets</a>
+    </li>
+    <li>
+      <a href="../articles/dynamic-maps.html">Dynamic maps with Mapbox Tiling Service and mapboxer</a>
     </li>
   </ul></li>
 <li>
@@ -115,94 +118,145 @@ information.</p>
 <dd><p>An input dataset of class <code>"sf"</code>, or a list of coordinate
 pairs for format <code>c(longitude, latitude)</code>. Cannot be used with an
 origin/destination pair.</p></dd>
+
+
 <dt>origin</dt>
 <dd><p>An address or coordinate pair that represents the origin of
 your requested route. Cannot be used with <code>input_data</code>.</p></dd>
+
+
 <dt>destination</dt>
 <dd><p>An address or coordinate pair that represents the
 destination of your requested route.</p></dd>
+
+
 <dt>profile</dt>
 <dd><p>One of "driving" (the default), "driving-traffic", "walking",
 or "cycling".</p></dd>
+
+
 <dt>output</dt>
 <dd><p>One of "sf" (the default), which returns an sf LINESTRING
 representing the route geometry, or "full", which returns the full request
 from the Directions API as a list.</p></dd>
+
+
 <dt>depart_at</dt>
 <dd><p>(optional) For the "driving" or "driving-traffic" profiles,
 the departure date and time to reflect historical traffic patterns. If
 "driving-traffic" is used, live traffic will be mixed in with historical
 traffic for dates/times near to the current time. Should be specified as an
 ISO 8601 date/time, e.g. <code>"2022-03-31T09:00"</code>.</p></dd>
+
+
 <dt>alternatives</dt>
 <dd><p>Whether or not to return alternative routes with your
 request. If TRUE, a list of up to 3 possible routes will be returned.</p></dd>
+
+
 <dt>annotations</dt>
 <dd><p>A comma-separated string of additional route metadata,
 which may include duration, distance, speed, and congestion. Must be used
 with overview = "full".</p></dd>
+
+
 <dt>bearings</dt>
 <dd><p>A semicolon-delimited character string of bearings</p></dd>
+
+
 <dt>continue_straight</dt>
 <dd><p>continue_straight</p></dd>
+
+
 <dt>exclude</dt>
 <dd><p>Road types to exclude from your route; possible choices are
 <code>'toll'</code>, <code>'motorway'</code>, or <code>'ferry'</code>. Defaults to <code>NULL</code>.</p></dd>
+
+
 <dt>geometries</dt>
 <dd><p>The route geometry format. If <code>output = 'sf'</code>, you will get
 back an <code>sf</code> object and you should leave this blank. If <code>output = 'full'</code>,
 the embedded route geometries will be one of <code>'geojson'</code> (the default),
 <code>'polyline'</code> with five decimal place precision, or <code>'polyline6'</code>.</p></dd>
+
+
 <dt>overview</dt>
 <dd><p>If left blank, defaults to <code>'simplified'</code> for simplified
 geometry; the other option is <code>'full'</code> which provides the most detailed
 geometry available.</p></dd>
+
+
 <dt>radiuses</dt>
 <dd><p>A character string with semicolon-separated radii that
 specify the distance (in meters) to snap each input coordinate to the road
 network. Defaults to <code>NULL</code>.</p></dd>
+
+
 <dt>approaches</dt>
 <dd><p>A character string with semicolon-separated specifications
 for how to approach waypoints. Options include <code>unrestricted</code> and <code>curb</code>.
 Defaults to <code>NULL</code> which uses <code>unrestricted</code> for all waypoints.</p></dd>
+
+
 <dt>steps</dt>
 <dd><p>If <code>TRUE</code>, returns the route object split up into route legs
 with step-by-step instructions included. If <code>FALSE</code> or <code>NULL</code> (the
 default), a single line geometry representing the full route will be
 returned.</p></dd>
+
+
 <dt>banner_instructions</dt>
 <dd><p>Whether or not to return banner objects; only
 available when<code>output = 'full'</code> and <code>steps = TRUE</code>.</p></dd>
+
+
 <dt>language</dt>
 <dd><p>The language of the returned instructions (defaults to
 English). Available language codes are found at
 <a href="https://docs.mapbox.com/api/navigation/#instructions-languages" class="external-link">https://docs.mapbox.com/api/navigation/#instructions-languages</a>. Only
 available when <code>steps = TRUE</code>.</p></dd>
+
+
 <dt>roundabout_exits</dt>
 <dd><p>If TRUE, adds instructions for roundabout entrance
 and exit. Only available when <code>steps = TRUE</code>.</p></dd>
+
+
 <dt>voice_instructions, voice_units</dt>
 <dd><p>Only available when <code>steps = TRUE</code> and
 <code>output = 'full'</code>.</p></dd>
+
+
 <dt>waypoint_names, waypoint_targets, waypoints</dt>
 <dd><p>Only available when <code>steps = TRUE</code> and <code>output = 'full'</code>.</p></dd>
+
+
 <dt>walking_speed</dt>
 <dd><p>The walking speed in meters/second; available when
 <code>profile = 'walking'</code>.</p></dd>
+
+
 <dt>walkway_bias</dt>
 <dd><p>Can take values between -1 and 1, where negative numbers
 avoid walkways and positive numbers prefer walkways. Available when
 <code>profile = 'walking'</code>.</p></dd>
+
+
 <dt>alley_bias</dt>
 <dd><p>Can take values between -1 and 1, where negative numbers
 avoid alleys and positive numbers prefer alleys. Available when <code>profile = 'walking'</code>.</p></dd>
+
+
 <dt>access_token</dt>
 <dd><p>A Mapbox access token; which can be set with
 <code><a href="mb_access_token.html">mb_access_token()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>sf</code> object (or list of <code>sf</code> objects), or full R list representing
+    
+
+<p>An <code>sf</code> object (or list of <code>sf</code> objects), or full R list representing
 the API response.</p>
     </div>
 
@@ -241,7 +295,7 @@ the API response.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
