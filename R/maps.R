@@ -978,11 +978,16 @@ set_static_map_dims <- function(base = NULL,
                                 width = NULL,
                                 height = NULL,
                                 scale = 0.5) {
-  if (all(is.null(c(width, height))) && !is.null(bbox)) {
-    asp <- as.numeric(abs(bbox$xmax - bbox$xmin) / abs(bbox$ymax - bbox$ymin))
-    max_size <- min(1280, round(1280 * scale))
-    width <- min(max_size, round(max_size * asp))
-    height <- min(max_size, round(max_size / asp))
+  has_map_dims <- !all(is.null(c(width, height)))
+
+  if (!has_map_dims && !is.null(bbox)) {
+      asp <- as.numeric(abs(bbox$xmax - bbox$xmin) / abs(bbox$ymax - bbox$ymin))
+      max_size <- min(1280, round(1280 * scale))
+      width <- min(max_size, round(max_size * asp))
+      height <- min(max_size, round(max_size / asp))
+  } else if (has_map_dims) {
+    width <- round(width)
+    height <- round(height)
   }
 
   sprintf("%s/%sx%s", base, width, height)
