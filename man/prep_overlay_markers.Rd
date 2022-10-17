@@ -38,8 +38,7 @@ number sign).}
 \item{latitude}{A vector of latitudes; inferred from the input dataset if
 \code{data} is provided.}
 
-\item{url}{The URL of the image to be used for the icon if \code{marker_type
-= "url"}.}
+\item{url}{The URL of the image to be used for the icon if \code{marker_type = "url"}.}
 }
 \value{
 A formatted list of marker specifications that can be passed to the

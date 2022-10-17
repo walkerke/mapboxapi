@@ -1003,11 +1003,11 @@ set_static_map_dims <- function(base = NULL,
 #' [{tmap}](https://r-tmap.github.io/tmap/) basemaps.
 #'
 #' This function uses a different approach [get_static_tiles()]. Instead,
-#' [layer_static_mapbox()] is based largely on \code{layer_mapbox()} in the snapbox package
+#' [layer_static_mapbox()] is based largely on [snapbox::layer_mapbox()] in the snapbox package
 #' (available under a [MIT
 #' license](https://github.com/anthonynorth/snapbox/blob/master/LICENSE). There
 #' are a few key differences between [layer_static_mapbox()] and
-#' \code{layer_mapbox()}. The "scale" parameter is equivalent to the
+#' [snapbox::layer_mapbox()]. The "scale" parameter is equivalent to the
 #' "scale_ratio" parameter for snapbox. Setting `scale_factor = "2x"` is
 #' equivalent to setting `retina = TRUE.` Both functions return basemaps that
 #' are no larger than a single tile (a maximum of 1280 by 1280 pixels).
@@ -1161,8 +1161,8 @@ request_to_raster <- function(request,
 #' @param data An input data frame with longitude and latitude columns (X and Y
 #'   or lon and lat as names are also acceptable) or an `sf` object with
 #'   geometry type POINT.
-#' @param marker_type The marker type; one of \code{"pin-s"}, for a small pin;
-#'   \code{"pin-l"}, for a large pin; and \code{"url"}, for an image path. If
+#' @param marker_type The marker type; one of `"pin-s"`, for a small pin;
+#'   `"pin-l"`, for a large pin; and `"url"`, for an image path. If
 #'   marker_type is the same length as the rows in data, a mix of different
 #'   marker types are allowed.
 #' @param label The marker label (optional). Can be a letter, number (0 through
@@ -1172,16 +1172,17 @@ request_to_raster <- function(request,
 #'   name or as a three or six-digit hexadecimal code (with or without the
 #'   number sign).
 #' @param longitude A vector of longitudes; inferred from the input dataset if
-#'   \code{data} is provided.
+#'   `data` is provided.
 #' @param latitude A vector of latitudes; inferred from the input dataset if
-#'   \code{data} is provided.
-#' @param url The URL of the image to be used for the icon if \code{marker_type
-#'   = "url"}.
+#'   `data` is provided.
+#' @param url The URL of the image to be used for the icon if `marker_type =
+#'   "url"`.
 #' @name prep_overlay_markers
 #' @return A formatted list of marker specifications that can be passed to the
 #'   [static_mapbox] function.
 #' @export
-#' @importFrom sf st_geometry_type st_coordinates
+#' @importFrom sf st_geometry_type st_point_on_surface st_transform
+#'   st_coordinates
 #' @importFrom purrr map
 prep_overlay_markers <- function(data = NULL,
                                  marker_type = c("pin-s", "pin-l", "url"),
@@ -1457,17 +1458,17 @@ addMapboxTiles <- function(map,
 #'
 #' @param location An input location for which you would like to request tiles.
 #'                 Can be a length-4 vector representing a bounding box, or an `sf` object.
-#'                 If an input `sf` object is supplied, use the \code{buffer_dist} argument to
+#'                 If an input `sf` object is supplied, use the `buffer_dist` argument to
 #'                 control how much area you want to capture around the layer.
 #'                 While the input `sf` object can be in an arbitrary coordinate reference system,
 #'                 if a length-4 bounding box vector is supplied instead it must represent
 #'                 WGS84 longitude/latitude coordinates and be in the order
-#'                 \code{c(xmin, ymin, xmax, ymax)}.
+#'                 `c(xmin, ymin, xmax, ymax)`.
 #' @param zoom The zoom level for which you'd like to return tiles.
 #' @param style_id A Mapbox style ID; retrieve yours from your Mapbox account.
 #' @param username A Mapbox username.
 #' @param style_url A Mapbox style URL.
-#' @param scaling_factor The scaling factor to use; one of \code{"1x"} or \code{"2x"}.
+#' @param scaling_factor The scaling factor to use; one of `"1x"` or `"2x"`.
 #' @param buffer_dist The distance to buffer around an input `sf` object for determining tile extent, specified in units. Defaults to 5000.
 #' @param units Units of `buffer_dist`; defaults to "m" (meters). If buffer_dist
 #'   is a units class object, the units argument is ignored.
