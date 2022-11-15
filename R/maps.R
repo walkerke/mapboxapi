@@ -161,13 +161,18 @@ check_upload_status <- function(upload_id,
                                 username,
                                 access_token = NULL) {
   access_token <-
-    get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN", secret_required = TRUE)
+    get_mb_access_token(
+      access_token,
+      default = "MAPBOX_SECRET_TOKEN",
+      secret_required = TRUE
+      )
 
-  status <- httr::GET(sprintf(
-    "https://api.mapbox.com/uploads/v1/%s/%s",
-    username, upload_id
-  ),
-  query = list(access_token = access_token)
+  status <- httr::GET(
+    sprintf(
+      "https://api.mapbox.com/uploads/v1/%s/%s",
+      username, upload_id
+    ),
+    query = list(access_token = access_token)
   )
 
   status %>%
@@ -235,7 +240,8 @@ query_tiles <- function(location,
   } else if (length(location) == 2) {
     coords <- location
   } else {
-    stop("The specified location must either be a coordinate pair or a valid address",
+    stop("The specified location must either be a
+         coordinate pair or a valid address",
       call. = FALSE
     )
   }
@@ -331,7 +337,8 @@ get_vector_tiles <- function(tileset_id,
 
     tile_ids <- tile_grid$tiles
 
-    message(sprintf("Requesting data for %s map tiles. To speed up your query, choose a smaller extent or zoom level.", nrow(tile_ids)))
+    message(sprintf("Requesting data for %s map tiles. To speed up your query
+                    choose a smaller extent or zoom level.", nrow(tile_ids)))
     sf_list <- purrr::map2(tile_ids$x, tile_ids$y, ~ {
       # Build the request to Mapbox
       url <- sprintf(
@@ -364,7 +371,8 @@ get_vector_tiles <- function(tileset_id,
 
     names(layer_names) <- layer_names
 
-    # Now, iterate over the layer names, then the lists, keeping what you need and combining
+    # Now, iterate over the layer names, then the lists, keeping what you need
+    # and combining
     master_list <- purrr::map(layer_names, function(name) {
       # print(name) # Leave here for de-bugging
       layer_list <- purrr::map(sf_list, ~ {
@@ -422,7 +430,8 @@ get_vector_tiles <- function(tileset_id,
         sf::st_geometry_type(.x, by_geometry = FALSE)
       })
 
-      # If there is only one geometry, return the combined segment across the tiles
+      # If there is only one geometry, return the combined segment across the
+      # tiles
       # Otherwise, we should give back points, lines, and polygons objects as
       # appropriate
       if (length(unique(geoms)) == 1) {
@@ -450,18 +459,23 @@ get_vector_tiles <- function(tileset_id,
     return(parsed_list)
   }
 
-  # If location is a length-2 numeric vector of longitude/latitude, get the specific tile IDs
+  # If location is a length-2 numeric vector of longitude/latitude, get the
+  # specific tile IDs
   # If location is an address/text description, geocode it
   if (is.vector(location)) {
     if (inherits(location, "numeric")) {
       if (length(location) != 2) {
-        stop("Location must be a length-2 vector of format c(lon, lat) if supplying coordinates as input.")
+        stop("Location must be a length-2 vector of format c(lon, lat) if
+             supplying coordinates as input.")
       }
     } else if (inherits(location, "character")) {
       location <- mb_geocode(location)
     }
 
-    tile_id <- slippymath::lonlat_to_tilenum(location[1], location[2], zoom = zoom)
+    tile_id <-
+      slippymath::lonlat_to_tilenum(
+        location[1], location[2], zoom = zoom
+        )
 
 
     # Build the request to Mapbox
@@ -481,7 +495,8 @@ get_vector_tiles <- function(tileset_id,
 
     sf_list <- protolite::read_mvt_sf(request$url)
 
-    # Iterate through the elements and parse into sub-elements when geometry is mixed
+    # Iterate through the elements and parse into sub-elements when geometry is
+    # mixed
     layer_names <- names(sf_list)
 
     names(layer_names) <- layer_names
@@ -592,7 +607,8 @@ get_vector_tiles <- function(tileset_id,
 #'   [mb_access_token].
 #' @param image If `FALSE`, return the a [httr::response] object from
 #'   [httr::GET] using the static image URL; defaults to `TRUE`.
-#' @param strip If `TRUE`, drop image comments and metadata when `image = TRUE`; defaults to `TRUE`.
+#' @param strip If `TRUE`, drop image comments and metadata when `image = TRUE`;
+#'   defaults to `TRUE`.
 #' @return A pointer to an image of class `"magick-image"` if `image = TRUE`.
 #'   The resulting image can be manipulated further with functions from the
 #'   {magick} package.
@@ -667,8 +683,9 @@ static_mapbox <- function(location = NULL,
   # components and format them accordingly.
   #
   # `overlay_sf` converts to GeoJSON to make the request.
-  # The input GeoJSON should have internal information conforming to simplestyle-spec
-  # Eventually, this function could be able to do that internally but not yet
+  # The input GeoJSON should have internal information conforming to
+  # simplestyle-spec Eventually, this function could be able to do that
+  # internally but not yet
 
   base <-
     set_static_map_overlay(
@@ -748,14 +765,21 @@ static_mapbox <- function(location = NULL,
   }
 
   if (nchar(base1) > 8192) {
-    stop("Your request is too large likely due to the size of your overlay geometry. Consider simplifying your overlay geometry or adding your data to a style in Mapbox Studio to resolve this.", call. = FALSE)
+    stop("Your request is too large likely due to the size of your overlay
+         geometry. Consider simplifying your overlay geometry or adding your
+         data to a style in Mapbox Studio to resolve this.", call. = FALSE)
   }
 
   if (!is.null(before_layer)) {
     before_layer <-
       match.arg(
         before_layer,
-        get_style(style_id = style_id, username = username, style_url = style_url, access_token = access_token)[["layers"]][["id"]]
+        get_style(
+          style_id = style_id,
+          username = username,
+          style_url = style_url,
+          access_token = access_token
+          )[["layers"]][["id"]]
       )
   }
 
@@ -792,8 +816,10 @@ static_mapbox <- function(location = NULL,
 #' @importFrom stringi stri_extract
 set_static_map_style <- function(style_url = NULL, username, style_id) {
   if (!is.null(style_url)) {
-    username <- stringi::stri_extract(style_url, regex = paste0("(?<=styles/).+(?=/)"))
-    style_id <- stringi::stri_extract(style_url, regex = paste0("(?<=", username, "/).+"))
+    username <- stringi::stri_extract(style_url,
+                                      regex = paste0("(?<=styles/).+(?=/)"))
+    style_id <- stringi::stri_extract(style_url,
+                                      regex = paste0("(?<=", username, "/).+"))
   }
 
   # Construct the request URL
@@ -812,7 +838,10 @@ set_static_map_style <- function(style_url = NULL, username, style_id) {
 #' @importFrom sf st_sf
 #' @importFrom utils URLencode
 #' @importFrom geojsonsf sf_geojson
-set_static_map_overlay <- function(base = NULL, overlay_sf = NULL, overlay_style = NULL, overlay_markers = NULL) {
+set_static_map_overlay <- function(base = NULL,
+                                   overlay_sf = NULL,
+                                   overlay_style = NULL,
+                                   overlay_markers = NULL) {
   overlay <- NULL
 
   if (!is.null(overlay_sf)) {
@@ -837,7 +866,8 @@ set_static_map_overlay <- function(base = NULL, overlay_sf = NULL, overlay_style
 
   if (!is.null(overlay_markers)) {
     if (attr(overlay_markers, "mapboxapi") != "marker_spec") {
-      stop("Overlay markers should be formatted with `prep_overlay_markers()` before using in a static map", call. = FALSE)
+      stop("Overlay markers should be formatted with `prep_overlay_markers()`
+           before using in a static map", call. = FALSE)
     }
 
     marker_spec <- overlay_markers %>%
@@ -882,22 +912,34 @@ set_overlay_style <-
 
     if ("stroke-opacity" %in% style_names) {
       overlay_sf$`stroke-opacity` <-
-        utils::URLencode(as.character(overlay_style$`stroke-opacity`), reserved = TRUE)
+        utils::URLencode(
+          as.character(overlay_style$`stroke-opacity`),
+          reserved = TRUE
+          )
     }
 
     if ("stroke_opacity" %in% style_names) {
       overlay_sf$`stroke-opacity` <-
-        utils::URLencode(as.character(overlay_style$stroke_opacity), reserved = TRUE)
+        utils::URLencode(
+          as.character(overlay_style$stroke_opacity),
+          reserved = TRUE
+          )
     }
 
     if ("stroke-width" %in% style_names) {
       overlay_sf$`stroke-width` <-
-        utils::URLencode(as.character(overlay_style$`stroke-width`), reserved = TRUE)
+        utils::URLencode(
+          as.character(overlay_style$`stroke-width`),
+          reserved = TRUE
+          )
     }
 
     if ("stroke_width" %in% style_names) {
       overlay_sf$`stroke-width` <-
-        utils::URLencode(as.character(overlay_style$stroke_width), reserved = TRUE)
+        utils::URLencode(
+          as.character(overlay_style$stroke_width),
+          reserved = TRUE
+          )
     }
 
     if ("fill" %in% style_names) {
@@ -911,12 +953,18 @@ set_overlay_style <-
 
     if ("fill_opacity" %in% style_names) {
       overlay_sf$`fill-opacity` <-
-        utils::URLencode(as.character(overlay_style$fill_opacity), reserved = TRUE)
+        utils::URLencode(
+          as.character(overlay_style$fill_opacity),
+          reserved = TRUE
+          )
     }
 
     if ("fill-opacity" %in% style_names) {
       overlay_sf$`fill-opacity` <-
-        utils::URLencode(as.character(overlay_style$`fill-opacity`), reserved = TRUE)
+        utils::URLencode(
+          as.character(overlay_style$`fill-opacity`),
+          reserved = TRUE
+          )
     }
 
     overlay_sf
@@ -925,12 +973,21 @@ set_overlay_style <-
 #' Add width/height to API query for static_mapbox
 #'
 #' @noRd
-set_static_map_dims <- function(base = NULL, bbox = NULL, width = NULL, height = NULL, scale = 0.5) {
-  if (all(is.null(c(width, height))) && !is.null(bbox)) {
-    asp <- as.numeric(abs(bbox$xmax - bbox$xmin) / abs(bbox$ymax - bbox$ymin))
-    max_size <- min(1280, round(1280 * scale))
-    width <- min(max_size, round(max_size * asp))
-    height <- min(max_size, round(max_size / asp))
+set_static_map_dims <- function(base = NULL,
+                                bbox = NULL,
+                                width = NULL,
+                                height = NULL,
+                                scale = 0.5) {
+  has_map_dims <- !all(is.null(c(width, height)))
+
+  if (!has_map_dims && !is.null(bbox)) {
+      asp <- as.numeric(abs(bbox$xmax - bbox$xmin) / abs(bbox$ymax - bbox$ymin))
+      max_size <- min(1280, round(1280 * scale))
+      width <- min(max_size, round(max_size * asp))
+      height <- min(max_size, round(max_size / asp))
+  } else if (has_map_dims) {
+    width <- round(width)
+    height <- round(height)
   }
 
   sprintf("%s/%sx%s", base, width, height)
@@ -946,11 +1003,11 @@ set_static_map_dims <- function(base = NULL, bbox = NULL, width = NULL, height =
 #' [{tmap}](https://r-tmap.github.io/tmap/) basemaps.
 #'
 #' This function uses a different approach [get_static_tiles()]. Instead,
-#' [layer_static_mapbox()] is based largely on \code{layer_mapbox()} in the snapbox package
+#' [layer_static_mapbox()] is based largely on [snapbox::layer_mapbox()] in the snapbox package
 #' (available under a [MIT
 #' license](https://github.com/anthonynorth/snapbox/blob/master/LICENSE). There
 #' are a few key differences between [layer_static_mapbox()] and
-#' \code{layer_mapbox()}. The "scale" parameter is equivalent to the
+#' [snapbox::layer_mapbox()]. The "scale" parameter is equivalent to the
 #' "scale_ratio" parameter for snapbox. Setting `scale_factor = "2x"` is
 #' equivalent to setting `retina = TRUE.` Both functions return basemaps that
 #' are no larger than a single tile (a maximum of 1280 by 1280 pixels).
@@ -1104,23 +1161,28 @@ request_to_raster <- function(request,
 #' @param data An input data frame with longitude and latitude columns (X and Y
 #'   or lon and lat as names are also acceptable) or an `sf` object with
 #'   geometry type POINT.
-#' @param marker_type The marker type; one of \code{"pin-s"}, for a small pin;
-#'   \code{"pin-l"}, for a large pin; and \code{"url"}, for an image path.
+#' @param marker_type The marker type; one of `"pin-s"`, for a small pin;
+#'   `"pin-l"`, for a large pin; and `"url"`, for an image path. If
+#'   marker_type is the same length as the rows in data, a mix of different
+#'   marker types are allowed.
 #' @param label The marker label (optional). Can be a letter, number (0 through
 #'   99), or a valid Maki icon (see <https://labs.mapbox.com/maki-icons/>)
 #'   for options).
-#' @param color The marker color (optional). Color should be specified as a
-#'   three or six-digit hexadecimal code without the number sign.
+#' @param color The marker color (optional). `color` can be specified as a color
+#'   name or as a three or six-digit hexadecimal code (with or without the
+#'   number sign).
 #' @param longitude A vector of longitudes; inferred from the input dataset if
-#'   \code{data} is provided.
+#'   `data` is provided.
 #' @param latitude A vector of latitudes; inferred from the input dataset if
-#'   \code{data} is provided.
-#' @param url The URL of the image to be used for the icon if \code{marker_type
-#'   = "url"}.
+#'   `data` is provided.
+#' @param url The URL of the image to be used for the icon if `marker_type =
+#'   "url"`.
 #' @name prep_overlay_markers
-#' @return A formatted list of marker specifications that can be passed to the [static_mapbox] function.
+#' @return A formatted list of marker specifications that can be passed to the
+#'   [static_mapbox] function.
 #' @export
-#' @importFrom sf st_geometry_type st_coordinates
+#' @importFrom sf st_geometry_type st_point_on_surface st_transform
+#'   st_coordinates
 #' @importFrom purrr map
 prep_overlay_markers <- function(data = NULL,
                                  marker_type = c("pin-s", "pin-l", "url"),
@@ -1132,12 +1194,12 @@ prep_overlay_markers <- function(data = NULL,
   if (!is.null(data)) {
     if (any(grepl("^sf", class(data)))) {
       if (sf::st_geometry_type(data, by_geometry = FALSE) != "POINT") {
-        stop("To make markers from `sf` objects you must use the geometry type POINT",
-          call. = FALSE
-        )
+        data <- suppressWarnings(sf::st_point_on_surface(data))
       }
+
       # Construct the marker data frame
       coords_df <- data %>%
+        sf::st_transform(4326) %>%
         sf::st_coordinates() %>%
         as.data.frame()
 
@@ -1151,21 +1213,26 @@ prep_overlay_markers <- function(data = NULL,
     if (all(c("lon", "lat") %in% names(coords_df))) {
       coords_df$longitude <- coords_df$lon
       coords_df$latitude <- coords_df$lat
-      # coords_df <- dplyr::rename(coords_df, longitude = lon, latitude = lat)
     } else if (all(c("x", "y") %in% names(coords_df))) {
       coords_df$longitude <- coords_df$x
       coords_df$latitude <- coords_df$y
-      # coords_df <- dplyr::rename(coords_df, longitude = x, latitude = y)
     }
 
     if (!all(c("longitude", "latitude") %in% names(coords_df))) {
-      stop("Your input dataset must have longitude/latitude information denoted by columns x and y, lon and lat, or longitude and latitude.", call. = FALSE)
+      stop("Your input dataset must have longitude/latitude information denoted
+           by columns x and y, lon and lat, or longitude and latitude.",
+        call. = FALSE
+      )
     }
 
     if ("marker_type" %in% names(coords_df)) {
       marker_type <- coords_df$marker_type
     } else {
-      marker_type <- match.arg(marker_type)
+      marker_type <-
+        match.arg(
+          marker_type, c("pin-s", "pin-l", "url"),
+          several.ok = length(marker_type) == nrow(coords_df)
+        )
       coords_df$marker_type <- marker_type
     }
 
@@ -1185,6 +1252,14 @@ prep_overlay_markers <- function(data = NULL,
       }
     }
 
+    if (!all(is.null(coords_df$color))) {
+      if (!is_hex(coords_df$color)) {
+        coords_df$color <- col2hex(coords_df$color, TRUE)
+      } else {
+        coords_df$color <- rmv_hash(oords_df$color)
+      }
+    }
+
     if ("url" %in% names(coords_df)) {
       url <- coords_df$url
     } else {
@@ -1193,6 +1268,14 @@ prep_overlay_markers <- function(data = NULL,
       }
     }
   } else {
+    if (!is.null(color)) {
+      if (!is_hex(color)) {
+        color <- col2hex(color, TRUE)
+      } else {
+        color <- rmv_hash(color)
+      }
+    }
+
     coords_df <-
       data.frame(
         longitude = longitude,
@@ -1213,7 +1296,6 @@ prep_overlay_markers <- function(data = NULL,
 
   marker_list
 }
-
 
 #' Format marker using marker_spec based on n row of a coordinate data frame
 #'
@@ -1376,17 +1458,17 @@ addMapboxTiles <- function(map,
 #'
 #' @param location An input location for which you would like to request tiles.
 #'                 Can be a length-4 vector representing a bounding box, or an `sf` object.
-#'                 If an input `sf` object is supplied, use the \code{buffer_dist} argument to
+#'                 If an input `sf` object is supplied, use the `buffer_dist` argument to
 #'                 control how much area you want to capture around the layer.
 #'                 While the input `sf` object can be in an arbitrary coordinate reference system,
 #'                 if a length-4 bounding box vector is supplied instead it must represent
 #'                 WGS84 longitude/latitude coordinates and be in the order
-#'                 \code{c(xmin, ymin, xmax, ymax)}.
+#'                 `c(xmin, ymin, xmax, ymax)`.
 #' @param zoom The zoom level for which you'd like to return tiles.
 #' @param style_id A Mapbox style ID; retrieve yours from your Mapbox account.
 #' @param username A Mapbox username.
 #' @param style_url A Mapbox style URL.
-#' @param scaling_factor The scaling factor to use; one of \code{"1x"} or \code{"2x"}.
+#' @param scaling_factor The scaling factor to use; one of `"1x"` or `"2x"`.
 #' @param buffer_dist The distance to buffer around an input `sf` object for determining tile extent, specified in units. Defaults to 5000.
 #' @param units Units of `buffer_dist`; defaults to "m" (meters). If buffer_dist
 #'   is a units class object, the units argument is ignored.

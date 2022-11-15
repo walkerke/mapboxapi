@@ -11,9 +11,12 @@ test_that("helpers work", {
   expect_true(is_sfc(nc$geometry))
   expect_true(is_sf(nc))
 
-  expect_equal(as_dist_units(1000, to = "km"), as_dist_units(1, from = "km", to = NULL))
+  expect_equal(as_dist_units(1000, to = "km"),
+               as_dist_units(1, from = "km", to = NULL))
 
   expect_true(is_hex("#ffffff"))
   hex_red <- col2hex("red")
   expect_true(is_hex(hex_red))
+  expect_identical(rmv_hash(hex_red), "FF0000")
+  expect_identical(col2hex("red", TRUE), "FF0000")
 })

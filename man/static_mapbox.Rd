@@ -113,7 +113,8 @@ layer ids for a map style with \code{get_style(style_id = style_id, username = u
 \item{image}{If \code{FALSE}, return the a \link[httr:response]{httr::response} object from
 \link[httr:GET]{httr::GET} using the static image URL; defaults to \code{TRUE}.}
 
-\item{strip}{If \code{TRUE}, drop image comments and metadata when \code{image = TRUE}; defaults to \code{TRUE}.}
+\item{strip}{If \code{TRUE}, drop image comments and metadata when \code{image = TRUE};
+defaults to \code{TRUE}.}
 }
 \value{
 A pointer to an image of class \code{"magick-image"} if \code{image = TRUE}.
