@@ -199,14 +199,15 @@ mb_matrix <- function(origins,
           purrr::reduce(cbind)
         return(matrix_output)
       }
-    }
+    } else if ((origin_size > coord_limit && dest_size > coord_limit) || (origin_size > coord_limit && is.null(destinations))) {
     # Scenario 3: Both origins _and_ destinations exceed limit
     # Can be when destinations are specified, or left blank with origins as many-to-many
     # Idea: split the destinations into chunks. Then, the origin walks through the first chunk,
     # then the second, then the third, etc. until the full matrix is assembled.
     # This will take a bit of work
-  } else if ((origin_size > coord_limit && dest_size > coord_limit) || (origin_size > coord_limit && is.null(destinations))) {
-    stop("Your matrix request is too large. Please split up your request into smaller pieces; we plan to support this size in a future release.")
+      stop("Your matrix request is too large. Please split up your request into smaller pieces; we plan to support this size in a future release.")
+    }
+
   }
 
   # Specify fallback speeds based on travel profile, if fallback speed is not provided
