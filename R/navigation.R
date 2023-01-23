@@ -9,7 +9,7 @@
 #' @param output one of \code{"duration"} (the default), which will be measured in either minutes or seconds (depending on the value of \code{duration_output}), or \code{"distance"}, which will be returned in meters.
 #' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
 #' @param access_token A Mapbox access token (required)
-#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}.
+#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2023-03-31T09:00"}. The time must be set to the current time or in the future.
 #'
 #' @return An R matrix of source-destination travel times.
 #'
@@ -130,7 +130,7 @@ mb_matrix <- function(origins,
                 depart_at = depart_at
               )
             )
-          }) %>%
+          }, .progress = TRUE) %>%
           purrr::reduce(rbind)
         return(matrix_output)
       } else {
@@ -148,7 +148,7 @@ mb_matrix <- function(origins,
               duration_output = duration_output,
               depart_at = depart_at
             )
-          }) %>%
+          }, .progress = TRUE) %>%
           purrr::reduce(rbind)
         return(matrix_output)
       }
@@ -177,7 +177,7 @@ mb_matrix <- function(origins,
                 depart_at = depart_at
               )
             )
-          }) %>%
+          }, .progress = TRUE) %>%
           purrr::reduce(cbind)
         return(matrix_output)
       } else {
@@ -195,7 +195,7 @@ mb_matrix <- function(origins,
               duration_output = duration_output,
               depart_at = depart_at
             )
-          }) %>%
+          }, .progress = TRUE) %>%
           purrr::reduce(cbind)
         return(matrix_output)
       }
@@ -453,6 +453,10 @@ mb_isochrone <- function(location,
                          id_column = NULL) {
   access_token <- get_mb_access_token(access_token)
 
+  if (!is.null(depart_at)) {
+    warning("The `depart_at` parameter is no longer supported for `mb_isochrone()`; returning isochrones under typical traffic conditions.")
+  }
+
   # If distance is supplied, time should be set to NULL
   if (!is.null(distance)) {
     time <- NULL
@@ -517,7 +521,7 @@ mb_isochrone <- function(location,
         output = "sf"
       ) %>%
         dplyr::mutate(id = .y)
-    }) %>%
+    }, .progress = TRUE) %>%
       dplyr::bind_rows()
   }
 
@@ -657,7 +661,7 @@ mb_isochrone <- function(location,
           output = "sf",
           keep_color_cols = keep_color_cols
         )
-      }) %>%
+      }, .progress = TRUE) %>%
         dplyr::bind_rows() %>%
         # data.table::rbindlist() %>%
         # st_as_sf(crs = 4326) %>%
@@ -710,7 +714,7 @@ mb_isochrone <- function(location,
           output = "sf",
           keep_color_cols = keep_color_cols
         )
-      }) %>%
+      }, .progress = TRUE) %>%
         dplyr::bind_rows() %>%
         # data.table::rbindlist() %>%
         # st_as_sf(crs = 4326) %>%
