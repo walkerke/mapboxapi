@@ -32,7 +32,7 @@ leaflet() %>%
 
 In some cases, you may be more interested in a static map rather than an interactive one.  Static maps can be created with __mapboxapi__ in two ways.  Static maps can be generated directly in __mapboxapi__ with the `static_mapbox()` function.  This function accepts sf polygon/linestring (of limited size) or marker overlays.  
 
-```{r}
+```{r, eval = FALSE}
 points_of_interest <- tibble::tibble(
   longitude = c(-73.99405, -74.00616, -73.99577, -74.00761),
   latitude = c(40.72033, 40.72182, 40.71590, 40.71428)
@@ -55,6 +55,11 @@ map <- static_mapbox(
 
 map
 ```
+
+```{r, echo = FALSE}
+knitr::include_graphics("img/static1.png")
+```
+
 
 The output is an object from the [magick](https://github.com/ropensci/magick) R package that can be further customized with __magick__ functions.  
 
