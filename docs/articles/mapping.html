@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -49,7 +49,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -90,7 +90,7 @@
 
       
 
-      </header><script src="mapping_files/htmlwidgets-1.5.4/htmlwidgets.js"></script><link href="mapping_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+      </header><script src="mapping_files/htmlwidgets-1.6.1/htmlwidgets.js"></script><link href="mapping_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
 <script src="mapping_files/leaflet-1.3.1/leaflet.js"></script><link href="mapping_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
 <script src="mapping_files/proj4-2.6.2/proj4.min.js"></script><script src="mapping_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="mapping_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
 <script src="mapping_files/leaflet-binding-2.1.1/leaflet.js"></script><div class="row">
@@ -133,8 +133,8 @@ of this style in an R Leaflet project.</p>
   <span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-methods.html" class="external-link">setView</a></span><span class="op">(</span>lng <span class="op">=</span> <span class="op">-</span><span class="fl">74.0051</span>,
           lat <span class="op">=</span> <span class="fl">40.7251</span>,
           zoom <span class="op">=</span> <span class="fl">13</span><span class="op">)</span></code></pre></div>
-<div id="htmlwidget-87da19d7e3d12bfb5d65" style="width:700px;height:432.632880098888px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-87da19d7e3d12bfb5d65">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://api.mapbox.com/styles/v1/kwalkertcu/ckb83x2ur02oa1hpiq9zdt1i2/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3dhbGtlcnRjdSIsImEiOiJMRk9JSmRvIn0.l1y2jHZ6IARHM_rA1-X45A",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://www.mapbox.com/about/maps/\">Mapbox<\/a> &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap<\/a> <strong><a href=\"https://www.mapbox.com/map-feedback/\" target=\"_blank\">Improve this map<\/a><\/strong>"}]}],"setView":[[40.7251,-74.0051],13,[]]},"evals":[],"jsHooks":[]}</script><p>In some cases, you may be more interested in a static map rather than
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-b2a61c302db34507f31f" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-b2a61c302db34507f31f">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://api.mapbox.com/styles/v1/kwalkertcu/ckb83x2ur02oa1hpiq9zdt1i2/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3dhbGtlcnRjdSIsImEiOiJMRk9JSmRvIn0.l1y2jHZ6IARHM_rA1-X45A",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://www.mapbox.com/about/maps/\">Mapbox<\/a> &copy; <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap<\/a> <strong><a href=\"https://www.mapbox.com/map-feedback/\" target=\"_blank\">Improve this map<\/a><\/strong>"}]}],"setView":[[40.7251,-74.0051],13,[]]},"evals":[],"jsHooks":[]}</script><p>In some cases, you may be more interested in a static map rather than
 an interactive one. Static maps can be created with
 <strong>mapboxapi</strong> in two ways. Static maps can be generated
 directly in <strong>mapboxapi</strong> with the
@@ -150,7 +150,7 @@ polygon/linestring (of limited size) or marker overlays.</p>
   data <span class="op">=</span> <span class="va">points_of_interest</span>,
   marker_type <span class="op">=</span> <span class="st">"pin-l"</span>,
   label <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,
-  color <span class="op">=</span> <span class="st">"fff"</span>
+  color <span class="op">=</span> <span class="st">"#fff"</span>
 <span class="op">)</span>
 
 <span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/static_mapbox.html">static_mapbox</a></span><span class="op">(</span>
@@ -162,7 +162,7 @@ polygon/linestring (of limited size) or marker overlays.</p>
 <span class="op">)</span>
 
 <span class="va">map</span></code></pre></div>
-<p><img src="mapping_files/figure-html/unnamed-chunk-2-1.png" width="600"></p>
+<p><img src="img/static1.png" width="600"></p>
 <p>The output is an object from the <a href="https://github.com/ropensci/magick" class="external-link">magick</a> R package that can
 be further customized with <strong>magick</strong> functions.</p>
 <p>Alternatively, users might be interested in retrieving static tiles
@@ -199,7 +199,7 @@ data obtained with tidycensus.</p>
               title <span class="op">=</span> <span class="st">"Median household income\n2015-2019 ACS"</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>legend.outside <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_credits.html" class="external-link">tm_credits</a></span><span class="op">(</span><span class="st">"Basemap © Mapbox, © OpenStreetMap"</span>, position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RIGHT"</span>, <span class="st">"BOTTOM"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="mapping_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="mapping_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="reading-vector-tile-data-into-r">Reading vector tile data into R<a class="anchor" aria-label="anchor" href="#reading-vector-tile-data-into-r"></a>
@@ -236,7 +236,7 @@ be mapped with R tools:</p>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">vector_extract</span><span class="op">$</span><span class="va">building</span><span class="op">$</span><span class="va">polygons</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p><img src="mapping_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p><img src="mapping_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
   </div>
 
@@ -257,7 +257,7 @@ be mapped with R tools:</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

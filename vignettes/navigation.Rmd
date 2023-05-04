@@ -39,7 +39,7 @@ my_route$instruction
 ```
 Optimized routes along multiple coordinates are available with the `mb_optimized_route()` function:  
 
-```{r, fig.width = 8}
+```{r, eval = FALSE, fig.width = 8}
 library(sf)
 
 to_visit <- data.frame(
@@ -70,6 +70,11 @@ optimized_map <- static_mapbox(
 
 optimized_map
 ```
+
+```{r, echo = FALSE}
+knitr::include_graphics("img/static2.png")
+```
+
 
 ## Isochrones and travel-time matrices
 

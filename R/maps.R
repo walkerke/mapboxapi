@@ -1191,6 +1191,9 @@ prep_overlay_markers <- function(data = NULL,
                                  longitude = NULL,
                                  latitude = NULL,
                                  url = NA) {
+
+
+
   if (!is.null(data)) {
     if (any(grepl("^sf", class(data)))) {
       if (sf::st_geometry_type(data, by_geometry = FALSE) != "POINT") {
@@ -1256,7 +1259,7 @@ prep_overlay_markers <- function(data = NULL,
       if (!is_hex(coords_df$color)) {
         coords_df$color <- col2hex(coords_df$color, TRUE)
       } else {
-        coords_df$color <- rmv_hash(oords_df$color)
+        coords_df$color <- rmv_hash(coords_df$color)
       }
     }
 

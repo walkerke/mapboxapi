@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -32,7 +32,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -85,7 +85,8 @@
   fallback_speed <span class="op">=</span> <span class="cn">NULL</span>,
   output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"duration"</span>, <span class="st">"distance"</span><span class="op">)</span>,
   duration_output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"minutes"</span>, <span class="st">"seconds"</span><span class="op">)</span>,
-  access_token <span class="op">=</span> <span class="cn">NULL</span>
+  access_token <span class="op">=</span> <span class="cn">NULL</span>,
+  depart_at <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -119,6 +120,10 @@ For sf linestrings or polygons, the distance between centroids will be taken.</p
 
 <dt>access_token</dt>
 <dd><p>A Mapbox access token (required)</p></dd>
+
+
+<dt>depart_at</dt>
+<dd><p>(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. <code>"2023-03-31T09:00"</code>. The time must be set to the current time or in the future.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -166,7 +171,7 @@ For sf linestrings or polygons, the distance between centroids will be taken.</p
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

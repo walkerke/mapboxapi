@@ -21,7 +21,7 @@ simplestyle-spec
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -36,7 +36,7 @@ simplestyle-spec
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -107,7 +107,9 @@ geometry type POINT.</p></dd>
 
 <dt>marker_type</dt>
 <dd><p>The marker type; one of <code>"pin-s"</code>, for a small pin;
-<code>"pin-l"</code>, for a large pin; and <code>"url"</code>, for an image path.</p></dd>
+<code>"pin-l"</code>, for a large pin; and <code>"url"</code>, for an image path. If
+marker_type is the same length as the rows in data, a mix of different
+marker types are allowed.</p></dd>
 
 
 <dt>label</dt>
@@ -117,8 +119,9 @@ for options).</p></dd>
 
 
 <dt>color</dt>
-<dd><p>The marker color (optional). Color should be specified as a
-three or six-digit hexadecimal code without the number sign.</p></dd>
+<dd><p>The marker color (optional). <code>color</code> can be specified as a color
+name or as a three or six-digit hexadecimal code (with or without the
+number sign).</p></dd>
 
 
 <dt>longitude</dt>
@@ -132,15 +135,15 @@ three or six-digit hexadecimal code without the number sign.</p></dd>
 
 
 <dt>url</dt>
-<dd><p>The URL of the image to be used for the icon if <code>marker_type
-= "url"</code>.</p></dd>
+<dd><p>The URL of the image to be used for the icon if <code>marker_type = "url"</code>.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>A formatted list of marker specifications that can be passed to the <a href="static_mapbox.html">static_mapbox</a> function.</p>
+<p>A formatted list of marker specifications that can be passed to the
+<a href="static_mapbox.html">static_mapbox</a> function.</p>
     </div>
 
   </div>
@@ -155,7 +158,7 @@ three or six-digit hexadecimal code without the number sign.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

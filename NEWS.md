@@ -1,3 +1,9 @@
+# mapboxapi 0.5.1
+
+* Support for more complex travel-time matrices
+* Various bug fixes and performance improvements
+
+
 # mapboxapi 0.5
 
 * Support for the [Mapbox Tiling Service API](https://docs.mapbox.com/api/maps/mapbox-tiling-service/), allowing for the publication and maintenance of vector tileset pipelines from R.
