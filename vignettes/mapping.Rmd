@@ -42,7 +42,7 @@ prepped_pois <- prep_overlay_markers(
   data = points_of_interest,
   marker_type = "pin-l",
   label = 1:4,
-  color = "fff"
+  color = "#fff"
 )
 
 map <- static_mapbox(

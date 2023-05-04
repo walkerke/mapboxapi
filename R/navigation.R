@@ -204,10 +204,47 @@ mb_matrix <- function(origins,
     # Can be when destinations are specified, or left blank with origins as many-to-many
     # Idea: split the destinations into chunks. Then, the origin walks through the first chunk,
     # then the second, then the third, etc. until the full matrix is assembled.
-    # This will take a bit of work
-      stop("Your matrix request is too large. Please split up your request into smaller pieces; we plan to support this size in a future release.")
+    # The function will need to call itself to get this to work, so let's try it.
+      if (any(grepl("^sf", class(destinations)))) {
+        matrix_output <- destinations %>%
+          dplyr::mutate(ix = dplyr::ntile(n = coord_limit - 1)) %>%
+          split(~ix) %>%
+          purrr::map(., ~ {
+            suppressMessages(
+              mb_matrix(
+                origins = origins,
+                destinations = .x,
+                profile = profile,
+                fallback_speed = fallback_speed,
+                access_token = access_token,
+                output = output,
+                duration_output = duration_output,
+                depart_at = depart_at
+              )
+            )
+          }, .progress = TRUE) %>%
+          purrr::reduce(cbind)
+        return(matrix_output)
+      } else {
+        ix <- c(0, rep(1:(length(destinations) - 1) %/% coord_limit - 1))
+        matrix_output <- destinations %>%
+          split(ix) %>%
+          purrr::map(., ~ {
+            mb_matrix(
+              origins = origins,
+              destinations = .x,
+              profile = profile,
+              fallback_speed = fallback_speed,
+              access_token = access_token,
+              output = output,
+              duration_output = duration_output,
+              depart_at = depart_at
+            )
+          }, .progress = TRUE) %>%
+          purrr::reduce(cbind)
+        return(matrix_output)
+      }
     }
-
   }
 
   # Specify fallback speeds based on travel profile, if fallback speed is not provided
@@ -384,9 +421,6 @@ mb_matrix <- function(origins,
     }
 
   }
-
-
-
 
 }
 
