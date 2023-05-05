@@ -10,6 +10,7 @@
 #' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
 #' @param access_token A Mapbox access token (required)
 #' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2023-03-31T09:00"}. The time must be set to the current time or in the future.
+#' @param allow_large_matrix \code{mb_matrix()} will prevent the user from calculating large travel-time matrices (greater than 25x25) by default, as they may lead to unexpected charges.  If the user sets this argument to \code{TRUE}, \code{mb_matrix()} will bypass this error and calculate the large matrix for the user.  Defaults to \code{FALSE}.
 #'
 #' @return An R matrix of source-destination travel times.
 #'
@@ -43,7 +44,8 @@ mb_matrix <- function(origins,
                       output = c("duration", "distance"),
                       duration_output = c("minutes", "seconds"),
                       access_token = NULL,
-                      depart_at = NULL)
+                      depart_at = NULL,
+                      allow_large_matrix = FALSE)
                       {
 
   access_token <- get_mb_access_token(access_token)
@@ -205,12 +207,38 @@ mb_matrix <- function(origins,
     # Idea: split the destinations into chunks. Then, the origin walks through the first chunk,
     # then the second, then the third, etc. until the full matrix is assembled.
     # The function will need to call itself to get this to work, so let's try it.
-      if (any(grepl("^sf", class(destinations)))) {
-        matrix_output <- destinations %>%
-          dplyr::mutate(ix = dplyr::ntile(n = coord_limit - 1)) %>%
-          split(~ix) %>%
-          purrr::map(., ~ {
-            suppressMessages(
+
+      if (!allow_large_matrix) {
+        rlang::abort(message = c("You have requested a large travel-time matrix which may incur charges to your Mapbox account.",
+                                 "i" = "To calculate this matrix, re-run `mb_matrix()` with the argument\n`allow_large_matrix = TRUE`.",
+                                 "i" = "The limit for Mapbox's free tier is 100,000 matrix elements per month,\n equivalent to one 316x316 travel-time matrix.",
+                                 "i" = "Please visit https://www.mapbox.com/pricing for more information."))
+      } else {
+        if (any(grepl("^sf", class(destinations)))) {
+          matrix_output <- destinations %>%
+            dplyr::mutate(ix = dplyr::ntile(n = coord_limit - 1)) %>%
+            split(~ix) %>%
+            purrr::map(., ~ {
+              suppressMessages(
+                mb_matrix(
+                  origins = origins,
+                  destinations = .x,
+                  profile = profile,
+                  fallback_speed = fallback_speed,
+                  access_token = access_token,
+                  output = output,
+                  duration_output = duration_output,
+                  depart_at = depart_at
+                )
+              )
+            }, .progress = TRUE) %>%
+            purrr::reduce(cbind)
+          return(matrix_output)
+        } else {
+          ix <- c(0, rep(1:(length(destinations) - 1) %/% coord_limit - 1))
+          matrix_output <- destinations %>%
+            split(ix) %>%
+            purrr::map(., ~ {
               mb_matrix(
                 origins = origins,
                 destinations = .x,
@@ -221,28 +249,10 @@ mb_matrix <- function(origins,
                 duration_output = duration_output,
                 depart_at = depart_at
               )
-            )
-          }, .progress = TRUE) %>%
-          purrr::reduce(cbind)
-        return(matrix_output)
-      } else {
-        ix <- c(0, rep(1:(length(destinations) - 1) %/% coord_limit - 1))
-        matrix_output <- destinations %>%
-          split(ix) %>%
-          purrr::map(., ~ {
-            mb_matrix(
-              origins = origins,
-              destinations = .x,
-              profile = profile,
-              fallback_speed = fallback_speed,
-              access_token = access_token,
-              output = output,
-              duration_output = duration_output,
-              depart_at = depart_at
-            )
-          }, .progress = TRUE) %>%
-          purrr::reduce(cbind)
-        return(matrix_output)
+            }, .progress = TRUE) %>%
+            purrr::reduce(cbind)
+          return(matrix_output)
+        }
       }
     }
   }

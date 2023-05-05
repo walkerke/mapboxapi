@@ -12,7 +12,8 @@ mb_matrix(
   output = c("duration", "distance"),
   duration_output = c("minutes", "seconds"),
   access_token = NULL,
-  depart_at = NULL
+  depart_at = NULL,
+  allow_large_matrix = FALSE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ For sf linestrings or polygons, the distance between centroids will be taken.}
 \item{access_token}{A Mapbox access token (required)}
 
 \item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2023-03-31T09:00"}. The time must be set to the current time or in the future.}
+
+\item{allow_large_matrix}{\code{mb_matrix()} will prevent the user from calculating large travel-time matrices (greater than 25x25) by default, as they may lead to unexpected charges.  If the user sets this argument to \code{TRUE}, \code{mb_matrix()} will bypass this error and calculate the large matrix for the user.  Defaults to \code{FALSE}.}
 }
 \value{
 An R matrix of source-destination travel times.
