@@ -22,7 +22,7 @@ location_to_bbox <- function(location, buffer_dist = 1000, units = "m", crs = 43
     return(location)
   }
 
-  if ("RasterLayer" %in% class(location)) {
+  if (inherits(location, "RasterLayer")) {
     location <- sf::st_bbox(location)
   }
 
@@ -31,16 +31,12 @@ location_to_bbox <- function(location, buffer_dist = 1000, units = "m", crs = 43
     input <- sf::st_as_sf(location)
   }
 
-  if (is_sfc(location)) {
-    location <- sf::st_sf(location)
-  }
-
   if (is_bbox(location)) {
-    location <- sf::st_as_sf(sf::st_as_sfc(location))
+    location <- sf::st_as_sfc(location)
   }
 
   # If location is an `sf` object, get a buffered bbox to query the tiles
-  if (is_sf(location)) {
+  if (is_sf_or_sfc(location)) {
 
     # If the input dataset is not a polygon, make it one
     geom_type <- unique(sf::st_geometry_type(location))
@@ -50,10 +46,10 @@ location_to_bbox <- function(location, buffer_dist = 1000, units = "m", crs = 43
     if (geom_type %in% c("POINT", "MULTIPOINT")) {
       # If it is one or two points, buffer it
       if (nrow(location) <= 2) {
-        if (is.null(buffer_dist) | (buffer_dist == 0)) {
-          sf_poly <- sf::st_buffer(location, as_dist_units(1, units))
+        if (is.null(buffer_dist) || (buffer_dist == 0)) {
+          location <- sf::st_buffer(location, as_dist_units(1, units))
         } else {
-          sf_poly <- sf::st_buffer(location, as_dist_units(buffer_dist, units))
+          location <- sf::st_buffer(location, as_dist_units(buffer_dist, units))
           buffer_dist <- 0
         }
       }
@@ -96,6 +92,33 @@ location_to_bbox <- function(location, buffer_dist = 1000, units = "m", crs = 43
   )
 }
 
+#' @noRd
+#' @importFrom terra rast ext
+location_to_extent <- function(location,
+                               buffer_dist = NULL,
+                               units = "m",
+                               ...,
+                               crs = "EPSG:3857") {
+  bbox <-
+    location_to_bbox(
+      location = location,
+      buffer_dist = buffer_dist,
+      units = units,
+      crs = crs
+    )
+
+  ras_ext <-
+    terra::rast(
+      xmin = bbox[["xmin"]],
+      xmax = bbox[["xmax"]],
+      ymin = bbox[["ymin"]],
+      ymax = bbox[["ymax"]],
+      crs = "EPSG:3857"
+    )
+
+  terra::ext(ras_ext)
+}
+
 #' Convert bbox to centroid coordinates
 #'
 #' @rdname bbox_to_center
@@ -105,40 +128,37 @@ bbox_to_center <- function(bbox, crs = 4326) {
   location <-
     sf::st_transform(sf::st_sf(sf::st_as_sfc(bbox)), crs)
 
-  center <-
-    sf::st_coordinates(
-      suppressWarnings(sf::st_centroid(location))
-    )
-
-  return(center)
+  sf::st_coordinates(
+    suppressWarnings(sf::st_centroid(location))
+  )
 }
 
 #' Is this a units class object?
 #'
 #' @noRd
 is_units <- function(x) {
-  any("units" %in% class(x))
+  inherits(x, "units")
 }
 
 #' Is this a bbox class object?
 #'
 #' @noRd
 is_bbox <- function(x) {
-  any("bbox" %in% class(x))
+  inherits(x, "bbox")
 }
 
 #' Is this a sfc class object?
 #'
 #' @noRd
 is_sfc <- function(x) {
-  any(grepl("sfc", class(x)))
+  inherits(x, "sfc")
 }
 
 #' Is this a sf or sfc class object?
 #'
 #' @noRd
-is_sf <- function(x) {
-  any(grepl("^sf", class(x)))
+is_sf_or_sfc <- function(x) {
+  inherits(x, c("sf", "sfc"))
 }
 
 #' Convert numeric vector to distance units objects or convert units for distance
@@ -151,9 +171,11 @@ is_sf <- function(x) {
 #' @return units class object from [units::set_units()]
 #' @noRd
 #' @importFrom units as_units
-as_dist_units <- function(x,
+as_dist_units <- function(x = NULL,
                           from = "m",
                           to = "m") {
+  x <- x %||% 0
+
   stopifnot(
     "`buffer_dist` must be a numeric or units class object." = (is.numeric(x) || is_units(x))
   )

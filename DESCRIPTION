@@ -39,7 +39,8 @@ Imports:
     units,
     raster,
     png,
-    jpeg
+    jpeg,
+    terra
 Suggests:
     ggspatial,
     grDevices,

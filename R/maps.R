@@ -1131,23 +1131,23 @@ tm_static_mapbox <- function(location = NULL,
 #'
 #' @noRd
 #' @importFrom sf st_crs
-#' @importFrom raster brick extent projection
+#' @importFrom terra rast
 #' @importFrom httr content
 request_to_raster <- function(request,
                               location = NULL,
                               buffer_dist = NULL,
                               units = "m") {
-  ras <- raster::brick(httr::content(request))
 
-  merc_bbox <- location_to_bbox(location, buffer_dist, units, crs = 3857)
-
-  merc_proj <- sf::st_crs(3857)$proj4string
-
-  raster::extent(ras) <- merc_bbox
-
-  suppressWarnings(raster::projection(ras) <- merc_proj)
-
-  ras
+  terra::rast(
+    httr::content(request),
+    extent = location_to_extent(
+      location,
+      buffer_dist = buffer_dist,
+      units = units,
+      crs = "EPSG:3857"
+      ),
+    crs = "EPSG:3857"
+  )
 }
 
 #' Prepare overlay markers for use in a Mapbox static map
