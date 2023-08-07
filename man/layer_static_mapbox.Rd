@@ -126,16 +126,16 @@ These functions wrap \code{\link[=static_mapbox]{static_mapbox()}} and \code{\li
 }
 \details{
 This function uses a different approach \code{\link[=get_static_tiles]{get_static_tiles()}}. Instead,
-\code{\link[=layer_static_mapbox]{layer_static_mapbox()}} is based largely on \code{\link[snapbox:layer_mapbox]{snapbox::layer_mapbox()}} in the snapbox package
-(available under a \href{https://github.com/anthonynorth/snapbox/blob/master/LICENSE}{MIT license}. There
+\code{\link[=layer_static_mapbox]{layer_static_mapbox()}} is based largely on \code{\link[snapbox:layer_mapbox]{snapbox::layer_mapbox()}} in the
+snapbox package (available under a \href{https://github.com/anthonynorth/snapbox/blob/master/LICENSE}{MIT license}. There
 are a few key differences between \code{\link[=layer_static_mapbox]{layer_static_mapbox()}} and
 \code{\link[snapbox:layer_mapbox]{snapbox::layer_mapbox()}}. The "scale" parameter is equivalent to the
 "scale_ratio" parameter for snapbox. Setting \code{scale_factor = "2x"} is
 equivalent to setting \code{retina = TRUE.} Both functions return basemaps that
 are no larger than a single tile (a maximum of 1280 by 1280 pixels).
 
-For \code{\link[=tm_static_mapbox]{tm_static_mapbox()}}, \link[tmap:tm_shape]{tmap::tm_shape} is called with \code{projection = 3857} and
-\link[tmap:tm_raster]{tmap::tm_rgb} is called with \code{max.value = 1}.
+For \code{\link[=tm_static_mapbox]{tm_static_mapbox()}}, \link[tmap:tm_shape]{tmap::tm_shape} is called with \code{projection = 3857}
+and \link[tmap:tm_raster]{tmap::tm_rgb} is called with \code{max.value = 1}.
 }
 \author{
 Eli Pousson, \email{eli.pousson@gmail.com}

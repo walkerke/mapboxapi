@@ -319,12 +319,12 @@ mb_directions <- function(input_data = NULL,
   )
 
   if (request$status_code != 200) {
-    pull <- jsonlite::fromJSON(content)
+    pull <- RcppSimdJson::fparse(content)
     stop(pull$message, call. = FALSE)
   }
 
   content <- httr::content(request, as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (output == "sf") {
     if (steps == "true") {
@@ -545,12 +545,12 @@ mb_optimized_route <- function(input_data,
 
 
   if (request$status_code != 200) {
-    pull <- jsonlite::fromJSON(content)
+    pull <- RcppSimdJson::fparse(content)
     stop(pull$message, call. = FALSE)
   }
 
   content <- httr::content(request, as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (output == "sf") {
     if (steps == "true") {
@@ -571,6 +571,7 @@ mb_optimized_route <- function(input_data,
       }) %>%
         dplyr::bind_rows()
 
+      check_installed("tidyr")
       waypoints <- content$waypoints %>%
         tidyr::unnest_wider(location, names_sep = "_") %>%
         sf::st_as_sf(coords = c("location_1", "location_2"), crs = 4326) %>%

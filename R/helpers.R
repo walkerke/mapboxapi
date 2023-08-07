@@ -107,8 +107,7 @@ location_to_extent <- function(location,
       crs = crs
     )
 
-  ras_ext <-
-    terra::rast(
+  ras_ext <- terra::rast(
       xmin = bbox[["xmin"]],
       xmax = bbox[["xmax"]],
       ymin = bbox[["ymin"]],
@@ -228,7 +227,7 @@ rmv_hash <- function(x) {
 #' @noRd
 col2hex <- function(color, num = FALSE) {
   if (!rlang::is_installed("grDevices") && rlang::is_interactive()) {
-    rlang::check_installed("grDevices")
+    check_installed("grDevices")
   }
 
   color <- grDevices::rgb(t(grDevices::col2rgb(color)), maxColorValue = 255)

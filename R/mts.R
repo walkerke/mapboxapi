@@ -54,7 +54,7 @@ mts_create_source <- function(data, tileset_id, username,
   # Capture the response from req and give back
   response <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (request$status_code != "200") {
     stop(sprintf("Attempt failed: your error message is %s", response),
@@ -106,7 +106,7 @@ mts_list_sources <- function(username,
 
   response <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (request$status_code != "200") {
     stop(sprintf("Request failed: your error message is %s", response),
@@ -302,7 +302,7 @@ mts_validate_recipe <- function(recipe,
 
   response <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (request$status_code != "200") {
     stop(sprintf("Request failed; the response from the API is %s", response))
@@ -363,7 +363,7 @@ mts_create_tileset <- function(tileset_name,
 
   response <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (request$status_code != "200") {
     stop(sprintf("Tileset creation failed: your error message is %s", response),
@@ -408,7 +408,7 @@ mts_publish_tileset <- function(tileset_name,
 
   response <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (request$status_code != "200") {
     stop(sprintf("Request failed: your error message is %s", response),
@@ -470,7 +470,7 @@ mts_list_tilesets <- function(username,
 
   response <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (request$status_code != "200") {
     stop(sprintf("Request failed: your error message is %s", response),
@@ -512,7 +512,7 @@ mts_get_recipe <- function(tileset_name,
 
   response <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON()
+    RcppSimdJson::fparse()
 
   if (request$status_code != "200") {
     stop(sprintf("Request failed: your error message is %s", response),
@@ -559,7 +559,7 @@ mts_update_recipe <- function(tileset_name,
 
     response <- request %>%
       httr::content(as = "text") %>%
-      jsonlite::fromJSON()
+      RcppSimdJson::fparse()
 
 
     stop(sprintf("Tileset creation failed: your error message is %s", response),

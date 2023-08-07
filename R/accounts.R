@@ -190,7 +190,7 @@ list_tokens <- function(username,
 
   output <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON() %>%
+    RcppSimdJson::fparse() %>%
     dplyr::as_tibble()
 
   return(output)

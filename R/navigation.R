@@ -409,8 +409,10 @@ mb_matrix <- function(origins,
     )
   )
 
+  check_installed("jsonlite")
   content <- httr::content(request, as = "text") %>%
-    jsonlite::fromJSON(flatten = TRUE)
+    jsonlite::read_json(flatten = TRUE)
+  # RcppSimdJson::fparse()
 
   if (request$status_code != 200) {
     stop(print(content$message), call. = FALSE)
