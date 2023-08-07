@@ -8,16 +8,22 @@ coords_to_tiles <- function(lon, lat, zoom) {
   ytile <- floor((1.0 - log(tan(lat_rad) + (1 / cos(lat_rad))) / pi) / 2.0 * n)
 
   return(c(xtile, ytile))
-  #  return(paste(paste("https://a.tile.openstreetmap.org", zoom, xtile, ytile, sep="/"),".png",sep=""))
+  #  return(paste(paste("https://a.tile.openstreetmap.org", zoom, xtile, ytile,
+  #  sep="/"),".png",sep=""))
 }
 
 #' Get a bounding box from location
 #'
 #' @rdname location_to_bbox
-#' @importFrom sf st_bbox st_as_sfc st_as_sf st_sf st_geometry_type st_buffer st_union st_convex_hull st_cast st_transform
+#' @importFrom sf st_bbox st_as_sfc st_as_sf st_sf st_geometry_type st_buffer
+#'   st_union st_convex_hull st_cast st_transform
 #' @importFrom units as_units
 #' @noRd
-location_to_bbox <- function(location, buffer_dist = 1000, units = "m", crs = 4326, null.ok = TRUE) {
+location_to_bbox <- function(location,
+                             buffer_dist = 1000,
+                             units = "m",
+                             crs = 4326,
+                             null.ok = TRUE) {
   if (is.null(location) && null.ok) {
     return(location)
   }
@@ -160,9 +166,10 @@ is_sf_or_sfc <- function(x) {
   inherits(x, c("sf", "sfc"))
 }
 
-#' Convert numeric vector to distance units objects or convert units for distance
+#' Convert numeric vector to distance units objects or convert units for
+#' distance
 #'
-#' Adapted from \code{convert_dist_units()} in the overedge R package
+#' Adapted from `convert_dist_units()` in the overedge R package
 #'
 #' @param x Numeric or units object
 #' @param from Existing unit for dist, Default: `m`.

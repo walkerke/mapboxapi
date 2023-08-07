@@ -171,7 +171,7 @@ mb_reverse_geocode <- function(coordinates,
 
 
   if (req$status_code != 200) {
-    pull <- fromJSON(content)
+    pull <- RcppSimdJson::fparse(content)
     stop(pull$message, call. = FALSE)
   }
 

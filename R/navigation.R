@@ -1,16 +1,36 @@
 #' Retrieve a matrix of travel times from the Mapbox Directions API
 #'
-#' @param origins The input coordinates of your request. Acceptable inputs include a list of
-#' coordinate pair vectors in \code{c(x, y)} format or an `sf` object.
-#' For sf linestrings or polygons, the distance between centroids will be taken.
-#' @param destinations The destination coordinates of your request. If \code{NULL} (the default), a many-to-many matrix using \code{origins} will be returned.
-#' @param profile One of "driving" (the default), "driving-traffic", "walking", or "cycling".
-#' @param fallback_speed A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations. The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.
-#' @param output one of \code{"duration"} (the default), which will be measured in either minutes or seconds (depending on the value of \code{duration_output}), or \code{"distance"}, which will be returned in meters.
-#' @param duration_output one of \code{"minutes"} (the default) or \code{"seconds"}
+#' @param origins The input coordinates of your request. Acceptable inputs
+#'   include a list of coordinate pair vectors in `c(x, y)` format or an
+#'   `sf` object. For sf linestrings or polygons, the distance between centroids
+#'   will be taken.
+#' @param destinations The destination coordinates of your request. If
+#'   `NULL` (the default), a many-to-many matrix using `origins` will
+#'   be returned.
+#' @param profile One of "driving" (the default), "driving-traffic", "walking",
+#'   or "cycling".
+#' @param fallback_speed A value expressed in kilometers per hour used to
+#'   estimate travel time when a route cannot be found between locations. The
+#'   returned travel time will be based on the straight-line estimate of travel
+#'   between the locations at the specified fallback speed.
+#' @param output one of `"duration"` (the default), which will be measured
+#'   in either minutes or seconds (depending on the value of
+#'   `duration_output`), or `"distance"`, which will be returned in
+#'   meters.
+#' @param duration_output one of `"minutes"` (the default) or
+#'   `"seconds"`
 #' @param access_token A Mapbox access token (required)
-#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2023-03-31T09:00"}. The time must be set to the current time or in the future.
-#' @param allow_large_matrix \code{mb_matrix()} will prevent the user from calculating large travel-time matrices (greater than 25x25) by default, as they may lead to unexpected charges.  If the user sets this argument to \code{TRUE}, \code{mb_matrix()} will bypass this error and calculate the large matrix for the user.  Defaults to \code{FALSE}.
+#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles,
+#'   the departure date and time to reflect historical traffic patterns. If
+#'   "driving-traffic" is used, live traffic will be mixed in with historical
+#'   traffic for dates/times near to the current time. Should be specified as an
+#'   ISO 8601 date/time, e.g. `"2023-03-31T09:00"`. The time must be set to
+#'   the current time or in the future.
+#' @param allow_large_matrix `mb_matrix()` will prevent the user from
+#'   calculating large travel-time matrices (greater than 25x25) by default, as
+#'   they may lead to unexpected charges.  If the user sets this argument to
+#'   `TRUE`, `mb_matrix()` will bypass this error and calculate the
+#'   large matrix for the user.  Defaults to `FALSE`.
 #'
 #' @return An R matrix of source-destination travel times.
 #'
@@ -103,12 +123,15 @@ mb_matrix <- function(origins,
     chunk <- FALSE
   }
 
-  # Specify chunking logic. Scenario 1: origins exceed limit, destinations do not
-  # This scenario comes up when both origins and destinations are specified.
+  # Specify chunking logic. Scenario 1: origins exceed limit, destinations do
+  # not This scenario comes up when both origins and destinations are specified.
   if (chunk) {
     message("Splitting your matrix request into smaller chunks and re-assembling the result.")
     # Define slow matrix function
-    mb_matrix_limited <- purrr::slowly(mb_matrix, rate = rate_delay(60 / rate_limit))
+    mb_matrix_limited <- purrr::slowly(
+      mb_matrix,
+      rate = rate_delay(60 / rate_limit)
+      )
 
     if (!is.null(destinations) && dest_size < coord_limit && origin_size >= coord_limit) {
       chunk_size <- coord_limit - dest_size
@@ -202,11 +225,12 @@ mb_matrix <- function(origins,
         return(matrix_output)
       }
     } else if ((origin_size > coord_limit && dest_size > coord_limit) || (origin_size > coord_limit && is.null(destinations))) {
-    # Scenario 3: Both origins _and_ destinations exceed limit
-    # Can be when destinations are specified, or left blank with origins as many-to-many
-    # Idea: split the destinations into chunks. Then, the origin walks through the first chunk,
-    # then the second, then the third, etc. until the full matrix is assembled.
-    # The function will need to call itself to get this to work, so let's try it.
+    # Scenario 3: Both origins _and_ destinations exceed limit Can be when
+    # destinations are specified, or left blank with origins as many-to-many
+    # Idea: split the destinations into chunks. Then, the origin walks through
+    # the first chunk, then the second, then the third, etc. until the full
+    # matrix is assembled. The function will need to call itself to get this to
+    # work, so let's try it.
 
       if (!allow_large_matrix) {
         rlang::abort(message = c("You have requested a large travel-time matrix which may incur charges to your Mapbox account.",
@@ -440,29 +464,56 @@ mb_matrix <- function(origins,
 #' Generate isochrones using the Mapbox Navigation Service Isochrone API
 #'
 #' This function returns isochrones from the Mapbox Navigation Service
-#' [Isochrone API](https://docs.mapbox.com/api/navigation/isochrone/). Isochrones are
-#' shapes that represent the reachable area around one or more locations within
-#' a given travel time. Isochrones can be computed for driving, walking, or
-#' cycling routing profiles, and can optionally be set to return distances
-#' rather than times. [mb_isochrone()] returns isochrones as simple
+#' [Isochrone API](https://docs.mapbox.com/api/navigation/isochrone/).
+#' Isochrones are shapes that represent the reachable area around one or more
+#' locations within a given travel time. Isochrones can be computed for driving,
+#' walking, or cycling routing profiles, and can optionally be set to return
+#' distances rather than times. [mb_isochrone()] returns isochrones as simple
 #' features objects in the WGS 1984 geographic coordinate system.
 #'
-#' @param location A vector of form \code{c(longitude, latitude)}, an address that can be geocoded as a character string, or an `sf` object.
+#' @param location A vector of form `c(longitude, latitude)`, an address
+#'   that can be geocoded as a character string, or an `sf` object.
 #' @param profile One of "driving", "walking", "cycling", or "driving-traffic".
-#'                "driving" is the default.
-#' @param time A vector of isochrone contours, specified in minutes. Defaults to \code{c(5, 10, 15)}. The maximum time supported is 60 minutes. Reflects traffic conditions for the date and time at which the function is called. If reproducibility of isochrones is required, supply an argument to the \code{depart_at} parameter.
-#' @param distance A vector of distance contours specified in meters. If supplied, will supercede
-#'                 any call to the \code{time} parameter as time and distance cannot be used
-#'                 simultaneously. Defaults to \code{NULL}.
-#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2022-03-31T09:00"}. If \code{NULL} (the default), isochrones will reflect traffic conditions at the date and time when the function is called.
+#'   "driving" is the default.
+#' @param time A vector of isochrone contours, specified in minutes. Defaults to
+#'   `c(5, 10, 15)`. The maximum time supported is 60 minutes. Reflects
+#'   traffic conditions for the date and time at which the function is called.
+#'   If reproducibility of isochrones is required, supply an argument to the
+#'   `depart_at` parameter.
+#' @param distance A vector of distance contours specified in meters. If
+#'   supplied, will supercede any call to the `time` parameter as time and
+#'   distance cannot be used simultaneously. Defaults to `NULL`.
+#' @param depart_at (optional) For the "driving" or "driving-traffic" profiles,
+#'   the departure date and time to reflect historical traffic patterns. If
+#'   "driving-traffic" is used, live traffic will be mixed in with historical
+#'   traffic for dates/times near to the current time. Should be specified as an
+#'   ISO 8601 date/time, e.g. `"2022-03-31T09:00"`. If `NULL` (the
+#'   default), isochrones will reflect traffic conditions at the date and time
+#'   when the function is called.
 #' @param access_token A valid Mapbox access token.
-#' @param denoise A floating-point value between 0 and 1 used to remove smaller contours. 1 is the default and returns only the largest contour for an input time.
-#' @param generalize A value expressed in meters of the tolerance for the Douglas-Peucker generalization algorithm used to simplify the isochrone shapes. If \code{NULL} (the default), the Mapbox API will choose an optimal value for you.
-#' @param geometry one of \code{"polygon"} (the default), which returns isochrones as polygons, or alternatively \code{"linestring"}, which returns isochrones as linestrings.
-#' @param output one of \code{"sf"} (the default), which returns an `sf` object representing the isochrone(s), or \code{"list"}, which returns the GeoJSON response from the API as an R list.
-#' @param rate_limit The rate limit for the API, expressed in maximum number of calls per minute. For most users this will be 300 though this parameter can be modified based on your Mapbox plan. Used when \code{location} is \code{"sf"}.
-#' @param keep_color_cols Whether or not to retain the color columns that the Mapbox API generates by default (applies when the output is an `sf` object). Defaults to `FALSE`.
-#' @param id_column If the input dataset is an `sf` object, the column in your dataset you want to use as the isochrone ID. Otherwise, isochrone IDs will be identified by row index or position.
+#' @param denoise A floating-point value between 0 and 1 used to remove smaller
+#'   contours. 1 is the default and returns only the largest contour for an
+#'   input time.
+#' @param generalize A value expressed in meters of the tolerance for the
+#'   Douglas-Peucker generalization algorithm used to simplify the isochrone
+#'   shapes. If `NULL` (the default), the Mapbox API will choose an optimal
+#'   value for you.
+#' @param geometry one of `"polygon"` (the default), which returns
+#'   isochrones as polygons, or alternatively `"linestring"`, which returns
+#'   isochrones as linestrings.
+#' @param output one of `"sf"` (the default), which returns an `sf` object
+#'   representing the isochrone(s), or `"list"`, which returns the GeoJSON
+#'   response from the API as an R list.
+#' @param rate_limit The rate limit for the API, expressed in maximum number of
+#'   calls per minute. For most users this will be 300 though this parameter can
+#'   be modified based on your Mapbox plan. Used when `location` is
+#'   `"sf"`.
+#' @param keep_color_cols Whether or not to retain the color columns that the
+#'   Mapbox API generates by default (applies when the output is an `sf`
+#'   object). Defaults to `FALSE`.
+#' @param id_column If the input dataset is an `sf` object, the column in your
+#'   dataset you want to use as the isochrone ID. Otherwise, isochrone IDs will
+#'   be identified by row index or position.
 #'
 #' @return An `sf` object representing the isochrone(s) around the location(s).
 #'
@@ -638,7 +689,7 @@ mb_isochrone <- function(location,
     content <- content(request, as = "text")
 
     if (request$status_code != 200) {
-      pull <- fromJSON(content)
+      pull <- RcppSimdJson::fparse(content)
       stop(pull$message, call. = FALSE)
     }
 

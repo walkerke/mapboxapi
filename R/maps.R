@@ -208,7 +208,7 @@ check_upload_status <- function(upload_id,
 #' @return An R list containing the API response, which includes information
 #'   about the requested features. Parse the list to extract desired elements.
 #' @seealso
-#'   <https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/>
+#' <https://docs.mapbox.com/help/tutorials/find-elevations-with-tilequery-api/>
 #'
 #'
 #' @examples \dontrun{
@@ -897,83 +897,77 @@ set_static_map_overlay <- function(base = NULL,
 #'
 #' @noRd
 #' @importFrom utils URLencode
-set_overlay_style <-
-  function(overlay_sf,
-           overlay_style = NULL) {
-    if (is.null(overlay_style)) {
-      overlay_style <- overlay_sf[1, ]
-    }
-
-    style_names <- names(overlay_style)
-
-    if ("stroke" %in% style_names) {
-      if (!is_hex(overlay_style$stroke)) {
-        overlay_style$stroke <- col2hex(overlay_style$stroke)
-      }
-
-      overlay_sf$stroke <-
-        utils::URLencode(overlay_style$stroke, reserved = TRUE)
-    }
-
-    if ("stroke-opacity" %in% style_names) {
-      overlay_sf$`stroke-opacity` <-
-        utils::URLencode(
-          as.character(overlay_style$`stroke-opacity`),
-          reserved = TRUE
-          )
-    }
-
-    if ("stroke_opacity" %in% style_names) {
-      overlay_sf$`stroke-opacity` <-
-        utils::URLencode(
-          as.character(overlay_style$stroke_opacity),
-          reserved = TRUE
-          )
-    }
-
-    if ("stroke-width" %in% style_names) {
-      overlay_sf$`stroke-width` <-
-        utils::URLencode(
-          as.character(overlay_style$`stroke-width`),
-          reserved = TRUE
-          )
-    }
-
-    if ("stroke_width" %in% style_names) {
-      overlay_sf$`stroke-width` <-
-        utils::URLencode(
-          as.character(overlay_style$stroke_width),
-          reserved = TRUE
-          )
-    }
-
-    if ("fill" %in% style_names) {
-      if (!is_hex(overlay_style$fill)) {
-        overlay_style$fill <- col2hex(overlay_style$fill)
-      }
-
-      overlay_sf$fill <-
-        utils::URLencode(overlay_style$fill, reserved = TRUE)
-    }
-
-    if ("fill_opacity" %in% style_names) {
-      overlay_sf$`fill-opacity` <-
-        utils::URLencode(
-          as.character(overlay_style$fill_opacity),
-          reserved = TRUE
-          )
-    }
-
-    if ("fill-opacity" %in% style_names) {
-      overlay_sf$`fill-opacity` <-
-        utils::URLencode(
-          as.character(overlay_style$`fill-opacity`),
-          reserved = TRUE
-          )
-    }
-
-    overlay_sf
+set_overlay_style <- function(overlay_sf,
+                              overlay_style = NULL) {
+  if (is.null(overlay_style)) {
+    overlay_style <- overlay_sf[1, ]
   }
+
+  style_names <- names(overlay_style)
+
+  if ("stroke" %in% style_names) {
+    if (!is_hex(overlay_style$stroke)) {
+      overlay_style$stroke <- col2hex(overlay_style$stroke)
+    }
+
+    overlay_sf$stroke <- utils::URLencode(
+      overlay_style$stroke,
+      reserved = TRUE
+    )
+  }
+
+  if ("stroke-opacity" %in% style_names) {
+    overlay_sf$`stroke-opacity` <- utils::URLencode(
+      as.character(overlay_style$`stroke-opacity`),
+      reserved = TRUE
+    )
+  }
+
+  if ("stroke_opacity" %in% style_names) {
+    overlay_sf$`stroke-opacity` <- utils::URLencode(
+      as.character(overlay_style$stroke_opacity),
+      reserved = TRUE
+    )
+  }
+
+  if ("stroke-width" %in% style_names) {
+    overlay_sf$`stroke-width` <- utils::URLencode(
+      as.character(overlay_style$`stroke-width`),
+      reserved = TRUE
+    )
+  }
+
+  if ("stroke_width" %in% style_names) {
+    overlay_sf$`stroke-width` <- utils::URLencode(
+      as.character(overlay_style$stroke_width),
+      reserved = TRUE
+    )
+  }
+
+  if ("fill" %in% style_names) {
+    if (!is_hex(overlay_style$fill)) {
+      overlay_style$fill <- col2hex(overlay_style$fill)
+    }
+
+    overlay_sf$fill <- utils::URLencode(overlay_style$fill, reserved = TRUE)
+  }
+
+  if ("fill_opacity" %in% style_names) {
+    overlay_sf$`fill-opacity` <- utils::URLencode(
+      as.character(overlay_style$fill_opacity),
+      reserved = TRUE
+    )
+  }
+
+  if ("fill-opacity" %in% style_names) {
+    overlay_sf$`fill-opacity` <- utils::URLencode(
+      as.character(overlay_style$`fill-opacity`),
+      reserved = TRUE
+    )
+  }
+
+  overlay_sf
+}
 
 #' Add width/height to API query for static_mapbox
 #'
@@ -1022,7 +1016,8 @@ set_static_map_dims <- function(base = NULL,
 #'
 #' @rdname layer_static_mapbox
 #' @inheritParams static_mapbox
-#' @param ... additional parameters passed to [ggspatial::layer_spatial] or [tmap::tm_rgb]
+#' @param ... additional parameters passed to [ggspatial::layer_spatial] or
+#'   [tmap::tm_rgb]
 #' @export
 #' @author Eli Pousson, \email{eli.pousson@gmail.com}
 #' @author Anthony North, \email{anthony.jl.north@gmail.com}
@@ -1461,32 +1456,36 @@ addMapboxTiles <- function(map,
 #' as a raster suitable for use as a basemap in
 #' [tmap](https://r-tmap.github.io/tmap/) or
 #' [ggplot2](https://ggplot2.tidyverse.org/) (with the
-#' [ggspatial::layer_spatial()] function. It returns a raster
-#' layer that corresponds either to an input bounding box or a buffered area
-#' around an input shape.
+#' [ggspatial::layer_spatial()] function. It returns a raster layer that
+#' corresponds either to an input bounding box or a buffered area around an
+#' input shape.
 #'
 #' @param location An input location for which you would like to request tiles.
-#'                 Can be a length-4 vector representing a bounding box, or an `sf` object.
-#'                 If an input `sf` object is supplied, use the `buffer_dist` argument to
-#'                 control how much area you want to capture around the layer.
-#'                 While the input `sf` object can be in an arbitrary coordinate reference system,
-#'                 if a length-4 bounding box vector is supplied instead it must represent
-#'                 WGS84 longitude/latitude coordinates and be in the order
-#'                 `c(xmin, ymin, xmax, ymax)`.
+#'   Can be a length-4 vector representing a bounding box, or an `sf` object. If
+#'   an input `sf` object is supplied, use the `buffer_dist` argument to control
+#'   how much area you want to capture around the layer. While the input `sf`
+#'   object can be in an arbitrary coordinate reference system, if a length-4
+#'   bounding box vector is supplied instead it must represent WGS84
+#'   longitude/latitude coordinates and be in the order `c(xmin, ymin, xmax,
+#'   ymax)`.
 #' @param zoom The zoom level for which you'd like to return tiles.
 #' @param style_id A Mapbox style ID; retrieve yours from your Mapbox account.
 #' @param username A Mapbox username.
 #' @param style_url A Mapbox style URL.
 #' @param scaling_factor The scaling factor to use; one of `"1x"` or `"2x"`.
-#' @param buffer_dist The distance to buffer around an input `sf` object for determining tile extent, specified in units. Defaults to 5000.
+#' @param buffer_dist The distance to buffer around an input `sf` object for
+#'   determining tile extent, specified in units. Defaults to 5000.
 #' @param units Units of `buffer_dist`; defaults to "m" (meters). If buffer_dist
 #'   is a units class object, the units argument is ignored.
-#' @param crop Whether or not to crop the result to the specified bounding box or buffer area.
-#'             Defaults to `TRUE`; `FALSE` will return the extent of the overlapping
-#'             tiles.
-#' @param access_token A Mapbox access token. Supply yours here or set globally with the [mb_access_token()] function.
+#' @param crop Whether or not to crop the result to the specified bounding box
+#'   or buffer area. Defaults to `TRUE`; `FALSE` will return the extent of the
+#'   overlapping tiles.
+#' @param access_token A Mapbox access token. Supply yours here or set globally
+#'   with the [mb_access_token()] function.
 #'
-#' @return A raster layer of tiles from the requested Mapbox style representing the area around the input location. The raster layer is projected in the Web Mercator coordinate reference system.
+#' @return A raster layer of tiles from the requested Mapbox style representing
+#'   the area around the input location. The raster layer is projected in the
+#'   Web Mercator coordinate reference system.
 #'
 #' @examples \dontrun{
 #'

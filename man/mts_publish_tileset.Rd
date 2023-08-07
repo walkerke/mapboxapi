@@ -7,20 +7,27 @@
 mts_publish_tileset(tileset_name, username, access_token = NULL)
 }
 \arguments{
-\item{tileset_name}{The name of the tileset (as supplied to \code{mts_create_tileset()})}
+\item{tileset_name}{The name of the tileset (as supplied to
+\code{mts_create_tileset()})}
 
 \item{username}{Your Mapbox username}
 
 \item{access_token}{Your Mapbox access token}
 }
 \value{
-The response from the Mapbox Tiling Service API, formatted as an R list.
+The response from the Mapbox Tiling Service API, formatted as an R
+list.
 }
 \description{
-\code{mts_publish_tileset()} publishes an existing vector tileset at your Mapbox account, allowing you to use the vector tiles in your projects.  The tileset name will be the same name you specified in \code{mts_create_tileset()}.
+\code{mts_publish_tileset()} publishes an existing vector tileset at your
+Mapbox account, allowing you to use the vector tiles in your projects.  The
+tileset name will be the same name you specified in
+\code{mts_create_tileset()}.
 }
 \details{
-The published tileset will conform to rules specified in its recipe.  If you want to change the recipe for a tileset, use \code{mts_update_recipe()} then re-publish the tileset with a call to \code{mts_publish_tileset()} once more.
+The published tileset will conform to rules specified in its recipe.  If you
+want to change the recipe for a tileset, use \code{mts_update_recipe()} then
+re-publish the tileset with a call to \code{mts_publish_tileset()} once more.
 }
 \examples{
 \dontrun{

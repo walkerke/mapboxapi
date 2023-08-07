@@ -49,7 +49,9 @@ get_style <- function(style_id,
 #' @rdname get_style
 #' @export
 list_styles <- function(username, access_token = NULL) {
-  access_token <- get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN")
+  access_token <- get_mb_access_token(
+    access_token, default = "MAPBOX_SECRET_TOKEN"
+    )
 
   url <- sprintf("https://api.mapbox.com/styles/v1/%s", username)
 

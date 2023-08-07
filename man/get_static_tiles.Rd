@@ -19,13 +19,12 @@ get_static_tiles(
 }
 \arguments{
 \item{location}{An input location for which you would like to request tiles.
-Can be a length-4 vector representing a bounding box, or an \code{sf} object.
-If an input \code{sf} object is supplied, use the \code{buffer_dist} argument to
-control how much area you want to capture around the layer.
-While the input \code{sf} object can be in an arbitrary coordinate reference system,
-if a length-4 bounding box vector is supplied instead it must represent
-WGS84 longitude/latitude coordinates and be in the order
-\code{c(xmin, ymin, xmax, ymax)}.}
+Can be a length-4 vector representing a bounding box, or an \code{sf} object. If
+an input \code{sf} object is supplied, use the \code{buffer_dist} argument to control
+how much area you want to capture around the layer. While the input \code{sf}
+object can be in an arbitrary coordinate reference system, if a length-4
+bounding box vector is supplied instead it must represent WGS84
+longitude/latitude coordinates and be in the order \code{c(xmin, ymin, xmax, ymax)}.}
 
 \item{zoom}{The zoom level for which you'd like to return tiles.}
 
@@ -37,28 +36,32 @@ WGS84 longitude/latitude coordinates and be in the order
 
 \item{scaling_factor}{The scaling factor to use; one of \code{"1x"} or \code{"2x"}.}
 
-\item{buffer_dist}{The distance to buffer around an input \code{sf} object for determining tile extent, specified in units. Defaults to 5000.}
+\item{buffer_dist}{The distance to buffer around an input \code{sf} object for
+determining tile extent, specified in units. Defaults to 5000.}
 
 \item{units}{Units of \code{buffer_dist}; defaults to "m" (meters). If buffer_dist
 is a units class object, the units argument is ignored.}
 
-\item{crop}{Whether or not to crop the result to the specified bounding box or buffer area.
-Defaults to \code{TRUE}; \code{FALSE} will return the extent of the overlapping
-tiles.}
+\item{crop}{Whether or not to crop the result to the specified bounding box
+or buffer area. Defaults to \code{TRUE}; \code{FALSE} will return the extent of the
+overlapping tiles.}
 
-\item{access_token}{A Mapbox access token. Supply yours here or set globally with the \code{\link[=mb_access_token]{mb_access_token()}} function.}
+\item{access_token}{A Mapbox access token. Supply yours here or set globally
+with the \code{\link[=mb_access_token]{mb_access_token()}} function.}
 }
 \value{
-A raster layer of tiles from the requested Mapbox style representing the area around the input location. The raster layer is projected in the Web Mercator coordinate reference system.
+A raster layer of tiles from the requested Mapbox style representing
+the area around the input location. The raster layer is projected in the
+Web Mercator coordinate reference system.
 }
 \description{
 This function queries the \href{https://docs.mapbox.com/api/maps/static-tiles/}{Mapbox Static Tiles API} and composites the tiles
 as a raster suitable for use as a basemap in
 \href{https://r-tmap.github.io/tmap/}{tmap} or
 \href{https://ggplot2.tidyverse.org/}{ggplot2} (with the
-\code{\link[ggspatial:layer_spatial]{ggspatial::layer_spatial()}} function. It returns a raster
-layer that corresponds either to an input bounding box or a buffered area
-around an input shape.
+\code{\link[ggspatial:layer_spatial]{ggspatial::layer_spatial()}} function. It returns a raster layer that
+corresponds either to an input bounding box or a buffered area around an
+input shape.
 }
 \examples{
 \dontrun{

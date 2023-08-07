@@ -206,9 +206,10 @@ mb_directions <- function(input_data = NULL,
     }
   }
 
-  # If origin/destination are specified, check to see if they represent coordinate pairs
-  # or addresses. If they are addresses, geocode them then process.
-  # We've already done error handling to make sure origin and destination are both supplied.
+  # If origin/destination are specified, check to see if they represent
+  # coordinate pairs or addresses. If they are addresses, geocode them then
+  # process. We've already done error handling to make sure origin and
+  # destination are both supplied.
   if (!is.null(origin)) {
     if (inherits(origin, "character")) {
       oxy <- paste0(mb_geocode(origin), collapse = ",")
@@ -418,12 +419,15 @@ mb_directions <- function(input_data = NULL,
 #'   specify the distance (in meters) to snap each input coordinate to the road
 #'   network. Defaults to `NULL`.
 #' @param steps If `TRUE`, returns the route object split up into route legs
-#'   with step-by-step instructions included. If `FALSE` or `NULL` (the default), a
-#'   single line geometry representing the full route will be returned.
+#'   with step-by-step instructions included. If `FALSE` or `NULL` (the
+#'   default), a single line geometry representing the full route will be
+#'   returned.
 #' @param access_token Your Mapbox access token; which can be set with
 #'   [mb_access_token()]
 #'
-#' @return Either a list of two `sf` objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
+#' @return Either a list of two `sf` objects - one representing the waypoints,
+#'   and one representing the route - or an R list representing the full
+#'   optimization API response.
 #'
 #' @examples \dontrun{
 #'
