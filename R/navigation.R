@@ -103,13 +103,14 @@ mb_matrix <- function(origins,
     chunk <- FALSE
   }
 
-  # Specify chunking logic. Scenario 1: origins exceed limit, destinations do not
-  # This scenario comes up when both origins and destinations are specified.
+  # Specify chunking logic.
   if (chunk) {
     message("Splitting your matrix request into smaller chunks and re-assembling the result.")
     # Define slow matrix function
     mb_matrix_limited <- purrr::slowly(mb_matrix, rate = rate_delay(60 / rate_limit))
 
+    # Scenario 1: origins exceed limit, destinations do not
+    # This scenario comes up when both origins and destinations are specified.
     if (!is.null(destinations) && dest_size < coord_limit && origin_size >= coord_limit) {
       chunk_size <- coord_limit - dest_size
       if (any(grepl("^sf", class(origins)))) {
@@ -201,8 +202,100 @@ mb_matrix <- function(origins,
           purrr::reduce(cbind)
         return(matrix_output)
       }
+    } else if (coord_size > coord_limit && origin_size < coord_limit && dest_size < coord_limit) {
+      # Scenario 3 (issue #42): the sum of origin and destination sizes are below the coordinate limit,
+      # but neither are uniquely.
+      if (origin_size > dest_size) {
+        chunk_size <- coord_limit - dest_size
+        if (any(grepl("^sf", class(origins)))) {
+          if (sf::st_geometry_type(origins, by_geometry = FALSE) != "POINT") {
+            message("Using feature centroids for origins")
+          }
+          matrix_output <- origins %>%
+            dplyr::mutate(ix = c(0, rep(1:(nrow(origins) - 1) %/% chunk_size))) %>%
+            split(.$ix) %>%
+            purrr::map(., ~ {
+              suppressMessages(
+                mb_matrix_limited(
+                  origins = .x,
+                  destinations = destinations,
+                  profile = profile,
+                  fallback_speed = fallback_speed,
+                  access_token = access_token,
+                  output = output,
+                  duration_output = duration_output,
+                  depart_at = depart_at
+                )
+              )
+            }, .progress = TRUE) %>%
+            purrr::reduce(rbind)
+          return(matrix_output)
+        } else {
+          ix <- c(0, rep(1:(length(origins) - 1) %/% chunk_size))
+          matrix_output <- origins %>%
+            split(.$ix) %>%
+            purrr::map(., ~ {
+              mb_matrix_limited(
+                origins = .x,
+                destinations = destinations,
+                profile = profile,
+                fallback_speed = fallback_speed,
+                access_token = access_token,
+                output = output,
+                duration_output = duration_output,
+                depart_at = depart_at
+              )
+            }, .progress = TRUE) %>%
+            purrr::reduce(rbind)
+          return(matrix_output)
+        }
+      } else if (origin_size < dest_size) {
+        chunk_size <- coord_limit - origin_size
+        if (any(grepl("^sf", class(destinations)))) {
+          if (sf::st_geometry_type(origins, by_geometry = FALSE) != "POINT") {
+            message("Using feature centroids for destinations")
+          }
+          matrix_output <- destinations %>%
+            dplyr::mutate(ix = c(0, rep(1:(nrow(destinations) - 1) %/% chunk_size))) %>%
+            split(.$ix) %>%
+            purrr::map(., ~ {
+              suppressMessages(
+                mb_matrix_limited(
+                  origins = origins,
+                  destinations = .x,
+                  profile = profile,
+                  fallback_speed = fallback_speed,
+                  access_token = access_token,
+                  output = output,
+                  duration_output = duration_output,
+                  depart_at = depart_at
+                )
+              )
+            }, .progress = TRUE) %>%
+            purrr::reduce(cbind)
+          return(matrix_output)
+        } else {
+          ix <- c(0, rep(1:(length(destinations) - 1) %/% chunk_size))
+          matrix_output <- destinations %>%
+            split(ix) %>%
+            purrr::map(., ~ {
+              mb_matrix_limited(
+                origins = origins,
+                destinations = .x,
+                profile = profile,
+                fallback_speed = fallback_speed,
+                access_token = access_token,
+                output = output,
+                duration_output = duration_output,
+                depart_at = depart_at
+              )
+            }, .progress = TRUE) %>%
+            purrr::reduce(cbind)
+          return(matrix_output)
+        }
+      }
     } else if ((origin_size > coord_limit && dest_size > coord_limit) || (origin_size > coord_limit && is.null(destinations))) {
-    # Scenario 3: Both origins _and_ destinations exceed limit
+    # Scenario 4: Both origins _and_ destinations exceed limit
     # Can be when destinations are specified, or left blank with origins as many-to-many
     # Idea: split the destinations into chunks. Then, the origin walks through the first chunk,
     # then the second, then the third, etc. until the full matrix is assembled.
