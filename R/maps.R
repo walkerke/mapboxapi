@@ -1570,8 +1570,8 @@ get_static_tiles <- function(location,
     loc <- file.path(tmp, sprintf("%s_%s.png", .x, .y))
 
     request <- httr::GET(url,
-      query = list(access_token = access_token),
-      httr::write_disk(loc, overwrite = TRUE)
+                         query = list(access_token = access_token),
+                         httr::write_disk(loc, overwrite = TRUE)
     )
 
     # Only try to read the data if there is data available
@@ -1583,17 +1583,16 @@ get_static_tiles <- function(location,
       my_img <- try(png::readPNG(loc), silent = TRUE)
 
       if ("try-error" %in% class(my_img)) {
-        check_installed("jpeg")
         my_img <- jpeg::readJPEG(loc)
       }
 
       my_img <- my_img * 255
 
-      ras <- terra::rast(
-          my_img,
-          extent = location_to_extent(bbox, crs = "EPSG:3857"),
-          crs = "EPSG:3857"
-        )
+      merc <- sf::st_crs(3857)$proj4string
+
+      ras <- raster::brick(my_img)
+      raster::extent(ras) <- box
+      suppressWarnings(raster::projection(ras) <- merc)
 
       return(ras)
     }
@@ -1604,33 +1603,31 @@ get_static_tiles <- function(location,
   if (length(tile_list) == 1) {
     out_brick <- tile_list[[1]]
   } else {
-    check_installed("raster")
-
     target_crs <- suppressWarnings(raster::projection(tile_list[[1]]))
 
     out_raster <- suppressWarnings(tile_list %>%
-      purrr::map(function(tile) {
-        raster::extent(tile)
-      }) %>%
-      purrr::reduce(raster::union) %>%
-      raster::raster(crs = target_crs))
+                                     purrr::map(function(tile) {
+                                       raster::extent(tile)
+                                     }) %>%
+                                     purrr::reduce(raster::union) %>%
+                                     raster::raster(crs = target_crs))
 
     raster::res(out_raster) <- suppressWarnings(raster::res(tile_list[[1]]))
 
     raster_cells <- suppressWarnings(tile_list %>%
-      map(function(tile) {
-        raster::cellsFromExtent(out_raster, tile)
-      }) %>%
-      unlist(use.names = FALSE))
+                                       map(function(tile) {
+                                         raster::cellsFromExtent(out_raster, tile)
+                                       }) %>%
+                                       unlist(use.names = FALSE))
 
     raster_values <- suppressWarnings(tile_list %>%
-      map(function(tile) {
-        raster::values(tile)
-      }) %>%
-      reduce(rbind))
+                                        map(function(tile) {
+                                          raster::values(tile)
+                                        }) %>%
+                                        reduce(rbind))
 
     out_brick <- suppressWarnings(raster::brick(out_raster, out_raster, out_raster) %>%
-      raster::setValues(raster_values[order(raster_cells), ]))
+                                    raster::setValues(raster_values[order(raster_cells), ]))
   }
 
   if (crop) {
@@ -1639,7 +1636,7 @@ get_static_tiles <- function(location,
       sf::st_sf() %>%
       sf::st_transform(sf::st_crs(out_brick))
 
-    cropped_brick <- terra::crop(out_brick, bb_shape)
+    cropped_brick <- raster::crop(out_brick, bb_shape)
 
     return(cropped_brick)
   } else {
