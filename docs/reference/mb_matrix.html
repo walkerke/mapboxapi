@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.2</span>
       </span>
     </div>
 
@@ -86,7 +86,8 @@
   output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"duration"</span>, <span class="st">"distance"</span><span class="op">)</span>,
   duration_output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"minutes"</span>, <span class="st">"seconds"</span><span class="op">)</span>,
   access_token <span class="op">=</span> <span class="cn">NULL</span>,
-  depart_at <span class="op">=</span> <span class="cn">NULL</span>
+  depart_at <span class="op">=</span> <span class="cn">NULL</span>,
+  allow_large_matrix <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -124,6 +125,10 @@ For sf linestrings or polygons, the distance between centroids will be taken.</p
 
 <dt>depart_at</dt>
 <dd><p>(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. <code>"2023-03-31T09:00"</code>. The time must be set to the current time or in the future.</p></dd>
+
+
+<dt>allow_large_matrix</dt>
+<dd><p><code>mb_matrix()</code> will prevent the user from calculating large travel-time matrices (greater than 25x25) by default, as they may lead to unexpected charges.  If the user sets this argument to <code>TRUE</code>, <code>mb_matrix()</code> will bypass this error and calculate the large matrix for the user.  Defaults to <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
