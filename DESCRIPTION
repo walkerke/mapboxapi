@@ -1,14 +1,15 @@
 Type: Package
 Package: mapboxapi
 Title: R Interface to 'Mapbox' Web Services
-Version: 0.5.1
-Date: 2023-05-05
-Authors@R: c(
-    person("Kyle", "Walker", , "kyle@walker-data.com", role = c("aut", "cre")),
-    person("Eli", "Pousson", , "eli.pousson@gmail.com", role = "ctb"),
-    person("Anthony", "North", , "anthony.jl.north@gmail.com", role = c("ctb", "cph")),
-    person("Miles", "McBain", , "miles.mcbain@gmail.com", role = "ctb")
-  )
+Date: 2023-09-07
+Version: 0.5.2
+Authors@R: 
+    c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
+    role = c("aut", "cre")), 
+    person(given = "Eli", family = "Pousson", email = "eli.pousson@gmail.com",
+    role = "ctb"),
+    person(given = "Anthony", family = "North", role = c("ctb", "cph"), email = "anthony.jl.north@gmail.com"),
+    person(given = "Miles", family = "McBain", role = "ctb", email = "miles.mcbain@gmail.com"))
 Maintainer: Kyle Walker <kyle@walker-data.com>
 Description: Includes support for 'Mapbox' Navigation APIs, including
     directions, isochrones, and route optimization; the Search API for
