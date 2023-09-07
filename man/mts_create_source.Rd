@@ -2,33 +2,24 @@
 % Please edit documentation in R/mts.R
 \name{mts_create_source}
 \alias{mts_create_source}
-\title{Create a Mapbox tileset source from a sf object using the Mapbox Tiling
-Service API}
+\title{Create a Mapbox tileset source from a sf object using the Mapbox Tiling Service API}
 \usage{
 mts_create_source(data, tileset_id, username, access_token = NULL)
 }
 \arguments{
 \item{data}{An input simple features object}
 
-\item{tileset_id}{The tileset ID. If the tileset ID already exists in your
-Mapbox account, this function will overwrite the existing source with a new
-source.}
+\item{tileset_id}{The tileset ID. If the tileset ID already exists in your Mapbox account, this function will overwrite the existing source with a new source.}
 
 \item{username}{Your Mapbox username}
 
-\item{access_token}{Your Mapbox access token with secret scope. Install with
-\code{mb_access_token()} after you retrieve it from your Mapbox account.}
+\item{access_token}{Your Mapbox access token with secret scope. Install with \code{mb_access_token()} after you retrieve it from your Mapbox account.}
 }
 \value{
-A list of the MTS API's responses, including the name of the tileset
-source in your Mapbox account.  You'll use this name to build a MTS recipe.
+A list of the MTS API's responses, including the name of the tileset source in your Mapbox account.  You'll use this name to build a MTS recipe.
 }
 \description{
-The \code{mts_create_source()} function can be used to create a tileset
-source or append to an existing tileset source.  This function publishes a
-simple features object you've created in R to your Mapbox account, where it
-is stored as line-delimited GeoJSON. A tileset source is required to create a
-vector tileset, and the same source can be used across multiple tilesets.
+The \code{mts_create_source()} function can be used to create a tileset source or append to an existing tileset source.  This function publishes a simple features object you've created in R to your Mapbox account, where it is stored as line-delimited GeoJSON. A tileset source is required to create a vector tileset, and the same source can be used across multiple tilesets.
 }
 \examples{
 \dontrun{
