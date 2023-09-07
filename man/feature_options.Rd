@@ -13,18 +13,33 @@ feature_options(
 )
 }
 \arguments{
-\item{id}{A column representing the feature ID. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#id-expression}.}
+\item{id}{A column representing the feature ID. See
+\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#id-expression}.}
 
-\item{bbox}{A bounding box within which rendered features will be clipped. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#bounding-box}.}
+\item{bbox}{A bounding box within which rendered features will be clipped.
+See
+\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#bounding-box}.}
 
-\item{attributes}{A named list of attribute transformations. \code{zoom_element} specifies how an attribute should be made available at different zoom levels; \code{set} allows you to calculate new attributes from existing attributes when processing the tiles; and \code{allowed_output} specifies which columns should be carried through to the output tiles.  See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-attributes}.}
+\item{attributes}{A named list of attribute transformations.
+\code{zoom_element} specifies how an attribute should be made available at
+different zoom levels; \code{set} allows you to calculate new attributes
+from existing attributes when processing the tiles; and
+\code{allowed_output} specifies which columns should be carried through to
+the output tiles.  See
+\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-attributes}.}
 
-\item{filter}{An expression that determines how features in the tileset should be filtered. See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-filters} for information on how to specify the filter.}
+\item{filter}{An expression that determines how features in the tileset
+should be filtered. See
+\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-filters}
+for information on how to specify the filter.}
 
-\item{simplification}{Rules for feature simplification.  See \url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-simplification} for more information on how to specify this.}
+\item{simplification}{Rules for feature simplification.  See
+\url{https://docs.mapbox.com/mapbox-tiling-service/reference/#feature-simplification}
+for more information on how to specify this.}
 }
 \value{
-A list of feature options, likely to be used in \code{recipe_layer()}.
+A list of feature options, likely to be used in
+\code{recipe_layer()}.
 }
 \description{
 Specify feature options for an MTS recipe layer

@@ -15,11 +15,14 @@ mts_list_sources(
 \arguments{
 \item{username}{Your Mapbox username}
 
-\item{sortby}{One of \code{"created"} or \code{"modified"}; the returned data frame will be sorted by one of these two options.}
+\item{sortby}{One of \code{"created"} or \code{"modified"}; the returned data
+frame will be sorted by one of these two options.}
 
-\item{limit}{The number of tileset sources to return; defaults to 100.  The maximum number of tileset sources returned by this endpoint is 2000.}
+\item{limit}{The number of tileset sources to return; defaults to 100.  The
+maximum number of tileset sources returned by this endpoint is 2000.}
 
-\item{start}{The source ID at which to start the list of sources; defaults to \code{NULL}.}
+\item{start}{The source ID at which to start the list of sources; defaults to
+\code{NULL}.}
 
 \item{access_token}{Your Mapbox access token with secret scope.}
 }

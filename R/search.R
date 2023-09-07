@@ -81,7 +81,7 @@ mb_geocode <- function(search_text,
 
 
   if (req$status_code != 200) {
-    pull <- jsonlite::fromJSON(content)
+    pull <- RcppSimdJson::fparse(content)
     stop(pull$message, call. = FALSE)
   }
 
@@ -90,7 +90,7 @@ mb_geocode <- function(search_text,
   if (output == "sf") {
     return(sf::st_read(content, quiet = TRUE))
   } else if (output == "coordinates") {
-    cont2 <- jsonlite::fromJSON(content)
+    cont2 <- RcppSimdJson::fparse(content)
 
     coords <- cont2$features$geometry$coordinates
 
@@ -100,7 +100,7 @@ mb_geocode <- function(search_text,
       return(coords)
     }
   } else if (output == "full") {
-    return(jsonlite::fromJSON(content))
+    return(RcppSimdJson::fparse(content))
   } else {
     stop("The requested output must be one of 'coordinates', 'sf', or 'full'.")
   }
@@ -171,12 +171,12 @@ mb_reverse_geocode <- function(coordinates,
 
 
   if (req$status_code != 200) {
-    pull <- fromJSON(content)
+    pull <- RcppSimdJson::fparse(content)
     stop(pull$message, call. = FALSE)
   }
 
   if (output == "text") {
-    content2 <- jsonlite::fromJSON(content)
+    content2 <- RcppSimdJson::fparse(content)
 
     text <- content2$features$place_name
 
@@ -184,6 +184,6 @@ mb_reverse_geocode <- function(coordinates,
   } else if (output == "sf") {
     return(sf::st_read(content, quiet = TRUE))
   } else if (output == "full") {
-    return(jsonlite::fromJSON(content))
+    return(RcppSimdJson::fparse(content))
   }
 }

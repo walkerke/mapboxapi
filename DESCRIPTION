@@ -1,5 +1,5 @@
-Package: mapboxapi
 Type: Package
+Package: mapboxapi
 Title: R Interface to 'Mapbox' Web Services
 Date: 2023-09-07
 Version: 0.5.2
@@ -11,44 +11,49 @@ Authors@R:
     person(given = "Anthony", family = "North", role = c("ctb", "cph"), email = "anthony.jl.north@gmail.com"),
     person(given = "Miles", family = "McBain", role = "ctb", email = "miles.mcbain@gmail.com"))
 Maintainer: Kyle Walker <kyle@walker-data.com>
-Description: Includes support for 'Mapbox' Navigation APIs, including directions, 
-  isochrones, and route optimization; the Search API for forward and reverse geocoding; 
-  the Maps API for interacting with 'Mapbox' vector tilesets and visualizing 
-  'Mapbox' maps in R; and 'Mapbox Tiling Service' and 'tippecanoe' for generating map tiles.
-  See <https://docs.mapbox.com/api/> for more information about the 'Mapbox' APIs.
+Description: Includes support for 'Mapbox' Navigation APIs, including
+    directions, isochrones, and route optimization; the Search API for
+    forward and reverse geocoding; the Maps API for interacting with
+    'Mapbox' vector tilesets and visualizing 'Mapbox' maps in R; and
+    'Mapbox Tiling Service' and 'tippecanoe' for generating map tiles.
+    See <https://docs.mapbox.com/api/> for more information about the
+    'Mapbox' APIs.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-Depends: R (>= 3.3.0)
+Depends: 
+    R (>= 3.3.0)
 Imports: 
-    httr,
-    sf,
-    jsonlite,
-    purrr,
     curl,
     dplyr (>= 1.0.0),
-    tidyr (>= 1.0.0),
-    aws.s3,
-    stringi,
-    slippymath,
-    protolite,
-    rlang,
     geojsonsf,
-    magick,
+    httr,
     leaflet,
-    units,
-    raster,
     png,
-    jpeg
+    purrr,
+    RcppSimdJson,
+    rlang,
+    sf,
+    slippymath,
+    stringi,
+    terra,
+    units
 Suggests:
+    aws.s3,
     ggspatial,
     grDevices,
-    mapdeck,
-    tigris,
-    tidycensus,
-    tmap,
+    jpeg,
+    jsonlite,
+    magick,
     mapboxer,
-    testthat (>= 3.0.0)
+    mapdeck,
+    protolite,
+    raster,
+    testthat (>= 3.0.0),
+    tidycensus,
+    tidyr (>= 1.0.0),
+    tigris,
+    tmap
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-Config/testthat/edition: 3

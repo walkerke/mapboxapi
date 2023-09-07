@@ -9,8 +9,8 @@
 #'   you.
 #' @param overwrite Whether or not to overwrite an existing Mapbox access token.
 #'   Defaults to `FALSE`.
-#' @param install if `TRUE`, will install the key in your `.Renviron` file for use
-#'   in future sessions. Defaults to `FALSE`.
+#' @param install if `TRUE`, will install the key in your `.Renviron` file for
+#'   use in future sessions. Defaults to `FALSE`.
 #' @param default Default token name to return first [get_mb_access_token()],
 #'   "MAPBOX_PUBLIC_TOKEN" or "MAPBOX_SECRET_TOKEN".
 #' @param secret_required If `TRUE`, a secret token is required. If `FALSE`, the
@@ -141,8 +141,9 @@ get_mb_access_token <- function(token = NULL,
 #' @param usage If `"pk"`, returns only public tokens; if `"sk"`, returns only
 #'   secret tokens. Defaults to `NULL`, which returns all tokens in the scope of
 #'   the supplied access token.
-#' @param access_token Your Mapbox access token. If left `NULL`, will first check
-#'   to see if you have a secret token stored in .Renviron, then a public token.
+#' @param access_token Your Mapbox access token. If left `NULL`, will first
+#'   check to see if you have a secret token stored in .Renviron, then a public
+#'   token.
 #' @rdname mb_access_token
 #'
 #' @return A tibble of information about tokens in your Mapbox account.
@@ -184,13 +185,13 @@ list_tokens <- function(username,
   ))
 
   if (request$status_code != 200) {
-    pull <- fromJSON(content)
+    pull <- RcppSimdJson::fparse(content)
     stop(pull$message, call. = FALSE)
   }
 
   output <- request %>%
     httr::content(as = "text") %>%
-    jsonlite::fromJSON() %>%
+    RcppSimdJson::fparse() %>%
     dplyr::as_tibble()
 
   return(output)
