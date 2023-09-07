@@ -76,17 +76,14 @@ specify the distance (in meters) to snap each input coordinate to the road
 network. Defaults to \code{NULL}.}
 
 \item{steps}{If \code{TRUE}, returns the route object split up into route legs
-with step-by-step instructions included. If \code{FALSE} or \code{NULL} (the
-default), a single line geometry representing the full route will be
-returned.}
+with step-by-step instructions included. If \code{FALSE} or \code{NULL} (the default), a
+single line geometry representing the full route will be returned.}
 
 \item{access_token}{Your Mapbox access token; which can be set with
 \code{\link[=mb_access_token]{mb_access_token()}}}
 }
 \value{
-Either a list of two \code{sf} objects - one representing the waypoints,
-and one representing the route - or an R list representing the full
-optimization API response.
+Either a list of two \code{sf} objects - one representing the waypoints, and one representing the route - or an R list representing the full optimization API response.
 }
 \description{
 Return an optimized route for a series of input coordinates

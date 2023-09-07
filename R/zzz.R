@@ -1,13 +1,5 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage(
-    paste0(
-      c(
-        "Usage of the Mapbox APIs is governed by the Mapbox Terms of Service.",
-        "Please visit https://www.mapbox.com/legal/tos/ for more information."
-      ),
-      collapse = "\n"
-    )
-  )
+  packageStartupMessage("Usage of the Mapbox APIs is governed by the Mapbox Terms of Service.\nPlease visit https://www.mapbox.com/legal/tos/ for more information.")
 }
 
 utils::globalVariables(c(

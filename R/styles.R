@@ -18,17 +18,14 @@ get_style <- function(style_id,
                       username,
                       style_url = NULL,
                       access_token = NULL) {
-  access_token <- get_mb_access_token(
-    access_token,
-    default = "MAPBOX_SECRET_TOKEN"
-    )
+  access_token <- get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN")
 
-  url <- set_mb_map_style(
-    style_url,
-    username,
-    style_id,
-    url_fmt = "https://api.mapbox.com/styles/v1/%s/%s/"
-  )
+  if (!is.null(style_url)) {
+    username <- stringi::stri_extract(style_url, regex = paste0("(?<=styles/).+(?=/)"))
+    style_id <- stringi::stri_extract(style_url, regex = paste0("(?<=", username, "/).+"))
+  }
+
+  url <- sprintf("https://api.mapbox.com/styles/v1/%s/%s", username, style_id)
 
   request <- httr::GET(
     url = url,
@@ -36,22 +33,19 @@ get_style <- function(style_id,
   )
 
   content <- httr::content(request, as = "text")
-  content <- RcppSimdJson::fparse(content)
 
   if (request$status_code != 200) {
-    stop(print(content[["message"]]), call. = FALSE)
+    stop(print(content$message), call. = FALSE)
   }
 
-  return(content)
+  return(jsonlite::fromJSON(content))
 }
 
 #' @name list_styles
 #' @rdname get_style
 #' @export
 list_styles <- function(username, access_token = NULL) {
-  access_token <- get_mb_access_token(
-    access_token, default = "MAPBOX_SECRET_TOKEN"
-    )
+  access_token <- get_mb_access_token(access_token, default = "MAPBOX_SECRET_TOKEN")
 
   url <- sprintf("https://api.mapbox.com/styles/v1/%s", username)
 
@@ -63,5 +57,5 @@ list_styles <- function(username, access_token = NULL) {
     stop(content, call. = FALSE)
   }
 
-  return(RcppSimdJson::fparse(content))
+  return(jsonlite::fromJSON(content))
 }

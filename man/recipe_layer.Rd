@@ -13,20 +13,15 @@ recipe_layer(
 )
 }
 \arguments{
-\item{source}{The tileset source ID. This is returned by
-\code{mts_create_source()} or can be retrieved from your Mapbox account
-with \code{mts_list_sources()}.}
+\item{source}{The tileset source ID. This is returned by \code{mts_create_source()} or can be retrieved from your Mapbox account with \code{mts_list_sources()}.}
 
 \item{minzoom}{The minimum zoom level at which a layer can be viewed.}
 
-\item{maxzoom}{The maximum zoom level at which a layer is rendered; the layer
-will still be visible past the maximum zoom level due to overzooming.}
+\item{maxzoom}{The maximum zoom level at which a layer is rendered; the layer will still be visible past the maximum zoom level due to overzooming.}
 
-\item{features}{A list of feature options, possibly generated with
-\code{feature_options()}.}
+\item{features}{A list of feature options, possibly generated with \code{feature_options()}.}
 
-\item{tiles}{A list of tile options, possibly generated with
-\code{tile_options()}}
+\item{tiles}{A list of tile options, possibly generated with \code{tile_options()}}
 }
 \value{
 A recipe layer list to be used in \code{mts_make_recipe()}.

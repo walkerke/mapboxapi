@@ -33,12 +33,13 @@ static_mapbox(
 }
 \arguments{
 \item{location}{An input location for which you would like to request tiles.
-Can be a length-4 vector representing a bounding box, or an \code{sf} object. If
-an input \code{sf} object is supplied, use the \code{buffer_dist} argument to control
-how much area you want to capture around the layer. While the input \code{sf}
-object can be in an arbitrary coordinate reference system, if a length-4
-bounding box vector is supplied instead it must represent WGS84
-longitude/latitude coordinates and be in the order \code{c(xmin, ymin, xmax, ymax)}.}
+Can be a length-4 vector representing a bounding box, or an \code{sf} object.
+If an input \code{sf} object is supplied, use the \code{buffer_dist} argument to
+control how much area you want to capture around the layer.
+While the input \code{sf} object can be in an arbitrary coordinate reference system,
+if a length-4 bounding box vector is supplied instead it must represent
+WGS84 longitude/latitude coordinates and be in the order
+\code{c(xmin, ymin, xmax, ymax)}.}
 
 \item{buffer_dist}{The distance to buffer around an input \code{sf} object for
 determining static map, specified in units. If location is a POINT object

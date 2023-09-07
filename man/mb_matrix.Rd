@@ -17,45 +17,25 @@ mb_matrix(
 )
 }
 \arguments{
-\item{origins}{The input coordinates of your request. Acceptable inputs
-include a list of coordinate pair vectors in \code{c(x, y)} format or an
-\code{sf} object. For sf linestrings or polygons, the distance between centroids
-will be taken.}
+\item{origins}{The input coordinates of your request. Acceptable inputs include a list of
+coordinate pair vectors in \code{c(x, y)} format or an \code{sf} object.
+For sf linestrings or polygons, the distance between centroids will be taken.}
 
-\item{destinations}{The destination coordinates of your request. If
-\code{NULL} (the default), a many-to-many matrix using \code{origins} will
-be returned.}
+\item{destinations}{The destination coordinates of your request. If \code{NULL} (the default), a many-to-many matrix using \code{origins} will be returned.}
 
-\item{profile}{One of "driving" (the default), "driving-traffic", "walking",
-or "cycling".}
+\item{profile}{One of "driving" (the default), "driving-traffic", "walking", or "cycling".}
 
-\item{fallback_speed}{A value expressed in kilometers per hour used to
-estimate travel time when a route cannot be found between locations. The
-returned travel time will be based on the straight-line estimate of travel
-between the locations at the specified fallback speed.}
+\item{fallback_speed}{A value expressed in kilometers per hour used to estimate travel time when a route cannot be found between locations. The returned travel time will be based on the straight-line estimate of travel between the locations at the specified fallback speed.}
 
-\item{output}{one of \code{"duration"} (the default), which will be measured
-in either minutes or seconds (depending on the value of
-\code{duration_output}), or \code{"distance"}, which will be returned in
-meters.}
+\item{output}{one of \code{"duration"} (the default), which will be measured in either minutes or seconds (depending on the value of \code{duration_output}), or \code{"distance"}, which will be returned in meters.}
 
-\item{duration_output}{one of \code{"minutes"} (the default) or
-\code{"seconds"}}
+\item{duration_output}{one of \code{"minutes"} (the default) or \code{"seconds"}}
 
 \item{access_token}{A Mapbox access token (required)}
 
-\item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles,
-the departure date and time to reflect historical traffic patterns. If
-"driving-traffic" is used, live traffic will be mixed in with historical
-traffic for dates/times near to the current time. Should be specified as an
-ISO 8601 date/time, e.g. \code{"2023-03-31T09:00"}. The time must be set to
-the current time or in the future.}
+\item{depart_at}{(optional) For the "driving" or "driving-traffic" profiles, the departure date and time to reflect historical traffic patterns. If "driving-traffic" is used, live traffic will be mixed in with historical traffic for dates/times near to the current time. Should be specified as an ISO 8601 date/time, e.g. \code{"2023-03-31T09:00"}. The time must be set to the current time or in the future.}
 
-\item{allow_large_matrix}{\code{mb_matrix()} will prevent the user from
-calculating large travel-time matrices (greater than 25x25) by default, as
-they may lead to unexpected charges.  If the user sets this argument to
-\code{TRUE}, \code{mb_matrix()} will bypass this error and calculate the
-large matrix for the user.  Defaults to \code{FALSE}.}
+\item{allow_large_matrix}{\code{mb_matrix()} will prevent the user from calculating large travel-time matrices (greater than 25x25) by default, as they may lead to unexpected charges.  If the user sets this argument to \code{TRUE}, \code{mb_matrix()} will bypass this error and calculate the large matrix for the user.  Defaults to \code{FALSE}.}
 }
 \value{
 An R matrix of source-destination travel times.

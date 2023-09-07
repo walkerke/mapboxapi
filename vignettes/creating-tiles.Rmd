@@ -24,23 +24,23 @@ GET("https://usbuildingdata.blob.core.windows.net/usbuildings-v1-1/Texas.zip",
 
 unzip("Texas.zip")
 
-# Use tippecanoe to make a dynamic .mbtiles file that visualizes large data
-# appropriately at any zoom level.  sf objects can also be used as input!
+# Use tippecanoe to make a dynamic .mbtiles file that visualizes large data appropriately
+# at any zoom level.  sf objects can also be used as input!
 # (requires installing tippecanoe on your machine separately first)
 tippecanoe(input = "Texas.geojson",
            output = "Texas.mbtiles",
            layer_name = "texas_buildings")
 
-# Upload the generated tileset to your Mapbox account (requires a Mapbox secret
-# access token to be set as an environment variable)
+# Upload the generated tileset to your Mapbox account (requires a Mapbox secret access token
+# to be set as an environment variable)
 upload_tiles(input = "Texas.mbtiles", username = "kwalkertcu",
              tileset_id = "TX_buildings",
              multipart = TRUE)
 
 
 # Head over to Mapbox Studio when the upload is done (check the status with
-# `check_upload_status()`) and add it to a style.  When you've styled it, bring
-# it back into R with mapdeck by referencing the style ID:
+# `check_upload_status()`) and add it to a style.  When you've styled it, bring it back
+# into R with mapdeck by referencing the style ID:
 mapdeck(token = Sys.getenv("MAPBOX_PUBLIC_TOKEN"),
         style = "mapbox://styles/kwalkertcu/ckaf9qxim1pyk1io7r2e8exj2/draft",
         zoom = 6,

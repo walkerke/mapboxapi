@@ -31,8 +31,8 @@ you.}
 \item{overwrite}{Whether or not to overwrite an existing Mapbox access token.
 Defaults to \code{FALSE}.}
 
-\item{install}{if \code{TRUE}, will install the key in your \code{.Renviron} file for
-use in future sessions. Defaults to \code{FALSE}.}
+\item{install}{if \code{TRUE}, will install the key in your \code{.Renviron} file for use
+in future sessions. Defaults to \code{FALSE}.}
 
 \item{default}{If \code{TRUE}, will only include the default token for an account.
 If \code{FALSE}, will include all other tokens except for the default. Defaults
@@ -54,9 +54,8 @@ tokens.}
 secret tokens. Defaults to \code{NULL}, which returns all tokens in the scope of
 the supplied access token.}
 
-\item{access_token}{Your Mapbox access token. If left \code{NULL}, will first
-check to see if you have a secret token stored in .Renviron, then a public
-token.}
+\item{access_token}{Your Mapbox access token. If left \code{NULL}, will first check
+to see if you have a secret token stored in .Renviron, then a public token.}
 }
 \value{
 A tibble of information about tokens in your Mapbox account.

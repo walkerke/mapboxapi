@@ -9,7 +9,7 @@ test_that("helpers work", {
 
   expect_true(is_bbox(bbox))
   expect_true(is_sfc(nc$geometry))
-  expect_true(is_sf_or_sfc(nc))
+  expect_true(is_sf(nc))
 
   expect_equal(as_dist_units(1000, to = "km"),
                as_dist_units(1, from = "km", to = NULL))
