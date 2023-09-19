@@ -118,8 +118,8 @@ get_mb_access_token <- function(token = NULL,
         return(token)
       }
     } else {
-      if (!grepl("^pk", token)) {
-        stop("Your supplied token appears to be invalid. Token strings will begin with 'pk.ey'. Retrieve one or create one from your Mapbox account.", call. = FALSE)
+      if (!grepl("^pk", token) && !grepl("^sk", token)) {
+        stop("Your supplied token appears to be invalid. Token strings will begin with 'pk.ey' or 'sk.ey'. Retrieve one or create one from your Mapbox account.", call. = FALSE)
       } else {
         return(token)
       }
