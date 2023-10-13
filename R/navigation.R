@@ -591,9 +591,9 @@ mb_isochrone <- function(location,
                          id_column = NULL) {
   access_token <- get_mb_access_token(access_token)
 
-  if (!is.null(depart_at)) {
-    warning("The `depart_at` parameter is no longer supported for `mb_isochrone()`; returning isochrones under typical traffic conditions.")
-  }
+  # if (!is.null(depart_at)) {
+  #   warning("The `depart_at` parameter is no longer supported for `mb_isochrone()`; returning isochrones under typical traffic conditions.")
+  # }
 
   # If distance is supplied, time should be set to NULL
   if (!is.null(distance)) {
