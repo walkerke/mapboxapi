@@ -19,6 +19,8 @@ Description: Includes support for 'Mapbox' Navigation APIs, including directions
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/walkerke/mapboxapi, https://walker-data.com/mapboxapi/
+BugReports: https://github.com/walkerke/mapboxapi/issues
 Depends: R (>= 3.3.0)
 Imports: 
     httr,
