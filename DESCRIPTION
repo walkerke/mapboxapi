@@ -16,6 +16,7 @@ Description: Includes support for 'Mapbox' Navigation APIs, including directions
   the Maps API for interacting with 'Mapbox' vector tilesets and visualizing 
   'Mapbox' maps in R; and 'Mapbox Tiling Service' and 'tippecanoe' for generating map tiles.
   See <https://docs.mapbox.com/api/> for more information about the 'Mapbox' APIs.
+URL: https://github.com/walkerke/mapboxapi
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
