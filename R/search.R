@@ -6,25 +6,26 @@
 #'
 #' @param search_text The text to search, formatted as a character string. Can
 #'   be an address, a location, or a description of a point of interest.
-#' @param endpoint One of `'mapbox.places'` (the default) or
-#'   `mapbox.places-permanent`. Per Mapbox's terms of service, you are only
-#'   allowed to save results and perform batch geocoding with the
-#'   places-permanent endpoint.
+#' @param structured_input A named list of structured address inputs, to be used in place of \code{search_text} when more formal address inputs are desired.  Available parameters, to be used as the names of list elements, include 'address_line1', 'address_number', 'street', 'block', 'place', 'region', 'locality', 'neighborhood', and 'country'.  See here for more documentation: \url{https://docs.mapbox.com/api/search/geocoding/#forward-geocoding-with-structured-input}.
+#' @param permanent Either FALSE (the default) when results are not intended to be stored, or TRUE if the results are planned to be stored.
+#' @param autocomplete Whether or not to return autocomplete results.  Defaults to FALSE.
 #' @param limit How many results to return; defaults to 1 (maximum 10).
 #' @param types A vector of feature types to limit to which the search should be
 #'   limited. Available options include `'country'`, `'region'`, `'postcode'`,
-#'   `'district'`, `'place'`, `'locality'`, `'neighborhood'`, `'address'`, and
-#'   `'poi'`. If left blank, all types will be searched.
+#'   `'district'`, `'place'`, `'locality'`, `'neighborhood'`, `'address'`, `street`, `block`, `address`. and `'secondary_address'`. If left blank, all types will be searched.
 #' @param search_within An `sf` object, or vector representing a bounding box of
 #'   format `c(min_longitude, min_latitude, max_longitude, max_latitude)` used
 #'   to limit search results. Defaults to NULL.
 #' @param language The user's language, which can help with interpretation of
 #'   queries. Available languages are found at
 #'   <https://docs.mapbox.com/api/search/#language-coverage>.
+#' @param country A character string or vector of ISO 3166 alpha-2 country codes within which you would like to limit your search.
+#' @param proximity Either a vector of coordinates or an IP address string to bias the results to favor locations near to the input location.
+#' @param worldview Returns features intended for different regional or cultural groups.  The US (\code{'us'}) world view is returned by default.
 #' @param output If `"coordinates"` (the default), returns a length-two vector
 #'   of coordinates or a list of coordinates. If `"sf"`, returns an `sf` object
 #'   with the result geometries. If `"full"`, returns the full response from the
-#'   API.
+#'   API as an sf object.
 #' @param access_token The Mapbox access token (required); can be set with
 #'   [mb_access_token()].
 #'
@@ -34,12 +35,17 @@
 #' }
 #'
 #' @export
-mb_geocode <- function(search_text,
-                       endpoint = "mapbox.places",
+mb_geocode <- function(search_text = NULL,
+                       structured_input = NULL,
+                       permanent = FALSE,
+                       autocomplete = TRUE,
                        limit = 1,
                        types = NULL,
                        search_within = NULL,
                        language = NULL,
+                       country = NULL,
+                       proximity = NULL,
+                       worldview = NULL,
                        output = "coordinates",
                        access_token = NULL) {
   access_token <- get_mb_access_token(access_token)
@@ -62,20 +68,48 @@ mb_geocode <- function(search_text,
     types <- paste0(types, collapse = ",")
   }
 
-  search_text <- curl::curl_escape(search_text)
+  if (!is.null(proximity)) {
+    proximity <- paste0(proximity, collapse = ",")
+  }
 
-  base <- sprintf(
-    "https://api.mapbox.com/geocoding/v5/%s/%s.json",
-    endpoint, search_text
-  )
+  if (!is.null(search_text) && !is.null(structured_input)) {
+    rlang::abort("Either `search_text` or `structured_input` should be supplied, but not both.")
+  }
 
-  req <- httr::GET(base, query = list(
-    access_token = access_token,
-    limit = limit,
-    bbox = bbox,
-    types = types,
-    language = language
-  ))
+  base <- "https://api.mapbox.com/search/geocode/v6/forward"
+
+
+  if (!is.null(search_text)) {
+    req <- httr::GET(base, query = list(
+      q = search_text,
+      permanent = permanent,
+      autocomplete = autocomplete,
+      access_token = access_token,
+      limit = limit,
+      bbox = bbox,
+      types = types,
+      language = language,
+      country = country,
+      proximity = proximity,
+      worldview = worldview
+    ))
+  } else if (!is.null(structured_input)) {
+    req <- httr::GET(base, query = c(structured_input, list(
+      permanent = permanent,
+      autocomplete = autocomplete,
+      access_token = access_token,
+      limit = limit,
+      bbox = bbox,
+      types = types,
+      language = language,
+      country = country,
+      proximity = proximity,
+      worldview = worldview
+    )))
+  } else {
+    rlang::abort("Either `search_text` or `structured_input` should be supplied, but not both.")
+
+  }
 
   content <- httr::content(req, as = "text")
 
@@ -88,7 +122,19 @@ mb_geocode <- function(search_text,
 
 
   if (output == "sf") {
-    return(sf::st_read(content, quiet = TRUE))
+
+    out <- sf::st_read(content, quiet = TRUE)
+
+    coords <- purrr::map_dfr(out$coordinates, function(x) {
+      jsonlite::fromJSON(x)
+    })
+
+    out <- out[,c("id", "mapbox_id", "feature_type", "full_address")]
+
+    out$longitude <- coords$longitude
+    out$latitude <- coords$latitude
+
+    return(out)
   } else if (output == "coordinates") {
     cont2 <- jsonlite::fromJSON(content)
 
@@ -100,7 +146,7 @@ mb_geocode <- function(search_text,
       return(coords)
     }
   } else if (output == "full") {
-    return(jsonlite::fromJSON(content))
+    return(sf::st_read(content, quiet = TRUE))
   } else {
     stop("The requested output must be one of 'coordinates', 'sf', or 'full'.")
   }
@@ -111,18 +157,16 @@ mb_geocode <- function(search_text,
 #'
 #' @param coordinates The coordinates of a location in format `c(longitude,
 #'   latitude)` for which you'd like to return information.
-#' @param endpoint One of `'mapbox.places'` (the default) or
-#'   `mapbox.places-permanent`. Per Mapbox's terms of service, you are only
-#'   allowed to save results and perform batch geocoding with the
-#'   places-permanent endpoint.
+#' @param permanent Either FALSE (the default) when results are not intended to be stored, or TRUE if the results are planned to be stored.
 #' @param limit How many results to return; defaults to 1 (maximum 10).
 #' @param language The user's language, which can help with interpretation of
 #'   queries. Available languages are found at
 #'   <https://docs.mapbox.com/api/search/#language-coverage>.
 #' @param types A vector of feature types to limit to which the search should be
 #'   limited. Available options include `'country'`, `'region'`, `'postcode'`,
-#'   `'district'`, `'place'`, `'locality'`, `'neighborhood'`, `'address'`, and
-#'   `'poi'`. If left blank, all types will be searched.
+#'   `'district'`, `'place'`, `'locality'`, `'neighborhood'`, `'address'`, `street`, `block`, `address`. and `'secondary_address'`. If left blank, all types will be searched.
+#' @param country A character string or vector of ISO 3166 alpha-2 country codes within which you would like to limit your search.
+#' @param worldview Returns features intended for different regional or cultural groups.  The US (\code{'us'}) world view is returned by default.
 #' @param output one of `"text"` (the default), which will return a character
 #'   string or list of character strings representing the returned results;
 #'   `output = "sf"`, returning an `sf` object; or `"full"`, which will return a
@@ -136,34 +180,36 @@ mb_geocode <- function(search_text,
 #'
 #' @examples \dontrun{
 #'
-#' mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "poi")
+#' mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "address")
 #' }
 #'
 #' @export
 mb_reverse_geocode <- function(coordinates,
-                               endpoint = "mapbox.places",
+                               permanent = FALSE,
                                limit = 1,
                                language = NULL,
                                types = NULL,
+                               country = NULL,
+                               worldview = NULL,
                                output = "text",
                                access_token = NULL) {
   access_token <- get_mb_access_token(access_token)
-
-  coords <- paste0(coordinates, collapse = ",")
 
   if (!is.null(types)) {
     types <- paste0(types, collapse = ",")
   }
 
-  base <- sprintf(
-    "https://api.mapbox.com/geocoding/v5/%s/%s.json",
-    endpoint, coords
-  )
+  base <- "https://api.mapbox.com/search/geocode/v6/reverse"
 
   req <- httr::GET(base, query = list(
+    longitude = coordinates[1],
+    latitude = coordinates[2],
+    permanent = permanent,
     access_token = access_token,
     limit = limit,
     types = types,
+    country = country,
+    worldview = worldview,
     language = language
   ))
 
@@ -178,12 +224,235 @@ mb_reverse_geocode <- function(coordinates,
   if (output == "text") {
     content2 <- jsonlite::fromJSON(content)
 
-    text <- content2$features$place_name
+    text <- content2$features$properties$full_address
 
     return(text)
   } else if (output == "sf") {
-    return(sf::st_read(content, quiet = TRUE))
+
+    out <- sf::st_read(content, quiet = TRUE)
+
+    coords <- jsonlite::fromJSON(out$coordinates)
+
+    out <- out[,c("id", "mapbox_id", "feature_type", "full_address")]
+
+    out$longitude <- coords$longitude
+    out$latitude <- coords$latitude
+
+    return(out)
+
   } else if (output == "full") {
-    return(jsonlite::fromJSON(content))
+    return(sf::st_read(content, quiet = TRUE))
+
   }
+}
+
+
+#' Geocode addresses or locations in bulk using the Mapbox Batch Geocoding API
+#'
+#' @param data An input data frame
+#' @param search_column A column that contains a description of the place to geocode, or a full address.  `search_column` cannot be used with address component arguments.
+#' @param address_line1 The name of a column in `data` that contains the first line of an address, e.g. "1600 Pennsylvania Ave NW"
+#' @param address_number The name of a column in `data` that contains the address number, e.g. "1600".  Not required when `address_line1` is used.
+#' @param street The name of a column in `data` that contains the street name, e.g. "Pennsylvania Ave NW".  Not required when `address_line1` is used.
+#' @param block The name of a column in `data` that describes the block, used in some Japanese addresses.
+#' @param place The name of a column in `data` that contains the place name; typically a city, village, or municipality, e.g. "Washington"
+#' @param region The name of a column in `data` that represents sub-national administrative features, such as states in Mexico or the United States.  Example: "DC"
+#' @param postcode The name of a column in `data` representing the postal code of the address; this will be a ZIP code in the United States, e.g. "20500"
+#' @param locality The name of a column in `data` that describes official sub-city locations, such as arrondissements in France.
+#' @param neighborhood The name of a column in `data` that represents a colloquial neighborhood name for the location.
+#' @param country A character string or vector of ISO 3166 alpha-2 country codes within which you would like to limit your search.
+#' @param permanent Either FALSE (the default) when results are not intended to be stored, or TRUE if the results are planned to be stored.
+#' @param limit How many results to return per address.  This is not currently accessible for users and can only be 1.
+#' @param search_within An `sf` object, or vector representing a bounding box of
+#'   format `c(min_longitude, min_latitude, max_longitude, max_latitude)` used
+#'   to limit search results. Defaults to NULL.
+#' @param language The user's language, which can help with interpretation of
+#'   queries. Available languages are found at
+#'   <https://docs.mapbox.com/api/search/#language-coverage>.
+#' @param types A vector of feature types to limit to which the search should be
+#'   limited. Available options include `'country'`, `'region'`, `'postcode'`,
+#'   `'district'`, `'place'`, `'locality'`, `'neighborhood'`, `'address'`, `street`, `block`, `address`. and `'secondary_address'`. If left blank, all types will be searched.
+#' @param proximity proximity Either a vector of coordinates or an IP address string to bias the results to favor locations near to the input location.
+#' @param worldview Returns features intended for different regional or cultural groups.  The US (\code{'us'}) world view is returned by default.
+#' @param allow_large_job A boolean indicating that the user is OK with potential charges incurred to their account due to a large geocoding job (over 1000 addresses).  The Mapbox Free Tier includes 100,000 free geocodes per month.  Defaults to `FALSE`.
+#' @param access_token The Mapbox access token (required); can be set with
+#'   [mb_access_token()]
+#' @param sf A boolean that determines whether the output will be an sf POINT object (`TRUE`, the default) or a regular data frame (`FALSE`).
+#'
+#' @return The input dataset as an sf POINT object representing the geocoded locations, or the input dataset with longitude, latitude, and matched address columns included.
+#' @export
+mb_batch_geocode <- function(
+  data,
+  search_column = NULL,
+  address_line1 = NULL,
+  address_number = NULL,
+  street = NULL,
+  block = NULL,
+  place = NULL,
+  region = NULL,
+  postcode = NULL,
+  locality = NULL,
+  neighborhood = NULL,
+  country = NULL,
+  permanent = FALSE,
+  limit = 1,
+  search_within = NULL,
+  language = NULL,
+  types = NULL,
+  proximity = NULL,
+  worldview = NULL,
+  allow_large_job = FALSE,
+  access_token = NULL,
+  sf = TRUE
+) {
+  access_token <- get_mb_access_token(access_token)
+
+  # Check to see if large job is allowed
+  if (nrow(data) > 1000) {
+    if (!allow_large_job) {
+      rlang::abort(message = c("The number of rows in your input dataset exceeds 1,000.",
+                               "i" = "To perform this batch geocoding job, re-run `mb_batch_geocode()` with the argument `allow_large_job = TRUE`.",
+                               "i" = "The limit for Mapbox's free tier is 100,000 geocodes per month. Beyond that, you will incur charges.",
+                               "i" = "Please visit https://www.mapbox.com/pricing for more information."))
+    } else {
+      data$ix <- c(0, rep(1:(nrow(origins) - 1) %/% 1000))
+
+      geocodes <- data %>%
+        split(~ix) %>%
+        purrr::map_dfr(function(x) {
+          mapboxapi::mb_batch_geocode(
+            data = x,
+            search_column = search_column,
+            address_line1 = address_line1,
+            address_number = address_number,
+            street = street,
+            block = block,
+            place = place,
+            region = region,
+            postcode = postcode,
+            locality = locality,
+            neighborhood = neighborhood,
+            country = country,
+            permanent = permanent,
+            limit = 1,
+            search_within = search_within,
+            language = language,
+            types = types,
+            proximity = proximity,
+            worldview = worldview,
+            allow_large_job = allow_large_job,
+            access_token = access_token,
+            sf = sf
+          )
+        }) %>%
+        dplyr::select(-ix)
+
+      return(geocodes)
+    }
+  }
+
+
+
+
+  if (!is.null(search_within)) {
+    if (any(grepl("^sf", class(search_within)))) {
+      bbox <- search_within %>%
+        st_transform(4326) %>%
+        st_bbox() %>%
+        as.vector() %>%
+        paste0(collapse = ",")
+    } else {
+      bbox <- paste0(search_within, collapse = ",")
+    }
+  } else {
+    bbox <- NULL
+  }
+
+  if (!is.null(types)) {
+    types <- paste0(types, collapse = ",")
+  }
+
+  if (!is.null(proximity)) {
+    proximity <- paste0(proximity, collapse = ",")
+  }
+
+  # if (!is.null(search_column) && !is.null(any(c(address_line1, address_number, street,
+  #                                               block, place, region, postcode, locality,
+  #                                               neighborhood)))) {
+  #   rlang::abort("Either `search_column` or structured address inputs should be supplied, but not both.")
+  # }
+
+  # Construct the inputs
+  if (!is.null(search_column)) {
+    data_input <- dplyr::tibble(
+      q = data[[search_column]],
+      limit = 1,
+      bbox = bbox,
+      types = types,
+      proximity = proximity,
+      worldview = worldview,
+      language = language,
+      country = country
+    )
+  } else {
+    data_input <- dplyr::tibble(
+      address_line1 = if (hasName(data, address_line1)) data[[address_number]] else NULL,
+      address_number = if (hasName(data, address_number)) data[[address_number]] else NULL,
+      street = if (hasName(data, street)) data[[street]] else NULL,
+      block = if (hasName(data, block)) data[[block]] else NULL,
+      place = if (hasName(data, place)) data[[place]] else NULL,
+      region = if (hasName(data, region)) data[[region]] else NULL,
+      postcode = if (hasName(data, postcode)) data[[postcode]] else NULL,
+      locality = if (hasName(data, locality)) data[[locality]] else NULL,
+      neighborhood = if (hasName(data, neighborhood)) data[[neighborhood]] else NULL,
+      limit = 1,
+      bbox = bbox,
+      types = types,
+      proximity = proximity,
+      worldview = worldview,
+      language = language,
+      country = country
+    )
+  }
+
+  input_json <- jsonlite::toJSON(data_input)
+
+  base <- "https://api.mapbox.com/search/geocode/v6/batch"
+
+  batch_req <- httr::POST(url = base,
+                          query = list(
+                            access_token = access_token,
+                            permanent = permanent
+                          ),
+                          body = input_json,
+                          httr::add_headers(c("Content-Type" = "application/json")))
+
+  batch_content <- httr::content(batch_req, as = "text") %>% jsonlite::fromJSON()
+
+  if (batch_req$status_code != 200) {
+    stop(batch_content$message, call. = FALSE)
+  }
+
+  combined <- batch_content$batch$features |> purrr::list_rbind()
+
+  longitudes <- combined$properties$coordinates$longitude
+  latitudes <- combined$properties$coordinates$latitude
+
+  matched_addresses <- combined$properties$full_address
+
+  data$longitude <- longitudes
+  data$latitude <- latitudes
+  data$matched_address <- matched_addresses
+
+  if (sf) {
+    data_sf <- sf::st_as_sf(data, coords = c("longitude", "latitude"), crs = 4326)
+
+    return(data_sf)
+  } else {
+    return(data)
+  }
+
+
+
+
 }

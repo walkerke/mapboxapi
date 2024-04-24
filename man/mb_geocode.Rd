@@ -6,22 +6,29 @@
 \title{Geocode an address or place description using the Mapbox Geocoding API}
 \usage{
 mb_geocode(
-  search_text,
-  endpoint = "mapbox.places",
+  search_text = NULL,
+  structured_input = NULL,
+  permanent = FALSE,
+  autocomplete = TRUE,
   limit = 1,
   types = NULL,
   search_within = NULL,
   language = NULL,
+  country = NULL,
+  proximity = NULL,
+  worldview = NULL,
   output = "coordinates",
   access_token = NULL
 )
 
 mb_reverse_geocode(
   coordinates,
-  endpoint = "mapbox.places",
+  permanent = FALSE,
   limit = 1,
   language = NULL,
   types = NULL,
+  country = NULL,
+  worldview = NULL,
   output = "text",
   access_token = NULL
 )
@@ -30,17 +37,17 @@ mb_reverse_geocode(
 \item{search_text}{The text to search, formatted as a character string. Can
 be an address, a location, or a description of a point of interest.}
 
-\item{endpoint}{One of \code{'mapbox.places'} (the default) or
-\code{mapbox.places-permanent}. Per Mapbox's terms of service, you are only
-allowed to save results and perform batch geocoding with the
-places-permanent endpoint.}
+\item{structured_input}{A named list of structured address inputs, to be used in place of \code{search_text} when more formal address inputs are desired.  Available parameters, to be used as the names of list elements, include 'address_line1', 'address_number', 'street', 'block', 'place', 'region', 'locality', 'neighborhood', and 'country'.  See here for more documentation: \url{https://docs.mapbox.com/api/search/geocoding/#forward-geocoding-with-structured-input}.}
+
+\item{permanent}{Either FALSE (the default) when results are not intended to be stored, or TRUE if the results are planned to be stored.}
+
+\item{autocomplete}{Whether or not to return autocomplete results.  Defaults to FALSE.}
 
 \item{limit}{How many results to return; defaults to 1 (maximum 10).}
 
 \item{types}{A vector of feature types to limit to which the search should be
 limited. Available options include \code{'country'}, \code{'region'}, \code{'postcode'},
-\code{'district'}, \code{'place'}, \code{'locality'}, \code{'neighborhood'}, \code{'address'}, and
-\code{'poi'}. If left blank, all types will be searched.}
+\code{'district'}, \code{'place'}, \code{'locality'}, \code{'neighborhood'}, \code{'address'}, \code{street}, \code{block}, \code{address}. and \code{'secondary_address'}. If left blank, all types will be searched.}
 
 \item{search_within}{An \code{sf} object, or vector representing a bounding box of
 format \code{c(min_longitude, min_latitude, max_longitude, max_latitude)} used
@@ -49,6 +56,12 @@ to limit search results. Defaults to NULL.}
 \item{language}{The user's language, which can help with interpretation of
 queries. Available languages are found at
 \url{https://docs.mapbox.com/api/search/#language-coverage}.}
+
+\item{country}{A character string or vector of ISO 3166 alpha-2 country codes within which you would like to limit your search.}
+
+\item{proximity}{Either a vector of coordinates or an IP address string to bias the results to favor locations near to the input location.}
+
+\item{worldview}{Returns features intended for different regional or cultural groups.  The US (\code{'us'}) world view is returned by default.}
 
 \item{output}{one of \code{"text"} (the default), which will return a character
 string or list of character strings representing the returned results;
@@ -76,7 +89,7 @@ whitehouse <- mb_geocode("1600 Pennsylvania Ave, Washington DC")
 
 \dontrun{
 
-mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "poi")
+mb_reverse_geocode(c(77.5958768, 12.9667046), limit = 5, types = "address")
 }
 
 }

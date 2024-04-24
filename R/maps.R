@@ -611,7 +611,7 @@ get_vector_tiles <- function(tileset_id,
 #'   defaults to `TRUE`.
 #' @return A pointer to an image of class `"magick-image"` if `image = TRUE`.
 #'   The resulting image can be manipulated further with functions from the
-#'   {magick} package.
+#'   magick package.
 #'
 #' @examples \dontrun{
 #'
@@ -1002,12 +1002,12 @@ set_static_map_dims <- function(base = NULL,
 #' [{ggplot2}](https://ggplot2.tidyverse.org/) or
 #' [{tmap}](https://r-tmap.github.io/tmap/) basemaps.
 #'
-#' This function uses a different approach [get_static_tiles()]. Instead,
-#' [layer_static_mapbox()] is based largely on [snapbox::layer_mapbox()] in the snapbox package
+#' This function uses a different approach than [get_static_tiles()]. Instead,
+#' [layer_static_mapbox()] is based largely on `layer_mapbox()` in the snapbox package
 #' (available under a [MIT
 #' license](https://github.com/anthonynorth/snapbox/blob/master/LICENSE). There
 #' are a few key differences between [layer_static_mapbox()] and
-#' [snapbox::layer_mapbox()]. The "scale" parameter is equivalent to the
+#' `layer_mapbox()`. The "scale" parameter is equivalent to the
 #' "scale_ratio" parameter for snapbox. Setting `scale_factor = "2x"` is
 #' equivalent to setting `retina = TRUE.` Both functions return basemaps that
 #' are no larger than a single tile (a maximum of 1280 by 1280 pixels).
