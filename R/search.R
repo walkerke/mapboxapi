@@ -454,7 +454,107 @@ mb_batch_geocode <- function(
     return(data)
   }
 
-
-
-
 }
+
+
+#' Include Mapbox Geocoder dependencies
+#'
+#' This function loads necessary JavaScript and CSS for the Mapbox Geocoder.
+#' @import htmltools
+get_geocoder_dependencies <- function() {
+  path <- system.file("www", package = "mapboxapi")
+
+  # Define local dependency for your package's JS
+  mapboxGeocoderBinding <- htmlDependency(
+    name = "mapboxGeocoderBinding",
+    version = "1.0.0",
+    src = c(file = path),
+    script = "mapboxGeocoderBinding.js"
+  )
+
+  # External Mapbox GL JS
+  mapboxGLJS <- htmlDependency(
+    name = "mapboxGL",
+    version = "3.3.0",
+    src = c(href = "https://api.mapbox.com/mapbox-gl-js/v3.3.0"),
+    script = "mapbox-gl.js"
+  )
+
+  # External Mapbox GL Geocoder CSS
+  mapboxGeocoderCSS <- htmlDependency(
+    name = "mapboxGeocoder",
+    version = "4.7.0",
+    src = c(href = "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0"),
+    stylesheet = "mapbox-gl-geocoder.css"
+  )
+
+  # External Mapbox GL Geocoder JS
+  mapboxGeocoderJS <- htmlDependency(
+    name = "mapboxGeocoderJS",
+    version = "4.7.0",
+    src = c(href = "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0"),
+    script = "mapbox-gl-geocoder.min.js"
+  )
+
+  # Include dependencies
+  htmltools::tagList(mapboxGLJS, mapboxGeocoderCSS, mapboxGeocoderJS, mapboxGeocoderBinding)
+}
+
+
+#' Use Mapbox's Geocoder widget in a Shiny application
+#'
+#' @param inputId The Shiny input ID
+#' @param access_token The Mapbox access token (required); can be set with
+#'   [mb_access_token()]
+#' @param width The width of the geocoder.
+#' @param placeholder The placeholder to be used in the search box; defaults to 'Search'
+#' @param search_within An `sf` object, or vector representing a bounding box of
+#'   format `c(min_longitude, min_latitude, max_longitude, max_latitude)` used
+#'   to limit search results. Defaults to NULL.
+#' @param proximity A length-2 vector of longitude and latitude coordinates used to prioritize results near to that location.  Defaults to NULL.
+#'
+#' @return A Mapbox geocoder widget as a Shiny input
+#' @export
+mapboxGeocoderInput <- function(
+    inputId,
+    access_token = NULL,
+    width = "100%",
+    placeholder = 'Search',
+    search_within = NULL,
+    proximity = NULL
+) {
+
+  access_token <- get_mb_access_token(access_token)
+
+  if (!is.null(search_within)) {
+    if (any(grepl("^sf", class(search_within)))) {
+      bbox <- search_within %>%
+        st_transform(4326) %>%
+        st_bbox() %>%
+        as.vector()
+    } else {
+      bbox <- bbox
+    }
+  } else {
+    bbox <- NULL
+  }
+
+  if (!is.null(proximity)) {
+    proximity_list <- list(
+      longitude = proximity[1],
+      latitude = proximity[2]
+    )
+  }
+
+  options <- list()
+
+  options <- modifyList(options, list(proximity = proximity, placeholder = placeholder, bbox = bbox))
+
+  div(id = inputId,
+      class = "mapbox-geocoder",
+      style = sprintf("width: %s;", width),
+      `data-access-token` = access_token,
+      `data-options` = jsonlite::toJSON(options),
+      get_geocoder_dependencies())
+}
+
