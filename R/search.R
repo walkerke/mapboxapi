@@ -395,23 +395,25 @@ mb_batch_geocode <- function(
       country = country
     )
   } else {
+    safe_extract <- purrr::possibly(function(col) data[[col]], otherwise = NULL)
+
     data_input <- dplyr::tibble(
-      address_line1 = if (hasName(data, address_line1)) data[[address_number]] else NULL,
-      address_number = if (hasName(data, address_number)) data[[address_number]] else NULL,
-      street = if (hasName(data, street)) data[[street]] else NULL,
-      block = if (hasName(data, block)) data[[block]] else NULL,
-      place = if (hasName(data, place)) data[[place]] else NULL,
-      region = if (hasName(data, region)) data[[region]] else NULL,
-      postcode = if (hasName(data, postcode)) data[[postcode]] else NULL,
-      locality = if (hasName(data, locality)) data[[locality]] else NULL,
-      neighborhood = if (hasName(data, neighborhood)) data[[neighborhood]] else NULL,
       limit = 1,
       bbox = bbox,
       types = types,
       proximity = proximity,
       worldview = worldview,
       language = language,
-      country = country
+      country = country,
+      address_line1 = safe_extract(address_line1),
+      address_number = safe_extract(address_number),
+      street = safe_extract(street),
+      block = safe_extract(block),
+      place = safe_extract(place),
+      region = safe_extract(region),
+      postcode = safe_extract(postcode),
+      locality = safe_extract(locality),
+      neighborhood = safe_extract(neighborhood)
     )
   }
 
