@@ -4,7 +4,6 @@
 #'
 #' @author Kyle Walker
 #' @name mapboxapi
-#' @docType package
 #' @import httr
 #' @import sf
 #' @importFrom jsonlite fromJSON
@@ -25,4 +24,5 @@
 #' @importFrom raster raster projection brick extent cellsFromExtent setValues values crop res
 #' @importFrom png readPNG
 #' @importFrom jpeg readJPEG
-NULL
+#' @import htmltools
+"_PACKAGE"
