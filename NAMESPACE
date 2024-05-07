@@ -3,6 +3,7 @@
 export(addMapboxTiles)
 export(check_upload_status)
 export(feature_options)
+export(geocoder_as_sf)
 export(get_mb_access_token)
 export(get_static_tiles)
 export(get_style)

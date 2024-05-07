@@ -50,6 +50,13 @@ mb_geocode <- function(search_text = NULL,
                        access_token = NULL) {
   access_token <- get_mb_access_token(access_token)
 
+  if (permanent) {
+    rlang::warn(c("You have requested permanent geocoding.",
+                  "i" = "You are allowed to store these geocoded results per Mapbox's Terms of Service",
+                  "i" = "However, permanent geocoding may incur significant charges to your Mapbox account."),
+                .frequency = "once")
+  }
+
   if (!is.null(search_within)) {
     if (any(grepl("^sf", class(search_within)))) {
       bbox <- search_within %>%
@@ -195,6 +202,13 @@ mb_reverse_geocode <- function(coordinates,
                                access_token = NULL) {
   access_token <- get_mb_access_token(access_token)
 
+  if (permanent) {
+    rlang::warn(c("You have requested permanent geocoding.",
+                  "i" = "You are allowed to store these geocoded results per Mapbox's Terms of Service",
+                  "i" = "However, permanent geocoding may incur significant charges to your Mapbox account."),
+                .frequency = "once")
+  }
+
   if (!is.null(types)) {
     types <- paste0(types, collapse = ",")
   }
@@ -306,6 +320,13 @@ mb_batch_geocode <- function(
   sf = TRUE
 ) {
   access_token <- get_mb_access_token(access_token)
+
+  if (permanent) {
+    rlang::warn(c("You have requested permanent geocoding.",
+                  "i" = "You are allowed to store these geocoded results per Mapbox's Terms of Service",
+                  "i" = "However, permanent geocoding may incur significant charges to your Mapbox account."),
+                .frequency = "once")
+  }
 
   # Check to see if large job is allowed
   if (nrow(data) > 1000) {
@@ -439,12 +460,15 @@ mb_batch_geocode <- function(
 
   longitudes <- combined$properties$coordinates$longitude
   latitudes <- combined$properties$coordinates$latitude
-
   matched_addresses <- combined$properties$full_address
+  accuracy <- combined$properties$coordinates$accuracy
+  confidence <- combined$properties$match_code$confidence
 
   data$longitude <- longitudes
   data$latitude <- latitudes
   data$matched_address <- matched_addresses
+  data$accuracy <- accuracy
+  data$confidence <- confidence
 
   if (sf) {
     data_sf <- sf::st_as_sf(data, coords = c("longitude", "latitude"), crs = 4326)
@@ -472,6 +496,13 @@ get_geocoder_dependencies <- function() {
     script = "mapboxGeocoderBinding.js"
   )
 
+  mapboxGeocoderLocalCSS <- htmlDependency(
+    name = "mapboxGeocoderLocalCSS",
+    version = "1.0.0",
+    src = c(file = path),
+    stylesheet = "mapboxGeocoder.css"
+  )
+
   # External Mapbox GL JS
   mapboxGLJS <- htmlDependency(
     name = "mapboxGL",
@@ -483,21 +514,22 @@ get_geocoder_dependencies <- function() {
   # External Mapbox GL Geocoder CSS
   mapboxGeocoderCSS <- htmlDependency(
     name = "mapboxGeocoder",
-    version = "4.7.0",
-    src = c(href = "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0"),
+    version = "5.0.0",
+    src = c(href = "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0"),
     stylesheet = "mapbox-gl-geocoder.css"
   )
 
   # External Mapbox GL Geocoder JS
   mapboxGeocoderJS <- htmlDependency(
     name = "mapboxGeocoderJS",
-    version = "4.7.0",
-    src = c(href = "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0"),
+    version = "5.0.0",
+    src = c(href = "https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0"),
     script = "mapbox-gl-geocoder.min.js"
   )
 
   # Include dependencies
-  htmltools::tagList(mapboxGLJS, mapboxGeocoderCSS, mapboxGeocoderJS, mapboxGeocoderBinding)
+  htmltools::tagList(mapboxGLJS, mapboxGeocoderCSS, mapboxGeocoderJS, mapboxGeocoderBinding,
+                     mapboxGeocoderLocalCSS)
 }
 
 
@@ -506,7 +538,6 @@ get_geocoder_dependencies <- function() {
 #' @param inputId The Shiny input ID
 #' @param access_token The Mapbox access token (required); can be set with
 #'   [mb_access_token()]
-#' @param width The width of the geocoder.
 #' @param placeholder The placeholder to be used in the search box; defaults to 'Search'
 #' @param search_within An `sf` object, or vector representing a bounding box of
 #'   format `c(min_longitude, min_latitude, max_longitude, max_latitude)` used
@@ -518,10 +549,10 @@ get_geocoder_dependencies <- function() {
 mapboxGeocoderInput <- function(
     inputId,
     access_token = NULL,
-    width = "100%",
     placeholder = 'Search',
     search_within = NULL,
     proximity = NULL
+
 ) {
 
   access_token <- get_mb_access_token(access_token)
@@ -552,9 +583,32 @@ mapboxGeocoderInput <- function(
 
   div(id = inputId,
       class = "mapbox-geocoder",
-      style = sprintf("width: %s;", width),
       `data-access-token` = access_token,
       `data-options` = jsonlite::toJSON(options),
       get_geocoder_dependencies())
+}
+
+
+
+#' Convert the result of a `mapboxGeocoderInput()` geocoded location to an sf object
+#'
+#' @param input The name of the Shiny input using `mapboxGeocoderInput()`, likely something like `input$geocode`
+#'
+#' @return An sf object that can be used downstream in your Shiny applications
+#' @export
+geocoder_as_sf <- function(input) {
+  coords <- unlist(input$geometry$coordinates)
+
+  sf_obj <- coords %>%
+    sf::st_point() %>%
+    sf::st_sfc(crs = 4326) %>%
+    sf::st_sf()
+
+  sf_obj$longitude <- coords[1]
+  sf_obj$latitude <- coords[2]
+  sf_obj$full_address <- input$place_name
+  sf_obj$text <- input$text
+
+  return(sf_obj)
 }
 

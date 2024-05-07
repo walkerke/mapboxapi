@@ -7,7 +7,6 @@
 mapboxGeocoderInput(
   inputId,
   access_token = NULL,
-  width = "100\%",
   placeholder = "Search",
   search_within = NULL,
   proximity = NULL
@@ -18,8 +17,6 @@ mapboxGeocoderInput(
 
 \item{access_token}{The Mapbox access token (required); can be set with
 \code{\link[=mb_access_token]{mb_access_token()}}}
-
-\item{width}{The width of the geocoder.}
 
 \item{placeholder}{The placeholder to be used in the search box; defaults to 'Search'}
 
