@@ -2,6 +2,7 @@
 % Please edit documentation in R/mapboxapi-package.R
 \docType{package}
 \name{mapboxapi}
+\alias{mapboxapi-package}
 \alias{mapboxapi}
 \title{An R interface to Mapbox web services}
 \description{

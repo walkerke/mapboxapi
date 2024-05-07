@@ -1,0 +1,15 @@
+@media screen and (min-width: 640px) {
+
+  .mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {
+    width: 36px;
+    min-width: 36px;
+  }
+
+  .mapboxgl-ctrl-geocoder {
+    width: 100%;
+    font-size: 15px;
+    line-height: 20px;
+    max-width: 1000px;
+  }
+
+}

@@ -1,8 +1,8 @@
 Package: mapboxapi
 Type: Package
 Title: R Interface to 'Mapbox' Web Services
-Date: 2023-10-13
-Version: 0.5.3
+Date: 2024-05-07
+Version: 0.6
 Authors@R: 
     c(person(given = "Kyle", family = "Walker", email = "kyle@walker-data.com", 
     role = c("aut", "cre")), 
@@ -41,7 +41,8 @@ Imports:
     units,
     raster,
     png,
-    jpeg
+    jpeg,
+    htmltools
 Suggests:
     ggspatial,
     grDevices,
@@ -52,5 +53,5 @@ Suggests:
     mapboxer,
     testthat (>= 3.0.0)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Config/testthat/edition: 3

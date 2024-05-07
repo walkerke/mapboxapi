@@ -119,7 +119,7 @@ defaults to \code{TRUE}.}
 \value{
 A pointer to an image of class \code{"magick-image"} if \code{image = TRUE}.
 The resulting image can be manipulated further with functions from the
-{magick} package.
+magick package.
 }
 \description{
 This function uses the \href{https://www.mapbox.com/static-maps}{Mapbox Static Maps API} to return a pointer to an
