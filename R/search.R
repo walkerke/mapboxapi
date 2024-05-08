@@ -543,6 +543,9 @@ get_geocoder_dependencies <- function() {
 #'   format `c(min_longitude, min_latitude, max_longitude, max_latitude)` used
 #'   to limit search results. Defaults to NULL.
 #' @param proximity A length-2 vector of longitude and latitude coordinates used to prioritize results near to that location.  Defaults to NULL.
+#' @param limit The maximum number of results to show.  Defaults to 5.
+#' @param min_length The minimum number of characters the user must enter before results are shown.  Defaults to 2.
+#' @param language The language to use for the geocoder.  Per the Mapbox documentation, "Options are IETF language tags comprised of a mandatory ISO 639-1 language code and optionally one or more IETF subtags for country or script."
 #'
 #' @return A Mapbox geocoder widget as a Shiny input
 #' @export
@@ -551,7 +554,10 @@ mapboxGeocoderInput <- function(
     access_token = NULL,
     placeholder = 'Search',
     search_within = NULL,
-    proximity = NULL
+    proximity = NULL,
+    limit = 5,
+    min_length = 2,
+    language = NULL
 
 ) {
 
@@ -579,12 +585,12 @@ mapboxGeocoderInput <- function(
 
   options <- list()
 
-  options <- modifyList(options, list(proximity = proximity, placeholder = placeholder, bbox = bbox))
+  options <- modifyList(options, list(proximity = proximity, placeholder = placeholder, bbox = bbox, limit = limit, minLength = min_length, language = language))
 
   div(id = inputId,
       class = "mapbox-geocoder",
       `data-access-token` = access_token,
-      `data-options` = jsonlite::toJSON(options),
+      `data-options` = jsonlite::toJSON(options, auto_unbox = TRUE),
       get_geocoder_dependencies())
 }
 
@@ -594,7 +600,7 @@ mapboxGeocoderInput <- function(
 #'
 #' @param input The name of the Shiny input using `mapboxGeocoderInput()`, likely something like `input$geocode`
 #'
-#' @return An sf object that can be used downstream in your Shiny applications
+#' @return An sf object that can be used downstream in your Shiny applications.
 #' @export
 geocoder_as_sf <- function(input) {
   coords <- unlist(input$geometry$coordinates)
@@ -610,5 +616,18 @@ geocoder_as_sf <- function(input) {
   sf_obj$text <- input$text
 
   return(sf_obj)
+}
+
+
+#' Convert the results of a `mapboxGeocoderInput()` geocoded location to XY coordinates
+#'
+#' @param input The name of the Shiny input using `mapboxGeocoderInput()`, likely something like `input$geocode`
+#'
+#' @return A length-2 vector representing the geocoded longitude/latitude coordinates of the location.
+#' @export
+geocoder_as_xy <- function(input) {
+  coords <- unlist(input$geometry$coordinates)
+
+  return(coords)
 }
 

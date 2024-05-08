@@ -9,7 +9,10 @@ mapboxGeocoderInput(
   access_token = NULL,
   placeholder = "Search",
   search_within = NULL,
-  proximity = NULL
+  proximity = NULL,
+  limit = 5,
+  min_length = 2,
+  language = NULL
 )
 }
 \arguments{
@@ -25,6 +28,12 @@ format \code{c(min_longitude, min_latitude, max_longitude, max_latitude)} used
 to limit search results. Defaults to NULL.}
 
 \item{proximity}{A length-2 vector of longitude and latitude coordinates used to prioritize results near to that location.  Defaults to NULL.}
+
+\item{limit}{The maximum number of results to show.  Defaults to 5.}
+
+\item{min_length}{The minimum number of characters the user must enter before results are shown.  Defaults to 2.}
+
+\item{language}{The language to use for the geocoder.  Per the Mapbox documentation, "Options are IETF language tags comprised of a mandatory ISO 639-1 language code and optionally one or more IETF subtags for country or script."}
 }
 \value{
 A Mapbox geocoder widget as a Shiny input

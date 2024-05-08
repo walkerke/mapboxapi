@@ -10,7 +10,7 @@ geocoder_as_sf(input)
 \item{input}{The name of the Shiny input using \code{mapboxGeocoderInput()}, likely something like \code{input$geocode}}
 }
 \value{
-An sf object that can be used downstream in your Shiny applications
+An sf object that can be used downstream in your Shiny applications.
 }
 \description{
 Convert the result of a \code{mapboxGeocoderInput()} geocoded location to an sf object
