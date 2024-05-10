@@ -500,6 +500,7 @@ mb_batch_geocode <- function(
 #'
 #' This function loads necessary JavaScript and CSS for the Mapbox Geocoder.
 #' @import htmltools
+#' @keywords internal
 get_geocoder_dependencies <- function() {
   path <- system.file("www", package = "mapboxapi")
 

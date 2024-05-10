@@ -52,6 +52,15 @@
     <loc>/reference/feature_options.html</loc>
   </url>
   <url>
+    <loc>/reference/geocoder_as_sf.html</loc>
+  </url>
+  <url>
+    <loc>/reference/geocoder_as_xy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_geocoder_dependencies.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_static_tiles.html</loc>
   </url>
   <url>
@@ -76,10 +85,16 @@
     <loc>/reference/list_tokens.html</loc>
   </url>
   <url>
+    <loc>/reference/mapboxGeocoderInput.html</loc>
+  </url>
+  <url>
     <loc>/reference/mapboxapi.html</loc>
   </url>
   <url>
     <loc>/reference/mb_access_token.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mb_batch_geocode.html</loc>
   </url>
   <url>
     <loc>/reference/mb_directions.html</loc>

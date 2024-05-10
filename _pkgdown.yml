@@ -13,9 +13,16 @@ reference:
   - '`get_style`'
   - '`upload_tiles`'
   - '`check_upload_status`'
-- title: Navigation Services
+- title: Geocoding
   contents:
   - '`mb_geocode`'
+  - '`mb_reverse_geocode`'
+  - '`mb_batch_geocode`'
+  - '`mapboxGeocoderInput`'
+  - '`geocoder_as_sf`'
+  - '`geocoder_as_xy`'
+- title: Navigation Services
+  contents:
   - '`mb_directions`'
   - '`mb_matrix`'
   - '`mb_isochrone`'

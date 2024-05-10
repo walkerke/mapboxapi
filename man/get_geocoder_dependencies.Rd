@@ -9,3 +9,4 @@ get_geocoder_dependencies()
 \description{
 This function loads necessary JavaScript and CSS for the Mapbox Geocoder.
 }
+\keyword{internal}

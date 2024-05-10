@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dynamic web maps with Mapbox Tiling Service and mapboxer • mapboxapi</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mapboxapi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@
 mapboxer</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/walkerke/mapboxapi/blob/HEAD/vignettes/dynamic-maps.Rmd" class="external-link"><code>vignettes/dynamic-maps.Rmd</code></a></small>
       <div class="hidden name"><code>dynamic-maps.Rmd</code></div>
 
     </div>
@@ -123,23 +123,23 @@ store information for both aggregation levels.</p>
 example assumes you have a Census API key; <a href="https://walker-data.com/tidycensus/articles/basic-usage.html" class="external-link">review
 the tidycensus documentation to get set up if you don’t</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://walker-data.com/tidycensus/" class="external-link">tidycensus</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mapboxapi</span><span class="op">)</span>
-
-<span class="va">county_broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://walker-data.com/tidycensus/reference/get_acs.html" class="external-link">get_acs</a></span><span class="op">(</span>
-  geography <span class="op">=</span> <span class="st">"county"</span>,
-  variables <span class="op">=</span> <span class="st">"DP02_0154P"</span>,
-  year <span class="op">=</span> <span class="fl">2020</span>,
-  geometry <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="va">tract_broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://walker-data.com/tidycensus/reference/get_acs.html" class="external-link">get_acs</a></span><span class="op">(</span>
-  geography <span class="op">=</span> <span class="st">"tract"</span>,
-  variables <span class="op">=</span> <span class="st">"DP02_0154P"</span>,
-  state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">state.abb</span>, <span class="st">"DC"</span><span class="op">)</span>,
-  year <span class="op">=</span> <span class="fl">2020</span>,
-  geometry <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://walker-data.com/tidycensus/" class="external-link">tidycensus</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/walkerke/mapboxapi" class="external-link">mapboxapi</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">county_broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://walker-data.com/tidycensus/reference/get_acs.html" class="external-link">get_acs</a></span><span class="op">(</span></span>
+<span>  geography <span class="op">=</span> <span class="st">"county"</span>,</span>
+<span>  variables <span class="op">=</span> <span class="st">"DP02_0154P"</span>,</span>
+<span>  year <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>  geometry <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tract_broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://walker-data.com/tidycensus/reference/get_acs.html" class="external-link">get_acs</a></span><span class="op">(</span></span>
+<span>  geography <span class="op">=</span> <span class="st">"tract"</span>,</span>
+<span>  variables <span class="op">=</span> <span class="st">"DP02_0154P"</span>,</span>
+<span>  state <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">state.abb</span>, <span class="st">"DC"</span><span class="op">)</span>,</span>
+<span>  year <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>  geometry <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="publishing-vector-tiles-from-r-with-mapbox-tiling-service">Publishing vector tiles from R with Mapbox Tiling Service<a class="anchor" aria-label="anchor" href="#publishing-vector-tiles-from-r-with-mapbox-tiling-service"></a>
 </h2>
@@ -165,17 +165,17 @@ also supply your own username to the <code>username</code> argument,
 rather than use mine. Large datasets can take a few minutes to upload to
 your account depending on your connection speed.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">county_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mts_create_source.html">mts_create_source</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">county_broadband</span>,
-  tileset_id <span class="op">=</span> <span class="st">"county_broadband"</span>,
-  username <span class="op">=</span> <span class="st">"kwalkertcu"</span>
-<span class="op">)</span>
-
-<span class="va">tract_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mts_create_source.html">mts_create_source</a></span><span class="op">(</span>
-  data <span class="op">=</span> <span class="va">tract_broadband</span>,
-  tileset_id <span class="op">=</span> <span class="st">"tract_broadband"</span>,
-  username <span class="op">=</span> <span class="st">"kwalkertcu"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">county_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mts_create_source.html">mts_create_source</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">county_broadband</span>,</span>
+<span>  tileset_id <span class="op">=</span> <span class="st">"county_broadband"</span>,</span>
+<span>  username <span class="op">=</span> <span class="st">"kwalkertcu"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">tract_source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mts_create_source.html">mts_create_source</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">tract_broadband</span>,</span>
+<span>  tileset_id <span class="op">=</span> <span class="st">"tract_broadband"</span>,</span>
+<span>  username <span class="op">=</span> <span class="st">"kwalkertcu"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>If the upload has succeeded, you’ll get a message like this:</p>
 <pre><code>✔ Successfully created tileset source with the ID
 'mapbox://tileset-source/kwalkertcu/tract_broadband'.
@@ -215,21 +215,21 @@ layer requires a tileset source ID, a minimum zoom level
 (<code>minzoom</code>), and maximum zoom level
 (<code>maxzoom</code>).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">broadband_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mts_make_recipe.html">mts_make_recipe</a></span><span class="op">(</span>
-  counties <span class="op">=</span> <span class="fu"><a href="../reference/recipe_layer.html">recipe_layer</a></span><span class="op">(</span>
-    source <span class="op">=</span> <span class="va">county_source</span><span class="op">$</span><span class="va">id</span>,
-    minzoom <span class="op">=</span> <span class="fl">2</span>,
-    maxzoom <span class="op">=</span> <span class="fl">7</span>
-  <span class="op">)</span>,
-  tracts <span class="op">=</span> <span class="fu"><a href="../reference/recipe_layer.html">recipe_layer</a></span><span class="op">(</span>
-    source <span class="op">=</span> <span class="va">tract_source</span><span class="op">$</span><span class="va">id</span>,
-    minzoom <span class="op">=</span> <span class="fl">7</span>,
-    maxzoom <span class="op">=</span> <span class="fl">12</span>,
-    tiles <span class="op">=</span> <span class="fu"><a href="../reference/tile_options.html">tile_options</a></span><span class="op">(</span>
-      layer_size <span class="op">=</span> <span class="fl">2500</span>
-    <span class="op">)</span>
-  <span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">broadband_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mts_make_recipe.html">mts_make_recipe</a></span><span class="op">(</span></span>
+<span>  counties <span class="op">=</span> <span class="fu"><a href="../reference/recipe_layer.html">recipe_layer</a></span><span class="op">(</span></span>
+<span>    source <span class="op">=</span> <span class="va">county_source</span><span class="op">$</span><span class="va">id</span>,</span>
+<span>    minzoom <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    maxzoom <span class="op">=</span> <span class="fl">7</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  tracts <span class="op">=</span> <span class="fu"><a href="../reference/recipe_layer.html">recipe_layer</a></span><span class="op">(</span></span>
+<span>    source <span class="op">=</span> <span class="va">tract_source</span><span class="op">$</span><span class="va">id</span>,</span>
+<span>    minzoom <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>    maxzoom <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>    tiles <span class="op">=</span> <span class="fu"><a href="../reference/tile_options.html">tile_options</a></span><span class="op">(</span></span>
+<span>      layer_size <span class="op">=</span> <span class="fl">2500</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Our recipe is relatively simple, as MTS recipes are concerned; we
 include the required arguments (though layers can be viewed beyond the
 maximum zoom level with overzooming) as well as directions to max out
@@ -239,25 +239,25 @@ as possible when zoomed out.</p>
 <code><a href="../reference/mts_validate_recipe.html">mts_validate_recipe()</a></code> function to make sure that it is
 formatted correctly.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/mts_validate_recipe.html">mts_validate_recipe</a></span><span class="op">(</span><span class="va">broadband_recipe</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mts_validate_recipe.html">mts_validate_recipe</a></span><span class="op">(</span><span class="va">broadband_recipe</span><span class="op">)</span></span></code></pre></div>
 <p>We get the message <code>✔ Your tileset recipe is valid!</code>; the
 function also returns <code>TRUE</code> or <code>FALSE</code> so you can
 do error handling in tileset creation pipelines if you wish.</p>
 <p>Just two more steps are required to publish the new tileset. We
 create the tileset with <code><a href="../reference/mts_create_tileset.html">mts_create_tileset()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/mts_create_tileset.html">mts_create_tileset</a></span><span class="op">(</span>
-  tileset_name <span class="op">=</span> <span class="st">"us_broadband"</span>,
-  username <span class="op">=</span> <span class="st">"kwalkertcu"</span>,
-  recipe <span class="op">=</span> <span class="va">broadband_recipe</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mts_create_tileset.html">mts_create_tileset</a></span><span class="op">(</span></span>
+<span>  tileset_name <span class="op">=</span> <span class="st">"us_broadband"</span>,</span>
+<span>  username <span class="op">=</span> <span class="st">"kwalkertcu"</span>,</span>
+<span>  recipe <span class="op">=</span> <span class="va">broadband_recipe</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>An empty tileset will be created in our Mapbox account. To populate
 the tileset, publish it with <code><a href="../reference/mts_publish_tileset.html">mts_publish_tileset()</a></code></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/mts_publish_tileset.html">mts_publish_tileset</a></span><span class="op">(</span>
-  tileset_name <span class="op">=</span> <span class="st">"us_broadband"</span>,
-  username <span class="op">=</span> <span class="st">"kwalkertcu"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/mts_publish_tileset.html">mts_publish_tileset</a></span><span class="op">(</span></span>
+<span>  tileset_name <span class="op">=</span> <span class="st">"us_broadband"</span>,</span>
+<span>  username <span class="op">=</span> <span class="st">"kwalkertcu"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>To check on the status of your tileset, you can head over to your
 Mapbox account and find your tileset on the <strong>Tilesets</strong>
 tab. Once the tileset is published, you’ll be able to browse your
@@ -285,37 +285,37 @@ up), the view will switch over to Census tracts.</p>
 <details><summary>
 Show code
 </summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/crazycapivara/mapboxer" class="external-link">mapboxer</a></span><span class="op">)</span>
-
-<span class="va">broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapbox_source.html" class="external-link">mapbox_source</a></span><span class="op">(</span>
-  type <span class="op">=</span> <span class="st">"vector"</span>,
-  url <span class="op">=</span> <span class="st">"mapbox://kwalkertcu.us_broadband"</span>
-<span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapboxer.html" class="external-link">mapboxer</a></span><span class="op">(</span>zoom <span class="op">=</span> <span class="fl">3</span>, style <span class="op">=</span> <span class="va">basemaps</span><span class="op">$</span><span class="va">Mapbox</span><span class="op">$</span><span class="va">light_v10</span>,
-         center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">96</span>, <span class="fl">37.5</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    id <span class="op">=</span> <span class="st">"county"</span>,
-    type <span class="op">=</span> <span class="st">"fill"</span>,
-    source <span class="op">=</span> <span class="va">broadband</span>,
-    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"counties"</span>,
-    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="st">"blue"</span>,
-      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fl">0.8</span>
-      <span class="op">)</span>,
-    maxzoom <span class="op">=</span> <span class="fl">7</span>
-    <span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    id <span class="op">=</span> <span class="st">"tracts"</span>,
-    type <span class="op">=</span> <span class="st">"fill"</span>,
-    source <span class="op">=</span> <span class="va">broadband</span>,
-    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"tracts"</span>,
-    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="st">"red"</span>,
-      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fl">0.8</span>
-      <span class="op">)</span>,
-    minzoom <span class="op">=</span> <span class="fl">7</span>
-  <span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/crazycapivara/mapboxer" class="external-link">mapboxer</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapbox_source.html" class="external-link">mapbox_source</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"vector"</span>,</span>
+<span>  url <span class="op">=</span> <span class="st">"mapbox://kwalkertcu.us_broadband"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapboxer.html" class="external-link">mapboxer</a></span><span class="op">(</span>zoom <span class="op">=</span> <span class="fl">3</span>, style <span class="op">=</span> <span class="va">basemaps</span><span class="op">$</span><span class="va">Mapbox</span><span class="op">$</span><span class="va">light_v10</span>,</span>
+<span>         center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">96</span>, <span class="fl">37.5</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    id <span class="op">=</span> <span class="st">"county"</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"fill"</span>,</span>
+<span>    source <span class="op">=</span> <span class="va">broadband</span>,</span>
+<span>    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"counties"</span>,</span>
+<span>    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span>      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fl">0.8</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>    maxzoom <span class="op">=</span> <span class="fl">7</span></span>
+<span>    <span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    id <span class="op">=</span> <span class="st">"tracts"</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"fill"</span>,</span>
+<span>    source <span class="op">=</span> <span class="va">broadband</span>,</span>
+<span>    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"tracts"</span>,</span>
+<span>    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fl">0.8</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>    minzoom <span class="op">=</span> <span class="fl">7</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </details><iframe src="img/dynamic_map.html" width="100%" height="500px" scrolling="no">
 </iframe>
 <div class="section level3">
@@ -345,71 +345,71 @@ transparent.</li>
 <details><summary>
 Show code
 </summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># remotes::install_github("crazycapivara/mapboxer#104")</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/crazycapivara/mapboxer" class="external-link">mapboxer</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapboxer_use_v2.html" class="external-link">mapboxer_use_v2</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapbox_source.html" class="external-link">mapbox_source</a></span><span class="op">(</span>
-  type <span class="op">=</span> <span class="st">"vector"</span>,
-  url <span class="op">=</span> <span class="st">"mapbox://kwalkertcu.us_broadband"</span>
-<span class="op">)</span>
-
-<span class="va">broadband_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapboxer.html" class="external-link">mapboxer</a></span><span class="op">(</span>zoom <span class="op">=</span> <span class="fl">3</span>, style <span class="op">=</span> <span class="va">basemaps</span><span class="op">$</span><span class="va">Mapbox</span><span class="op">$</span><span class="va">light_v10</span>,
-         center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">96</span>, <span class="fl">37.5</span><span class="op">)</span>,
-         projection <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-           name <span class="op">=</span> <span class="st">"albers"</span>,
-           center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">96</span>, <span class="fl">37.5</span><span class="op">)</span>,
-           parallels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">29.5</span>, <span class="fl">45.5</span><span class="op">)</span>
-         <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    id <span class="op">=</span> <span class="st">"county"</span>,
-    type <span class="op">=</span> <span class="st">"fill"</span>,
-    source <span class="op">=</span> <span class="va">broadband</span>,
-    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"counties"</span>,
-    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-        <span class="st">"interpolate"</span>,
-        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"linear"</span><span class="op">)</span>,
-        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"get"</span>, <span class="st">"estimate"</span><span class="op">)</span>,
-        <span class="fl">33</span>,
-        <span class="st">'#edf8b1'</span>,
-        <span class="fl">65</span>,
-        <span class="st">'#7fcdbb'</span>,
-        <span class="fl">97</span>,
-        <span class="st">'#2c7fb8'</span>
-      <span class="op">)</span>,
-      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fl">0.8</span>
-    <span class="op">)</span>,
-    maxzoom <span class="op">=</span> <span class="fl">7</span>
-  <span class="op">)</span>,
-  popup <span class="op">=</span> <span class="st">"{{NAME}}&lt;br/&gt;Estimate: {{estimate}}%"</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    id <span class="op">=</span> <span class="st">"tracts"</span>,
-    type <span class="op">=</span> <span class="st">"fill"</span>,
-    source <span class="op">=</span> <span class="va">broadband</span>,
-    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"tracts"</span>,
-    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-        <span class="st">"interpolate"</span>,
-        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"linear"</span><span class="op">)</span>,
-        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"get"</span>, <span class="st">"estimate"</span><span class="op">)</span>,
-        <span class="fl">33</span>,
-        <span class="st">'#edf8b1'</span>,
-        <span class="fl">65</span>,
-        <span class="st">'#7fcdbb'</span>,
-        <span class="fl">97</span>,
-        <span class="st">'#2c7fb8'</span>
-      <span class="op">)</span>,
-      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-        <span class="st">"case"</span>,
-        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"=="</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"get"</span>, <span class="st">"estimate"</span><span class="op">)</span>, <span class="cn">NA</span><span class="op">)</span>,
-        <span class="fl">0.1</span>,
-        <span class="fl">0.8</span>
-      <span class="op">)</span>
-    <span class="op">)</span>,
-    minzoom <span class="op">=</span> <span class="fl">7</span>
-  <span class="op">)</span>,
-  popup <span class="op">=</span> <span class="st">"{{NAME}}&lt;br/&gt;Estimate: {{estimate}}%"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># remotes::install_github("crazycapivara/mapboxer#104")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/crazycapivara/mapboxer" class="external-link">mapboxer</a></span><span class="op">)</span></span>
+<span><span class="fu">mapboxer_use_v2</span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">broadband</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapbox_source.html" class="external-link">mapbox_source</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"vector"</span>,</span>
+<span>  url <span class="op">=</span> <span class="st">"mapbox://kwalkertcu.us_broadband"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">broadband_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/mapboxer.html" class="external-link">mapboxer</a></span><span class="op">(</span>zoom <span class="op">=</span> <span class="fl">3</span>, style <span class="op">=</span> <span class="va">basemaps</span><span class="op">$</span><span class="va">Mapbox</span><span class="op">$</span><span class="va">light_v10</span>,</span>
+<span>         center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">96</span>, <span class="fl">37.5</span><span class="op">)</span>,</span>
+<span>         projection <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>           name <span class="op">=</span> <span class="st">"albers"</span>,</span>
+<span>           center <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">96</span>, <span class="fl">37.5</span><span class="op">)</span>,</span>
+<span>           parallels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">29.5</span>, <span class="fl">45.5</span><span class="op">)</span></span>
+<span>         <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    id <span class="op">=</span> <span class="st">"county"</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"fill"</span>,</span>
+<span>    source <span class="op">=</span> <span class="va">broadband</span>,</span>
+<span>    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"counties"</span>,</span>
+<span>    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        <span class="st">"interpolate"</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"linear"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"get"</span>, <span class="st">"estimate"</span><span class="op">)</span>,</span>
+<span>        <span class="fl">33</span>,</span>
+<span>        <span class="st">'#edf8b1'</span>,</span>
+<span>        <span class="fl">65</span>,</span>
+<span>        <span class="st">'#7fcdbb'</span>,</span>
+<span>        <span class="fl">97</span>,</span>
+<span>        <span class="st">'#2c7fb8'</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fl">0.8</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    maxzoom <span class="op">=</span> <span class="fl">7</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  popup <span class="op">=</span> <span class="st">"{{NAME}}&lt;br/&gt;Estimate: {{estimate}}%"</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/mapboxer/man/add_layer.html" class="external-link">add_layer</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    id <span class="op">=</span> <span class="st">"tracts"</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"fill"</span>,</span>
+<span>    source <span class="op">=</span> <span class="va">broadband</span>,</span>
+<span>    <span class="st">"source-layer"</span> <span class="op">=</span> <span class="st">"tracts"</span>,</span>
+<span>    paint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="st">"fill-color"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        <span class="st">"interpolate"</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"linear"</span><span class="op">)</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"get"</span>, <span class="st">"estimate"</span><span class="op">)</span>,</span>
+<span>        <span class="fl">33</span>,</span>
+<span>        <span class="st">'#edf8b1'</span>,</span>
+<span>        <span class="fl">65</span>,</span>
+<span>        <span class="st">'#7fcdbb'</span>,</span>
+<span>        <span class="fl">97</span>,</span>
+<span>        <span class="st">'#2c7fb8'</span></span>
+<span>      <span class="op">)</span>,</span>
+<span>      <span class="st">"fill-opacity"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        <span class="st">"case"</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"=="</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"get"</span>, <span class="st">"estimate"</span><span class="op">)</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
+<span>        <span class="fl">0.1</span>,</span>
+<span>        <span class="fl">0.8</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    minzoom <span class="op">=</span> <span class="fl">7</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  popup <span class="op">=</span> <span class="st">"{{NAME}}&lt;br/&gt;Estimate: {{estimate}}%"</span><span class="op">)</span></span></code></pre></div>
 </details><iframe src="img/styled_map.html" width="100%" height="500px" scrolling="no">
 </iframe>
 </div>
@@ -426,77 +426,77 @@ and <code><a href="https://rdrr.io/pkg/htmlwidgets/man/prependContent.html" clas
 <details><summary>
 Show code
 </summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">style</span> <span class="op">&lt;-</span> <span class="fu">htmltools</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/htmltools/reference/HTML.html" class="external-link">HTML</a></span><span class="op">(</span>
-  <span class="st">"
-  &lt;style&gt;
-    @import url('https://fonts.googleapis.com/css2?family=Roboto&amp;display=swap');
-
-    h2 {
-    font-size: 14px;
-    font-family: 'Roboto';
-    line-height: 20px;
-    margin-bottom: 10px;
-    }
-
-    #legend {
-    position: fixed;
-    border-radius: 10px;
-    top:10px;
-    left:10px;
-    margin: 10px;
-    width: 120px;
-    background-color: #ffffff80;
-    padding: 10px 20px;
-    z-index: 1002;
-    }
-
-    .content {
-    margin-bottom: 20px;
-    }
-
-    .row {
-    height: 12px;
-    width: 100%;
-    }
-
-    .colors {
-    background: linear-gradient(
-    to right,
-    #edf8b1,
-    #7fcdbb,
-    #2c7fb8
-    );
-    margin-bottom: 5px;
-    }
-
-    .label {
-    width: 30%;
-    display: inline-block;
-    text-align: center;
-    font-family: 'Roboto';
-    }
-    &lt;/style&gt;
-  "</span>
-<span class="op">)</span>
-
-<span class="va">legend</span> <span class="op">&lt;-</span> <span class="fu">htmltools</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/htmltools/reference/HTML.html" class="external-link">HTML</a></span><span class="op">(</span>
-  <span class="st">'
-&lt;div id="legend"&gt;
-&lt;div class="content"&gt;
-&lt;h2&gt;Households with broadband access&lt;/h2&gt;
-&lt;div class="row colors"&gt;&lt;/div&gt;
-&lt;div class="row labels"&gt;
-&lt;div class="label"&gt;33%&lt;/div&gt;
-&lt;div class="label"&gt;65%&lt;/div&gt;
-&lt;div class="label"&gt;97%&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-  '</span>
-<span class="op">)</span>
-
-<span class="va">broadband_map</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">htmlwidgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/htmlwidgets/man/prependContent.html" class="external-link">prependContent</a></span><span class="op">(</span><span class="va">style</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">htmlwidgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/htmlwidgets/man/prependContent.html" class="external-link">appendContent</a></span><span class="op">(</span><span class="va">legend</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">style</span> <span class="op">&lt;-</span> <span class="fu">htmltools</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/htmltools/reference/HTML.html" class="external-link">HTML</a></span><span class="op">(</span></span>
+<span>  <span class="st">"</span></span>
+<span><span class="st">  &lt;style&gt;</span></span>
+<span><span class="st">    @import url('https://fonts.googleapis.com/css2?family=Roboto&amp;display=swap');</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    h2 {</span></span>
+<span><span class="st">    font-size: 14px;</span></span>
+<span><span class="st">    font-family: 'Roboto';</span></span>
+<span><span class="st">    line-height: 20px;</span></span>
+<span><span class="st">    margin-bottom: 10px;</span></span>
+<span><span class="st">    }</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    #legend {</span></span>
+<span><span class="st">    position: fixed;</span></span>
+<span><span class="st">    border-radius: 10px;</span></span>
+<span><span class="st">    top:10px;</span></span>
+<span><span class="st">    left:10px;</span></span>
+<span><span class="st">    margin: 10px;</span></span>
+<span><span class="st">    width: 120px;</span></span>
+<span><span class="st">    background-color: #ffffff80;</span></span>
+<span><span class="st">    padding: 10px 20px;</span></span>
+<span><span class="st">    z-index: 1002;</span></span>
+<span><span class="st">    }</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    .content {</span></span>
+<span><span class="st">    margin-bottom: 20px;</span></span>
+<span><span class="st">    }</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    .row {</span></span>
+<span><span class="st">    height: 12px;</span></span>
+<span><span class="st">    width: 100%;</span></span>
+<span><span class="st">    }</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    .colors {</span></span>
+<span><span class="st">    background: linear-gradient(</span></span>
+<span><span class="st">    to right,</span></span>
+<span><span class="st">    #edf8b1,</span></span>
+<span><span class="st">    #7fcdbb,</span></span>
+<span><span class="st">    #2c7fb8</span></span>
+<span><span class="st">    );</span></span>
+<span><span class="st">    margin-bottom: 5px;</span></span>
+<span><span class="st">    }</span></span>
+<span><span class="st"></span></span>
+<span><span class="st">    .label {</span></span>
+<span><span class="st">    width: 30%;</span></span>
+<span><span class="st">    display: inline-block;</span></span>
+<span><span class="st">    text-align: center;</span></span>
+<span><span class="st">    font-family: 'Roboto';</span></span>
+<span><span class="st">    }</span></span>
+<span><span class="st">    &lt;/style&gt;</span></span>
+<span><span class="st">  "</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">legend</span> <span class="op">&lt;-</span> <span class="fu">htmltools</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/htmltools/reference/HTML.html" class="external-link">HTML</a></span><span class="op">(</span></span>
+<span>  <span class="st">'</span></span>
+<span><span class="st">&lt;div id="legend"&gt;</span></span>
+<span><span class="st">&lt;div class="content"&gt;</span></span>
+<span><span class="st">&lt;h2&gt;Households with broadband access&lt;/h2&gt;</span></span>
+<span><span class="st">&lt;div class="row colors"&gt;&lt;/div&gt;</span></span>
+<span><span class="st">&lt;div class="row labels"&gt;</span></span>
+<span><span class="st">&lt;div class="label"&gt;33%&lt;/div&gt;</span></span>
+<span><span class="st">&lt;div class="label"&gt;65%&lt;/div&gt;</span></span>
+<span><span class="st">&lt;div class="label"&gt;97%&lt;/div&gt;</span></span>
+<span><span class="st">&lt;/div&gt;</span></span>
+<span><span class="st">&lt;/div&gt;</span></span>
+<span><span class="st">  '</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">broadband_map</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">htmlwidgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/htmlwidgets/man/prependContent.html" class="external-link">prependContent</a></span><span class="op">(</span><span class="va">style</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">htmlwidgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/htmlwidgets/man/prependContent.html" class="external-link">appendContent</a></span><span class="op">(</span><span class="va">legend</span><span class="op">)</span></span></code></pre></div>
 </details><iframe src="img/map_with_legend.html" width="100%" height="500px" scrolling="no">
 </iframe>
 </div>
@@ -520,7 +520,7 @@ Show code
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>
