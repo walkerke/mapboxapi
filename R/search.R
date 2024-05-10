@@ -461,8 +461,23 @@ mb_batch_geocode <- function(
   longitudes <- combined$properties$coordinates$longitude
   latitudes <- combined$properties$coordinates$latitude
   matched_addresses <- combined$properties$full_address
-  accuracy <- combined$properties$coordinates$accuracy
-  confidence <- combined$properties$match_code$confidence
+
+  if (is.null(combined$properties$coordinates$accuracy)) {
+    accuracy <- "unreliable"
+  } else {
+    accuracy <- combined$properties$coordinates$accuracy
+  }
+
+  accuracy[is.na(accuracy)] <- "unreliable"
+
+  if (is.null(combined$properties$match_code$confidence)) {
+    confidence <- "unreliable"
+  } else {
+    confidence <- combined$properties$match_code$confidence
+  }
+
+  confidence[is.na(confidence)] <- "unreliable"
+
 
   data$longitude <- longitudes
   data$latitude <- latitudes

@@ -20,8 +20,6 @@ install.packages("mapboxapi")
 mapboxapi::mb_access_token("pk.eyzdl....", install = TRUE)
 ```
 
-More thorough documentation will be coming as I develop the package. In the meantime, take a look at the following examples:
-
 #### Example 1: Building a routing app with Shiny and `mb_directions()`
 
 ```r
@@ -29,17 +27,27 @@ library(shiny)
 library(mapdeck)
 library(mapboxapi)
 
-# Set up a sidebar panel with text boxes for origin and destination, 
+# Set up a sidebar panel with geocoders for origin and destination,
 # and a placeholder to print out the driving instructions
 ui <- fluidPage(
+  tags$head(
+    tags$style(HTML(
+      "#origin {
+        position: relative;
+        z-index: 999999;    
+      }"
+    ))
+  ),
   sidebarPanel(
-    textInput("origin_text", label = "Origin",
-              placeholder = "Type an address or place name"),
-    textInput("destination_text", label = "Destination",
-              placeholder = "Type an address or place name"),
+    mapboxGeocoderInput("origin", placeholder = "Enter an origin",
+                        proximity = mb_geocode("Fort Worth, TX")),
+    shiny::br(),
+    mapboxGeocoderInput("destination", placeholder = "Enter a destination",
+                        proximity = mb_geocode("Fort Worth, TX")),
+    shiny::br(),
     actionButton("action", "Show me the route!"),
     htmlOutput("instructions"),
-    width = 3
+    width = 4
   ),
   mainPanel(
     mapdeckOutput(outputId = "map", width = "100%", height = 600)
@@ -52,30 +60,32 @@ server <- function(input, output) {
 
   output$map <- renderMapdeck({
     mapdeck(token = Sys.getenv("MAPBOX_PUBLIC_TOKEN"),
-            style = mapdeck_style("light"), 
-            zoom = 11, 
-            location = c(-97.3034314, 32.7593745)) 
-    
+            style = mapdeck_style("light"),
+            zoom = 11,
+            location = c(-97.3034314, 32.7593745))
+
   })
 
   new_route <- eventReactive(input$action, {
     mb_directions(
-      origin = input$origin_text,
-      destination = input$destination_text,
+      input_data = rbind(
+        geocoder_as_sf(input$origin),
+        geocoder_as_sf(input$destination)
+      ),
       profile = "driving",
       output = "sf",
       steps = TRUE
     )
   })
-  
+
   observeEvent(new_route(), {
 
     mapdeck_update(map_id = "map") %>%
       clear_path(layer_id = "new_route") %>%
-      add_path(data = new_route(), stroke_width = 75, 
-              layer_id = "new_route", update_view = TRUE, 
-              focus_layer = TRUE)
-    
+      add_path(data = new_route(), stroke_width = 75,
+               layer_id = "new_route", update_view = TRUE,
+               focus_layer = TRUE)
+
     output$instructions <- renderUI({
       HTML(paste0(
         paste("&bull;", new_route()$instruction, sep = ""),
@@ -88,7 +98,7 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
-<img src=img/shiny-example.gif style="width: 800px">
+<img src=tools/readme/shiny_example.png style="width: 800px">
 
 #### Example 2: render large datasets as scalable vector tiles with tippecanoe
 
@@ -126,7 +136,7 @@ mapdeck(token = Sys.getenv("MAPBOX_PUBLIC_TOKEN"),
         location = c(-98.7382803, 31.7678448))
 ```
 
-<img src=img/tippecanoe-example.gif style="width: 800px">
+<img src=tools/readme/tippecanoe-example.gif style="width: 800px">
 
 
 ### Example 3: a research workflow to determine how median gross rent varies by distance from downtown
@@ -140,7 +150,7 @@ library(sf)
 library(crsuggest)
 options(tigris_use_cache = TRUE)
 
-# Grab median gross rent data from the 2014-2018 ACS for the Twin Cities metro
+# Grab median gross rent data from the  ACS for the Twin Cities metro
 county_names <- c("Hennepin", "Ramsey", "Anoka", "Washington",
                   "Dakota", "Carver", "Scott")
 
@@ -148,6 +158,7 @@ tc_rent <- get_acs(geography = "tract",
                    variables = "B25064_001",
                    state = "MN",
                    county = county_names,
+                   year = 2022,
                    geometry = TRUE)
 
 # Find the right coordinate system to use; in this case we'll use 26993
@@ -155,17 +166,9 @@ print(suggest_top_crs(tc_rent, units = "m"))
 
 # Remove water areas - there are a lot in Minnesota! - to help ensure that a point in a 
 # given Census tract will be routable
-tc_water <- county_names %>%
-  map(~area_water("MN", .x)) %>%
-  rbind_tigris() %>%
-  mutate(pct = percent_rank(AWATER)) %>%
-  filter(pct >= 0.95) %>%
-  st_union() %>%
-  st_transform(26993)
-
 tc_rent_points <- tc_rent %>%
   st_transform(26993) %>%
-  st_difference(tc_water) %>%
+  erase_water(area_threshold = 0.95) %>%
   st_point_on_surface()
 
 # Determine the location of downtown (apologies to St. Paul, purposes of illustration here)
@@ -186,8 +189,8 @@ ggplot(tc_rent, aes(x = time, y = estimate)) +
        y = "Median gross rent in Census tract", 
        title = "Median rent by drive-time to downtown Minneapolis",
        subtitle = "Census tracts in the seven-county Twin Cities metropolitan area",
-       caption = "Data sources: Mapbox Directions API, 2014-2018 ACS") + 
+       caption = "Data sources: Mapbox Directions API, 2018-2022 ACS") + 
   theme_minimal()
 ```
 
-<img src=img/ggplot2-example.png style="width: 800px">
+<img src=tools/readme/ggplot2-example.png style="width: 800px">
