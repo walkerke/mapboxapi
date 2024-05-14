@@ -336,12 +336,14 @@ mb_batch_geocode <- function(
                                "i" = "The limit for Mapbox's free tier is 100,000 geocodes per month. Beyond that, you will incur charges.",
                                "i" = "Please visit https://www.mapbox.com/pricing for more information."))
     } else {
-      data$ix <- c(0, rep(1:(nrow(origins) - 1) %/% 1000))
+      mb_batch_geocode_limited <- purrr::slowly(mb_batch_geocode, rate = rate_delay(60))
+
+      data$ix <- c(0, rep(1:(nrow(data) - 1) %/% 1000))
 
       geocodes <- data %>%
         split(~ix) %>%
         purrr::map_dfr(function(x) {
-          mapboxapi::mb_batch_geocode(
+          mb_batch_geocode_limited(
             data = x,
             search_column = search_column,
             address_line1 = address_line1,
@@ -365,7 +367,7 @@ mb_batch_geocode <- function(
             access_token = access_token,
             sf = sf
           )
-        }) %>%
+        }, .progress = TRUE) %>%
         dplyr::select(-ix)
 
       return(geocodes)
