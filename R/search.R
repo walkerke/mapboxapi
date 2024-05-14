@@ -336,6 +336,8 @@ mb_batch_geocode <- function(
                                "i" = "The limit for Mapbox's free tier is 100,000 geocodes per month. Beyond that, you will incur charges.",
                                "i" = "Please visit https://www.mapbox.com/pricing for more information."))
     } else {
+      rlang::inform("The default rate limit for Mapbox's batch geocoder is 1,000 requests per minute. `mb_batch_geocode()` uses this limit to complete your request.")
+
       mb_batch_geocode_limited <- purrr::slowly(mb_batch_geocode, rate = rate_delay(60))
 
       data$ix <- c(0, rep(1:(nrow(data) - 1) %/% 1000))
