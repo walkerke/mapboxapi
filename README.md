@@ -177,7 +177,7 @@ time_to_downtown <- mb_matrix(origins = tc_rent_points,
                               destinations = downtown_mpls) %>%
   as.vector()
 
-tc_rent$time <- time_to_downtown
+tc_rent_points$time <- time_to_downtown
 
 # Visualize how rent varies by travel time from downtown with ggplot2
 ggplot(tc_rent, aes(x = time, y = estimate)) +
