@@ -1,5 +1,4 @@
 var mapboxGeocoderBinding = new Shiny.InputBinding();
-
 $.extend(mapboxGeocoderBinding, {
   find: function(scope) {
     return $(scope).find(".mapbox-geocoder");
@@ -8,21 +7,22 @@ $.extend(mapboxGeocoderBinding, {
     var accessToken = $(el).data("access-token");
     var options = $(el).data("options");
     mapboxgl.accessToken = accessToken;
-
     var geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
       ...options
     });
-
     geocoder.addTo(el);
-
     // Capture the result event and send data to Shiny
     geocoder.on('result', function(e) {
       $(el).data("geocoder-result", e.result); // Store the result in jQuery data
       $(el).trigger('change');
     });
-
+    // Add event listener for the 'clear' event
+    geocoder.on('clear', function() {
+      $(el).data("geocoder-result", null); // Reset the result to null
+      $(el).trigger('change');
+    });
     $(el).data("geocoder", geocoder);
   },
   getValue: function(el) {
@@ -37,5 +37,4 @@ $.extend(mapboxGeocoderBinding, {
     $(el).off(".mapboxGeocoderBinding");
   }
 });
-
 Shiny.inputBindings.register(mapboxGeocoderBinding);
