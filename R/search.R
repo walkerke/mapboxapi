@@ -460,7 +460,7 @@ mb_batch_geocode <- function(
     stop(batch_content$message, call. = FALSE)
   }
 
-  combined <- batch_content$batch$features |> purrr::list_rbind()
+  combined <- purrr::list_rbind(batch_content$batch$features)
 
   longitudes <- combined$properties$coordinates$longitude
   latitudes <- combined$properties$coordinates$latitude
