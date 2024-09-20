@@ -417,6 +417,9 @@ mb_matrix <- function(origins,
     if (!is.null(destinations)) {
       end <- length(origins) - 1
       origin_ix <- paste0(0:end, collapse = ";")
+
+      origin_end <- length(origins) - 1
+
       if ("data.frame" %in% class(destinations)) {
         if (length(destinations) == 1) {
           destination_ix <- origin_end + 1
