@@ -34,9 +34,7 @@ mb_geocode(
 )
 ```
 
-`mb_geocode()` can also return a *simple features object* with the option `output = "sf"` . Simple features (sf) objects, from the **sf** R package, are the primary way that vector (points, lines, and polygons) spatial data are represented in R. mapboxapi is tightly integrated with the sf package, and you'll gain experience working with sf objects in this workshop.
-
-Let's assign the result of `mb_geocode()` to a variable, then map it interactively with Mapbox GL JS via the **mapgl** R package..
+`mb_geocode()` can also return a *simple features object* with the option `output = "sf"` . Let's assign the result of `mb_geocode()` to a variable, get an sf object back, then map it interactively with Mapbox GL JS via the **mapgl** R package.
 
 ```{r}
 library(mapgl)
@@ -55,13 +53,11 @@ mb_reverse_geocode(c(-73.98188, 40.75162))
 
 ### Workflow: batch geocoding
 
-One-off geocoding as illustrated above is very useful in targeted analyses and when building apps (you'll see how this works next week). For larger analyses, however, you'll want to geocode addresses in bulk. This process is called *batch geocoding*.
+One-off geocoding as illustrated above is very useful in targeted analyses and when building web mapping apps (more on this later in the vignette). For larger analyses, however, you'll want to geocode addresses in bulk. This process is called *batch geocoding*.
 
 Batch geocoding typically involves sending a table of addresses to a geocoding service and getting back XY coordinates for all of those addresses. With v6 of its geocoder, Mapbox opened up batch geocoding to all users, which is now implemented in the latest release of mapboxapi.
 
-Let's try it out with a real-world dataset. We'll be working with a dataset of Adult Residential Care facilities in the state of California, [obtained from the State of California Open Data portal](https://sandbox.data.ca.gov/dataset/community-care-licensing-adult-residential-facility-locations/c05efa69-8a1f-457e-8a34-9070c664bae6). You can find this dataset in mapboxapi's GitHub repository in `vignettes/data`.
-
-We'll read in the dataset with the `read_csv()` function, [available in the **tidyverse** suite of tools](https://www.tidyverse.org/). If you haven't worked with the tidyverse before, it offers an integrated collection of packages that make your life much easier when working with data.
+Let's try it out with a real-world dataset. We'll be working with a dataset of Adult Residential Care facilities in the state of California, [obtained from the State of California Open Data portal](https://sandbox.data.ca.gov/dataset/community-care-licensing-adult-residential-facility-locations/c05efa69-8a1f-457e-8a34-9070c664bae6). You can find this dataset in mapboxapi's GitHub repository in `vignettes/data`. We'll read in the dataset with `readr::read_csv()`.
 
 ```{r, message = FALSE}
 library(tidyverse)

@@ -107,14 +107,10 @@ of an address. Here’s an example of how that works:</p>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] -73.98188  40.75162</span></span></code></pre>
 <p><code><a href="../reference/mb_geocode.html">mb_geocode()</a></code> can also return a <em>simple features
-object</em> with the option <code>output = "sf"</code> . Simple features
-(sf) objects, from the <strong>sf</strong> R package, are the primary
-way that vector (points, lines, and polygons) spatial data are
-represented in R. mapboxapi is tightly integrated with the sf package,
-and you’ll gain experience working with sf objects in this workshop.</p>
-<p>Let’s assign the result of <code><a href="../reference/mb_geocode.html">mb_geocode()</a></code> to a variable,
-then map it interactively with Mapbox GL JS via the
-<strong>mapgl</strong> R package..</p>
+object</em> with the option <code>output = "sf"</code> . Let’s assign
+the result of <code><a href="../reference/mb_geocode.html">mb_geocode()</a></code> to a variable, get an sf object
+back, then map it interactively with Mapbox GL JS via the
+<strong>mapgl</strong> R package.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://walker-data.com/mapgl/" class="external-link">mapgl</a></span><span class="op">)</span></span>
 <span></span>
@@ -135,9 +131,9 @@ function.</p>
 <h3 id="workflow-batch-geocoding">Workflow: batch geocoding<a class="anchor" aria-label="anchor" href="#workflow-batch-geocoding"></a>
 </h3>
 <p>One-off geocoding as illustrated above is very useful in targeted
-analyses and when building apps (you’ll see how this works next week).
-For larger analyses, however, you’ll want to geocode addresses in bulk.
-This process is called <em>batch geocoding</em>.</p>
+analyses and when building web mapping apps (more on this later in the
+vignette). For larger analyses, however, you’ll want to geocode
+addresses in bulk. This process is called <em>batch geocoding</em>.</p>
 <p>Batch geocoding typically involves sending a table of addresses to a
 geocoding service and getting back XY coordinates for all of those
 addresses. With v6 of its geocoder, Mapbox opened up batch geocoding to
@@ -147,13 +143,8 @@ mapboxapi.</p>
 dataset of Adult Residential Care facilities in the state of California,
 <a href="https://sandbox.data.ca.gov/dataset/community-care-licensing-adult-residential-facility-locations/c05efa69-8a1f-457e-8a34-9070c664bae6" class="external-link">obtained
 from the State of California Open Data portal</a>. You can find this
-dataset in mapboxapi’s GitHub repository in
-<code>vignettes/data</code>.</p>
-<p>We’ll read in the dataset with the <code><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv()</a></code> function,
-<a href="https://www.tidyverse.org/" class="external-link">available in the
-<strong>tidyverse</strong> suite of tools</a>. If you haven’t worked
-with the tidyverse before, it offers an integrated collection of
-packages that make your life much easier when working with data.</p>
+dataset in mapboxapi’s GitHub repository in <code>vignettes/data</code>.
+We’ll read in the dataset with <code><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">readr::read_csv()</a></code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span></span>
