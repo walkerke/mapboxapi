@@ -73,7 +73,7 @@ ca_care
 
 We notice that the dataset has over 25,000 rows. It is a perfect candidate for geocoding, as it describes the locations of each adult care facility but doesn't include longitude and latitude, so it can't currently be mapped. While we *could* geocode all of these facilities - Mapbox's free tier offers 100,000 free geocodes per month - this isn't necessary. Let's instead clean up the dataset and filter down to a specific county - Ventura County to the west of Los Angeles.
 
-```{r}
+```{r, message = FALSE}
 library(janitor)
 
 ventura_care <- read_csv("data/community-care-licensing-adult-residential-facility-locations.csv") |> 
