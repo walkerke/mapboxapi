@@ -12,9 +12,9 @@ options(tigris_use_cache = TRUE)
 
 __mapboxapi__ version 0.5 added support for the [Mapbox Tiling Service (MTS) API](https://docs.mapbox.com/api/maps/mapbox-tiling-service/), Mapbox's recommended tool for publishing and maintaining vector tile data pipelines.  A major benefit to using R and __mapboxapi__ to interact with MTS is that data pipelines for web maps can be handled directly from R.  This vignette covers an example walkthrough of how to build dynamic web maps with vector tiles using Mapbox Tiling Service and the [mapgl R package](https://walker-data.com/mapgl/), a flexible R interface to Mapbox GL JS.  
 
-<div class="warning">
+::: .warning
 **Warning:** Using MTS is _not_ free, and large tileset processing jobs (like this one) that cover a large extent can incur significant charges to your Mapbox account. Please use with caution.
-</div>
+:::
 
 We'll be making a map of household access to a broadband internet subscription from the 2016-2020 American Community Survey that varies by zoom level.  The map should show county broadband internet access when zoomed out, and Census tract level information when zoomed in.  We will accomplish this by preparing a _multi-layer tileset_ that will store information for both aggregation levels.  
 

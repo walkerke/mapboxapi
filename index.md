@@ -36,6 +36,8 @@ Read through the following articles to see what you can do with the package:
 * [Mapping with __mapboxapi__](articles/mapping.html)
 * [Using navigation services with __mapboxapi__](articles/navigation.html)
 * [Creating and uploading Mapbox vector tilesets](articles/creating-tiles.html)
+* [Geocoding with Mapbox and mapboxapi](articles/geocoding.html)
+* [Dynamic web maps with Mapbox Tiling Service and mapgl](articles/dynamic-maps.html)
 
 If you find this project useful, [consider supporting package development via PayPal](https://www.paypal.me/walkerdata), hiring me to give a workshop on __mapboxapi__ or hiring me to consult on your project. Send me a note at <kyle@walker-data.com> if this interests you!  You can also get updates on package development by signing up for my newsletter: 
 
