@@ -1,171 +1,56 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/articles/creating-tiles.html</loc>
-  </url>
-  <url>
-    <loc>/articles/dynamic-maps.html</loc>
-  </url>
-  <url>
-    <loc>/articles/img/dynamic_map.html</loc>
-  </url>
-  <url>
-    <loc>/articles/img/map_with_legend.html</loc>
-  </url>
-  <url>
-    <loc>/articles/img/styled_map.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/mapping.html</loc>
-  </url>
-  <url>
-    <loc>/articles/navigation.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/img/isochrone.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/addMapboxTiles.html</loc>
-  </url>
-  <url>
-    <loc>/reference/check_upload_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/feature_options.html</loc>
-  </url>
-  <url>
-    <loc>/reference/geocoder_as_sf.html</loc>
-  </url>
-  <url>
-    <loc>/reference/geocoder_as_xy.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_geocoder_dependencies.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_static_tiles.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_style.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_vector_tiles.html</loc>
-  </url>
-  <url>
-    <loc>/reference/hello.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/layer_static_mapbox.html</loc>
-  </url>
-  <url>
-    <loc>/reference/list_styles.html</loc>
-  </url>
-  <url>
-    <loc>/reference/list_tokens.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mapboxGeocoderInput.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mapboxapi.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_access_token.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_batch_geocode.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_directions.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_geocode.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_isochrone.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_matrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_optimized_route.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mb_reverse_geocode.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_create_source.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_create_tileset.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_get_recipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_list_sources.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_list_tilesets.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_make_recipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_publish_tileset.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_update_recipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mts_validate_recipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/prep_overlay_markers.html</loc>
-  </url>
-  <url>
-    <loc>/reference/query_tiles.html</loc>
-  </url>
-  <url>
-    <loc>/reference/recipe_layer.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rmapbox.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_dist_units.html</loc>
-  </url>
-  <url>
-    <loc>/reference/static_mapbox.html</loc>
-  </url>
-  <url>
-    <loc>/reference/tile_options.html</loc>
-  </url>
-  <url>
-    <loc>/reference/tippecanoe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/upload_tiles.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://walker-data.com/mapboxapi/404.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/LICENSE-text.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/creating-tiles.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/dynamic-maps.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/img/dynamic_map.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/img/map_with_legend.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/img/styled_map.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/index.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/mapping.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/articles/navigation.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/authors.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/img/isochrone.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/index.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/news/index.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/addMapboxTiles.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/check_upload_status.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/feature_options.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/geocoder_as_sf.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/geocoder_as_xy.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/get_geocoder_dependencies.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/get_static_tiles.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/get_style.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/get_vector_tiles.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/hello.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/index.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/layer_static_mapbox.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mapboxGeocoderInput.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mapboxapi.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mb_access_token.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mb_batch_geocode.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mb_directions.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mb_geocode.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mb_isochrone.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mb_matrix.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mb_optimized_route.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_create_source.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_create_tileset.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_get_recipe.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_list_sources.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_list_tilesets.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_make_recipe.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_publish_tileset.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_update_recipe.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/mts_validate_recipe.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/prep_overlay_markers.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/query_tiles.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/recipe_layer.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/rmapbox.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/set_dist_units.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/static_mapbox.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/tile_options.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/tippecanoe.html</loc></url>
+<url><loc>https://walker-data.com/mapboxapi/reference/upload_tiles.html</loc></url>
 </urlset>
+

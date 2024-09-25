@@ -1,10 +1,12 @@
-pandoc: 3.1.11
-pkgdown: 2.0.9
-pkgdown_sha: ~
+pandoc: '3.2'
+pkgdown: 2.0.9.9000
+pkgdown_sha: 5c1d34d1950ff53d20a9a1d590a04c160bdb2099
 articles:
   creating-tiles: creating-tiles.html
   dynamic-maps: dynamic-maps.html
   mapping: mapping.html
   navigation: navigation.html
-last_built: 2024-05-10T15:30Z
-
+last_built: 2024-09-25T00:01Z
+urls:
+  reference: https://walker-data.com/mapboxapi/reference
+  article: https://walker-data.com/mapboxapi/articles

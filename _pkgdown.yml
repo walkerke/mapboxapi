@@ -1,9 +1,15 @@
+url: https://walker-data.com/mapboxapi
+
 template:
-  params:
-    bootswatch: readable
+  bootstrap: 5
+  bootswatch: minty
 
 home:
   title: Use Mapbox Web Services in R
+
+authors:
+  Kyle Walker:
+    href: https://walker-data.com
 
 reference:
 - title: API token, style, and data management

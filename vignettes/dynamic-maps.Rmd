@@ -1,5 +1,5 @@
 ---
-title: "Dynamic web maps with Mapbox Tiling Service and mapboxer"
+title: "Dynamic web maps with Mapbox Tiling Service and mapgl"
 output: 
   html_document: 
     code_folding: show
@@ -10,7 +10,11 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = FALSE, out.width="100
 options(tigris_use_cache = TRUE)
 ```
 
-__mapboxapi__ version 0.5 added support for the [Mapbox Tiling Service (MTS) API](https://docs.mapbox.com/api/maps/mapbox-tiling-service/), Mapbox's recommended tool for publishing and maintaining vector tile data pipelines.  A major benefit to using R and __mapboxapi__ to interact with MTS is that data pipelines for web maps can be handled directly from R.  This vignette covers an example walkthrough of how to build dynamic web maps with vector tiles using Mapbox Tiling Service and the [mapboxer R package](https://crazycapivara.github.io/mapboxer/), a flexible R interface to Mapbox GL JS.  
+__mapboxapi__ version 0.5 added support for the [Mapbox Tiling Service (MTS) API](https://docs.mapbox.com/api/maps/mapbox-tiling-service/), Mapbox's recommended tool for publishing and maintaining vector tile data pipelines.  A major benefit to using R and __mapboxapi__ to interact with MTS is that data pipelines for web maps can be handled directly from R.  This vignette covers an example walkthrough of how to build dynamic web maps with vector tiles using Mapbox Tiling Service and the [mapgl R package](https://walker-data.com/mapgl/), a flexible R interface to Mapbox GL JS.  
+
+<div class="warning">
+**Warning:** Using MTS is _not_ free, and large tileset processing jobs (like this one) that cover a large extent can incur significant charges to your Mapbox account. Please use with caution.
+</div>
 
 We'll be making a map of household access to a broadband internet subscription from the 2016-2020 American Community Survey that varies by zoom level.  The map should show county broadband internet access when zoomed out, and Census tract level information when zoomed in.  We will accomplish this by preparing a _multi-layer tileset_ that will store information for both aggregation levels.  
 
@@ -131,220 +135,109 @@ To check on the status of your tileset, you can head over to your Mapbox account
 knitr::include_graphics("img/example_tileset.png")
 ```
 
-## Using vector tilesets in R with the mapboxer package
+## Using vector tilesets in R with the mapgl package
 
-The [mapboxer R package](https://crazycapivara.github.io/mapboxer/) by Stefan Kuethe is a a flexible R interface to [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/), Mapbox's JavaScript web mapping library with a massive amount of features.  mapboxapi and mapboxer work quite nicely together; mapboxapi can handle the creation and maintenance of vector tileset pipelines, and mapboxer then handles the visualization of those tiles.  
+The [mapgl R package](https://walker-data.com/mapgl) is a a flexible R interface to [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/), Mapbox's JavaScript web mapping library with a massive amount of features.  mapboxapi and mapgl work quite nicely together; mapboxapi can handle the creation and maintenance of vector tileset pipelines, and mapgl then handles the visualization of those tiles.  
 
-The `add_layer()` function in mapboxer allows users to load remote vector tile layers from their Mapbox account and visualize them seamlessly in R.  Given that we've already tiled our county and tract data, we can visualize all 3000+ US counties and all 80,000+ Census tracts intelligently on the same map.  
+The `add_vector_source()` function in mapgl allows users to load remote vector tile sources from their Mapbox account; the `add_fill_layer()` function then helps users add layers from those tileset sources.  Given that we've already tiled our county and tract data, we can visualize all 3000+ US counties and all 80,000+ Census tracts intelligently on the same map.  
 
-The code used below (click "Show code" to view it) uses mapboxer to visualize counties and Census tracts in a scale-dependent manner.  At small zooms (below 7), counties will display; at larger zooms (7 and up), the view will switch over to Census tracts.  
+The code used below (click "Show code" to view it) uses mapgl to visualize counties and Census tracts in a scale-dependent manner.  At small zooms (below 7), counties will display; at larger zooms (7 and up), the view will switch over to Census tracts.  
 
-<details><summary>Show code</summary>
+```{r, class.source = "fold-hide", eval = TRUE}
+library(mapgl)
 
-```{r, class.source = "fold-hide"}
-library(mapboxer)
-
-broadband <- mapbox_source(
-  type = "vector",
-  url = "mapbox://kwalkertcu.us_broadband"
-)
-
-mapboxer(zoom = 3, style = basemaps$Mapbox$light_v10,
-         center = c(-96, 37.5)) %>%
-  add_layer(style = list(
+mapboxgl(style = mapbox_style("light"),
+         zoom = 3,
+         center = c(-96, 37.5)) |> 
+  add_vector_source(
+    id = "broadband",
+    url = "mapbox://kwalkertcu.us_broadband"
+  ) |> 
+  add_fill_layer(
     id = "county",
-    type = "fill",
-    source = broadband,
-    "source-layer" = "counties",
-    paint = list(
-      "fill-color" = "blue",
-      "fill-opacity" = 0.8
-      ),
-    maxzoom = 7
-    ))  %>%
-  add_layer(style = list(
+    source = "broadband",
+    source_layer = "counties",
+    fill_color = "blue",
+    fill_outline_color = "black",
+    fill_opacity = 0.5,
+    max_zoom = 7
+  ) |> 
+  add_fill_layer(
     id = "tracts",
-    type = "fill",
-    source = broadband,
-    "source-layer" = "tracts",
-    paint = list(
-      "fill-color" = "red",
-      "fill-opacity" = 0.8
-      ),
-    minzoom = 7
-  ))
+    source = "broadband",
+    source_layer = "tracts",
+    fill_color = "red",
+    fill_outline_color = "black",
+    fill_opacity = 0.5,
+    min_zoom = 7
+  )
+
 ```
-
-</details>
-
-<iframe src=img/dynamic_map.html width="100%" height="500px" scrolling="no"></iframe>
 
 ### Styling vector tiles with Mapbox GL JS and mapboxer
 
-Mapbox GL JS has many, many more options available for users to customize styling of their vector tiles.  [While those options are voluminous](https://docs.mapbox.com/mapbox-gl-js/style-spec/), mapboxer can flexibly accommodate most options within the `add_layer()` function.  Similar to how recipes are specified in Mapbox Tiling Service, Mapbox style specifications can be readily translated to R by using named lists for objects and unnamed lists for arrays.  
+Mapbox GL JS has many, many more options available for users to customize styling of their vector tiles.  [While those options are voluminous](https://docs.mapbox.com/mapbox-gl-js/style-spec/), mapgl includes a variety of helper functions to assist with styling. 
 
 The example below modifies the map using the following options:
 
-- An Albers projection appropriate for the United States is used instead of the default Mercator projection.  As of this writing (14 September 2022), this option is only available in a fork of the package, PR #104; the final implementation may change when the PR is merged.  
-- Counties and Census tracts are styled using linear interpolation inspired by the ColorBrewer YlGnBU palette. 
+- An Albers projection appropriate for the United States is used instead of the default Globe projection.   
+- Counties and Census tracts are styled using linear interpolation with the `interpolate()` function inspired by the ColorBrewer YlGnBU palette. 
 - For Census tracts, the `"case"` option is used for `NA` values to make tracts missing data mostly transparent.  
 
-<details><summary>Show code</summary>
-
-```{r, class.source = "fold-hide"}
-# remotes::install_github("crazycapivara/mapboxer#104")
-library(mapboxer)
-mapboxer_use_v2(TRUE)
-
-broadband <- mapbox_source(
-  type = "vector",
-  url = "mapbox://kwalkertcu.us_broadband"
-)
-
-broadband_map <- mapboxer(zoom = 3, style = basemaps$Mapbox$light_v10,
+```{r, class.source = "fold-hide", eval = TRUE}
+broadband_map <- mapboxgl(style = mapbox_style("light"),
+         zoom = 3,
          center = c(-96, 37.5),
-         projection = list(
-           name = "albers",
-           center = c(-96, 37.5),
-           parallels = c(29.5, 45.5)
-         )) %>%
-  add_layer(style = list(
+         projection = "albers",
+         parallels = c(29.5, 45.5)) |> 
+  add_vector_source(
+    id = "broadband",
+    url = "mapbox://kwalkertcu.us_broadband"
+  ) |> 
+  add_fill_layer(
     id = "county",
-    type = "fill",
-    source = broadband,
-    "source-layer" = "counties",
-    paint = list(
-      "fill-color" = list(
-        "interpolate",
-        list("linear"),
-        list("get", "estimate"),
-        33,
-        '#edf8b1',
-        65,
-        '#7fcdbb',
-        97,
-        '#2c7fb8'
-      ),
-      "fill-opacity" = 0.8
+    source = "broadband",
+    source_layer = "counties",
+    fill_color = interpolate(
+      column = "estimate",
+      values = c(33, 65, 97),
+      stops = c("#edf8b1", "#7fcdbb", "#2c7fb8")
     ),
-    maxzoom = 7
-  ),
-  popup = "{{NAME}}<br/>Estimate: {{estimate}}%")  %>%
-  add_layer(style = list(
+    fill_opacity = 0.5,
+    max_zoom = 7,
+    popup = "estimate"
+  ) |> 
+  add_fill_layer(
     id = "tracts",
-    type = "fill",
-    source = broadband,
-    "source-layer" = "tracts",
-    paint = list(
-      "fill-color" = list(
-        "interpolate",
-        list("linear"),
-        list("get", "estimate"),
-        33,
-        '#edf8b1',
-        65,
-        '#7fcdbb',
-        97,
-        '#2c7fb8'
-      ),
-      "fill-opacity" = list(
-        "case",
-        list("==", list("get", "estimate"), NA),
-        0.1,
-        0.8
-      )
+    source = "broadband",
+    source_layer = "tracts",
+    fill_color = interpolate(
+      column = "estimate",
+      values = c(33, 65, 97),
+      stops = c("#edf8b1", "#7fcdbb", "#2c7fb8"),
+      na_color = "white"
     ),
-    minzoom = 7
-  ),
-  popup = "{{NAME}}<br/>Estimate: {{estimate}}%")
+    fill_opacity = 0.5,
+    min_zoom = 7,
+    popup = "estimate"
+  )
+
+broadband_map
+
 ```
-
-</details>
-
-<iframe src=img/styled_map.html width="100%" height="500px" scrolling="no"></iframe>
-
 
 ### Adding a custom-built legend
 
-While mapboxer does not yet have official support for legends, the beauty of htmlwidgets is that you can customize your HTML output with some extra HTML and CSS.  I've built a custom legend to be placed over the map [by modifying a legend example from the Mapbox documentation](https://docs.mapbox.com/help/tutorials/show-changes-over-time/) and adding it to my mapboxer map with `htmlwidgets::prependContent()` and `htmlwidgets::appendContent()`.  
+While the map data are styled in relationship to locations' broadband access, we'll also want to add a legend to our map to communicate the information to our viewers more clearly. The `add_legend()` function in mapgl accommodates both continuous legends (the default, which we'll use here) along with categorical legends.  
 
-<details><summary>Show code</summary>
-
-```{r, class.source = "fold-hide"}
-style <- htmltools::HTML(
-  "
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-    h2 {
-    font-size: 14px;
-    font-family: 'Roboto';
-    line-height: 20px;
-    margin-bottom: 10px;
-    }
-
-    #legend {
-    position: fixed;
-    border-radius: 10px;
-    top:10px;
-    left:10px;
-    margin: 10px;
-    width: 120px;
-    background-color: #ffffff80;
-    padding: 10px 20px;
-    z-index: 1002;
-    }
-
-    .content {
-    margin-bottom: 20px;
-    }
-
-    .row {
-    height: 12px;
-    width: 100%;
-    }
-
-    .colors {
-    background: linear-gradient(
-    to right,
-    #edf8b1,
-    #7fcdbb,
-    #2c7fb8
-    );
-    margin-bottom: 5px;
-    }
-
-    .label {
-    width: 30%;
-    display: inline-block;
-    text-align: center;
-    font-family: 'Roboto';
-    }
-    </style>
-  "
-)
-
-legend <- htmltools::HTML(
-  '
-<div id="legend">
-<div class="content">
-<h2>Households with broadband access</h2>
-<div class="row colors"></div>
-<div class="row labels">
-<div class="label">33%</div>
-<div class="label">65%</div>
-<div class="label">97%</div>
-</div>
-</div>
-  '
-)
-
-broadband_map %>%
-  htmlwidgets::prependContent(style) %>%
-  htmlwidgets::appendContent(legend)
-
+```{r, class.source = "fold-hide", eval = TRUE}
+broadband_map |> 
+  add_legend(
+    "Households with broadband access",
+    values = c("33%", "65%", "97%"),
+    colors = c("#edf8b1", "#7fcdbb", "#2c7fb8"), 
+    position = "bottom-left"
+  )
 ```
 
-</details>
 
-<iframe src=img/map_with_legend.html width="100%" height="500px" scrolling="no"></iframe>
