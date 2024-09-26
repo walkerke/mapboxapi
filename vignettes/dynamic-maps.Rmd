@@ -205,7 +205,11 @@ broadband_map <- mapboxgl(style = mapbox_style("light"),
     ),
     fill_opacity = 0.5,
     max_zoom = 7,
-    popup = "estimate"
+    popup = "estimate",
+    hover_options = list(
+      fill_color = "cyan",
+      fill_opacity = 1
+    )
   ) |> 
   add_fill_layer(
     id = "tracts",
@@ -219,7 +223,11 @@ broadband_map <- mapboxgl(style = mapbox_style("light"),
     ),
     fill_opacity = 0.5,
     min_zoom = 7,
-    popup = "estimate"
+    popup = "estimate",
+    hover_options = list(
+      fill_color = "cyan",
+      fill_opacity = 1
+    )
   )
 
 broadband_map
@@ -236,7 +244,8 @@ broadband_map |>
     "Households with broadband access",
     values = c("33%", "65%", "97%"),
     colors = c("#edf8b1", "#7fcdbb", "#2c7fb8"), 
-    position = "bottom-left"
+    position = "bottom-left", 
+    width = "150px"
   )
 ```
 
