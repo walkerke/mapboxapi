@@ -174,7 +174,7 @@ mapboxgl(style = mapbox_style("light"),
 
 ```
 
-### Styling vector tiles with Mapbox GL JS and mapboxer
+### Styling vector tiles with Mapbox GL JS and mapgl
 
 Mapbox GL JS has many, many more options available for users to customize styling of their vector tiles.  [While those options are voluminous](https://docs.mapbox.com/mapbox-gl-js/style-spec/), mapgl includes a variety of helper functions to assist with styling. 
 
