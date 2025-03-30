@@ -67,6 +67,21 @@
 #' @param alley_bias Can take values between -1 and 1, where negative numbers
 #'   avoid alleys and positive numbers prefer alleys. Available when `profile =
 #'   'walking'`.
+#' @param max_height The max vehicle height, in meters. If this parameter is provided, 
+#'   the Directions API will compute a route that includes only roads with a height 
+#'   limit greater than or equal to the max vehicle height. `max_height` must be between
+#'   0 and 10 meters. The default value is 1.6 meters. Coverage for road height
+#'   restriction may vary by region.
+#' @param max_width The max vehicle width, in meters. If this parameter is provided,
+#'   the Directions API will compute a route that includes only roads with a width
+#'   limit greater than or equal to the max vehicle width. `max_width` must be between
+#'   0 and 10 meters. The default value is 1.9 meters. Coverage for road width
+#'   restriction may vary by region.
+#' @param max_weight The max vehicle weight, in metric tons (1000 kg). If this parameter
+#'   is provided, the Directions API will compute a route that includes only roads with
+#'   a weight limit greater than or equal to the max vehicle weight. `max_weight` must be
+#'   between 0 and 100 metric tons. The default value is 2.5 metric tons. Coverage for
+#'   road weight restriction may vary by region.
 #' @param access_token A Mapbox access token; which can be set with
 #'   [mb_access_token()]
 #'
@@ -120,6 +135,9 @@ mb_directions <- function(input_data = NULL,
                           walking_speed = NULL,
                           walkway_bias = NULL,
                           alley_bias = NULL,
+                          max_height = NULL,
+                          max_width = NULL,
+                          max_weight = NULL,
                           access_token = NULL) {
   access_token <- get_mb_access_token(access_token)
 
@@ -314,7 +332,10 @@ mb_directions <- function(input_data = NULL,
       waypoints = waypoints,
       walking_speed = walking_speed,
       walkway_bias = walkway_bias,
-      alley_bias = alley_bias
+      alley_bias = alley_bias,
+      max_height = max_height,
+      max_width = max_width,
+      max_weight = max_weight
     )
   )
 
