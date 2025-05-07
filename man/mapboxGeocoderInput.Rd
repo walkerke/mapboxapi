@@ -12,7 +12,11 @@ mapboxGeocoderInput(
   proximity = NULL,
   limit = 5,
   min_length = 2,
-  language = NULL
+  language = NULL,
+  types = NULL,
+  country = NULL,
+  worldview = NULL,
+  width = "100\%"
 )
 }
 \arguments{
@@ -34,6 +38,16 @@ to limit search results. Defaults to NULL.}
 \item{min_length}{The minimum number of characters the user must enter before results are shown.  Defaults to 2.}
 
 \item{language}{The language to use for the geocoder.  Per the Mapbox documentation, "Options are IETF language tags comprised of a mandatory ISO 639-1 language code and optionally one or more IETF subtags for country or script."}
+
+\item{types}{A vector of feature types to limit to which the search should be
+limited. Available options include \code{'country'}, \code{'region'}, \code{'postcode'},
+\code{'district'}, \code{'place'}, \code{'locality'}, \code{'neighborhood'}, \code{'address'}, \code{'street'}, \code{'block'}, \code{'address'}. and \code{'secondary_address'}. If left blank, all types will be searched.}
+
+\item{country}{A character string or vector of ISO 3166 alpha-2 country codes within which you would like to limit your search.}
+
+\item{worldview}{Returns features intended for different regional or cultural groups.  The US (\code{'us'}) world view is returned by default.}
+
+\item{width}{The width of the input field. Can be specified as a number (pixels) or a valid CSS width value (e.g., "300px", "100\%"). Defaults to 100\%.}
 }
 \value{
 A Mapbox geocoder widget as a Shiny input

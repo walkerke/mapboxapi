@@ -566,6 +566,12 @@ get_geocoder_dependencies <- function() {
 #' @param limit The maximum number of results to show.  Defaults to 5.
 #' @param min_length The minimum number of characters the user must enter before results are shown.  Defaults to 2.
 #' @param language The language to use for the geocoder.  Per the Mapbox documentation, "Options are IETF language tags comprised of a mandatory ISO 639-1 language code and optionally one or more IETF subtags for country or script."
+#' @param types A vector of feature types to limit to which the search should be
+#'   limited. Available options include `'country'`, `'region'`, `'postcode'`,
+#'   `'district'`, `'place'`, `'locality'`, `'neighborhood'`, `'address'`, `'street'`, `'block'`, `'address'`. and `'secondary_address'`. If left blank, all types will be searched.
+#' @param country A character string or vector of ISO 3166 alpha-2 country codes within which you would like to limit your search.
+#' @param worldview Returns features intended for different regional or cultural groups.  The US (\code{'us'}) world view is returned by default.
+#' @param width The width of the input field. Can be specified as a number (pixels) or a valid CSS width value (e.g., "300px", "100%"). Defaults to 100%.
 #'
 #' @return A Mapbox geocoder widget as a Shiny input
 #' @export
@@ -577,8 +583,11 @@ mapboxGeocoderInput <- function(
     proximity = NULL,
     limit = 5,
     min_length = 2,
-    language = NULL
-
+    language = NULL,
+    types = NULL,
+    country = NULL,
+    worldview = NULL,
+    width = "100%"
 ) {
 
   access_token <- get_mb_access_token(access_token)
@@ -602,15 +611,41 @@ mapboxGeocoderInput <- function(
       latitude = proximity[2]
     )
   }
+  
+  if (!is.null(types)) {
+    types <- paste0(types, collapse = ",")
+  }
 
   options <- list()
 
-  options <- modifyList(options, list(proximity = proximity, placeholder = placeholder, bbox = bbox, limit = limit, minLength = min_length, language = language))
+  options <- modifyList(options, list(
+    proximity = proximity, 
+    placeholder = placeholder, 
+    bbox = bbox, 
+    limit = limit, 
+    minLength = min_length, 
+    language = language,
+    types = types,
+    countries = country,
+    worldview = worldview
+  ))
 
+  # Process width value
+  width_style <- if(is.numeric(width)) {
+    paste0(width, "px")
+  } else {
+    width
+  }
+
+  # Add width to options as well
+  options$customWidth <- width_style
+  
   div(id = inputId,
       class = "mapbox-geocoder",
+      style = paste0("width: ", width_style, ";"),
       `data-access-token` = access_token,
       `data-options` = jsonlite::toJSON(options, auto_unbox = TRUE),
+      `data-width` = width_style,
       get_geocoder_dependencies())
 }
 

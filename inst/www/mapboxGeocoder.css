@@ -5,10 +5,9 @@
     }
 
     .mapboxgl-ctrl-geocoder {
-        width: 100%;
         font-size: 15px;
         line-height: 20px;
-        max-width: 1000px;
+        max-width: none !important; /* Override Mapbox's default max-width */
         z-index: 10010;
         position: relative; /* Ensure the parent has position for absolute children anchoring */
     }
@@ -39,6 +38,9 @@
 /* Additional fixes for container issues */
 .mapboxgl-ctrl-geocoder {
     position: relative; /* Ensure parent has position context */
+    min-width: unset !important; /* Override Mapbox's default min-width of 240px */
+    width: 100%; /* Ensure the geocoder takes the width of its container */
+    transition: none !important; /* Disable transitions that might affect width */
 }
 
 /* Ensure the container for suggestions has no overflow restrictions */
