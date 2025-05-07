@@ -1,15 +1,58 @@
 @media screen and (min-width: 640px) {
+    .mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {
+        width: 36px;
+        min-width: 36px;
+    }
 
-  .mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {
-    width: 36px;
-    min-width: 36px;
-  }
+    .mapboxgl-ctrl-geocoder {
+        width: 100%;
+        font-size: 15px;
+        line-height: 20px;
+        max-width: 1000px;
+        z-index: 10010;
+        position: relative; /* Ensure the parent has position for absolute children anchoring */
+    }
+}
 
-  .mapboxgl-ctrl-geocoder {
+/* Fix for Quarto dashboards - ensure suggestions appear above other content */
+.mapboxgl-ctrl-geocoder .suggestions {
+    position: absolute !important; /* Force absolute positioning */
+    z-index: 9999 !important; /* Use high z-index to stay on top */
     width: 100%;
-    font-size: 15px;
-    line-height: 20px;
-    max-width: 1000px;
-  }
+    left: 0;
+    top: 100%; /* Position right below the input */
+    overflow-y: visible !important;
+    /* Allow dropdown to go outside parent container boundaries */
+    max-height: 200px; /* Ensure a reasonable max height */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
 
+/* Improve visibility of suggestions dropdown */
+.mapboxgl-ctrl-geocoder .suggestions > .active > a,
+.mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
+    background-color: #f0f0f0;
+    color: #404040;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Additional fixes for container issues */
+.mapboxgl-ctrl-geocoder {
+    position: relative; /* Ensure parent has position context */
+}
+
+/* Ensure the container for suggestions has no overflow restrictions */
+.mapboxgl-ctrl-geocoder,
+.mapboxgl-ctrl-geocoder .suggestions-wrapper {
+    overflow: visible !important;
+}
+
+/* Force suggestions container to not be clipped by parent elements */
+.suggestions-wrapper {
+    position: static !important;
+}
+
+.cell-output-display:has(.mapboxgl-ctrl-geocoder) {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
 }
