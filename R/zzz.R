@@ -3,7 +3,7 @@
 }
 
 utils::globalVariables(c(
-  ".", "contour", "lat", "layer_area", "lon", "name",
+  ".", "contour", "lat", "layer_area", "location", "lon", "name",
   "roundabout_exits", "waypoint_index", "x", "y",
   "origins", "ix"
 ))
