@@ -54,7 +54,8 @@ mb_geocode <- function(search_text = NULL,
     rlang::warn(c("You have requested permanent geocoding.",
                   "i" = "You are allowed to store these geocoded results per Mapbox's Terms of Service",
                   "i" = "However, permanent geocoding may incur significant charges to your Mapbox account."),
-                .frequency = "once")
+                .frequency = "once",
+                .frequency_id = "mapboxapi_permanent_geocoding")
   }
 
   if (!is.null(search_within)) {
@@ -206,7 +207,8 @@ mb_reverse_geocode <- function(coordinates,
     rlang::warn(c("You have requested permanent geocoding.",
                   "i" = "You are allowed to store these geocoded results per Mapbox's Terms of Service",
                   "i" = "However, permanent geocoding may incur significant charges to your Mapbox account."),
-                .frequency = "once")
+                .frequency = "once",
+                .frequency_id = "mapboxapi_permanent_geocoding")
   }
 
   if (!is.null(types)) {
@@ -325,7 +327,8 @@ mb_batch_geocode <- function(
     rlang::warn(c("You have requested permanent geocoding.",
                   "i" = "You are allowed to store these geocoded results per Mapbox's Terms of Service",
                   "i" = "However, permanent geocoding may incur significant charges to your Mapbox account."),
-                .frequency = "once")
+                .frequency = "once",
+                .frequency_id = "mapboxapi_permanent_geocoding")
   }
 
   # Check to see if large job is allowed
