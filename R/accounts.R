@@ -66,7 +66,7 @@ mb_access_token <- function(token, overwrite = FALSE, install = FALSE) {
     return(token)
   } else {
     message("To install your access token for use in future sessions, run this function with `install = TRUE`.")
-    Sys.setenv(type = token)
+    do.call(Sys.setenv, stats::setNames(list(token), type))
   }
 }
 
