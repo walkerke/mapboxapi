@@ -8,7 +8,7 @@ coords_to_tiles <- function(lon, lat, zoom) {
   ytile <- floor((1.0 - log(tan(lat_rad) + (1 / cos(lat_rad))) / pi) / 2.0 * n)
 
   return(c(xtile, ytile))
-  #  return(paste(paste("https://a.tile.openstreetmap.org", zoom, xtile, ytile, sep="/"),".png",sep=""))
+  #  return(paste(paste("https://tile.openstreetmap.org", zoom, xtile, ytile, sep="/"),".png",sep=""))
 }
 
 #' Get a bounding box from location
